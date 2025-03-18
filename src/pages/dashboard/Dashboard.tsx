@@ -1,29 +1,24 @@
 import {
   Box,
+  Divider,
   Drawer,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
+import { getAuth, signOut } from "firebase/auth";
 import { useNavigate, Outlet } from "react-router-dom";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import { menuItems } from "./menuItems";
 
 const DashboardLayout = () => {
   const navigate = useNavigate();
-  const menuItems = [
-    { text: "Clientes", icon: "fas fa-users", path: "/dashboard/clients" },
-    {
-      text: "Profissionais",
-      icon: "fas fa-user-tie",
-      path: "/dashboard/professionals",
-    },
-    { text: "Serviços", icon: "fas fa-briefcase", path: "/dashboard/services" },
-    {
-      text: "Atendimentos",
-      icon: "fas fa-calendar-check",
-      path: "/dashboard/appointments",
-    },
-  ];
+
+  const handleLogout = async () => {
+    await signOut(getAuth());
+    navigate("/login");
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -32,6 +27,7 @@ const DashboardLayout = () => {
         sx={{
           width: 240,
           flexShrink: 0,
+          zIndex: 1,
           "& .MuiDrawer-paper": {
             width: 240,
             bgcolor: "#0a0a0a",
@@ -39,11 +35,30 @@ const DashboardLayout = () => {
           },
         }}
       >
-        <List>
-          {menuItems.map((item) => (
+        <Box sx={{ overflow: "auto", mt: 10 }}>
+          <List>
+            {menuItems.map((item) => (
+              <ListItemButton
+                key={item.text}
+                onClick={() => navigate(item.path)}
+                sx={{
+                  py: 2,
+                  "&.Mui-selected": {
+                    bgcolor: "rgba(0, 255, 157, 0.1)",
+                    "&:hover": {
+                      bgcolor: "rgba(0, 255, 157, 0.2)",
+                    },
+                  },
+                }}
+              >
+                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.text} sx={{ color: "#e5e5e5" }} />
+              </ListItemButton>
+            ))}
+            <Divider />
             <ListItemButton
-              key={item.text}
-              onClick={() => navigate(item.path)}
+              key="logoutbutton"
+              onClick={handleLogout}
               sx={{
                 py: 2,
                 "&.Mui-selected": {
@@ -55,16 +70,24 @@ const DashboardLayout = () => {
               }}
             >
               <ListItemIcon>
-                <i className={`${item.icon} fa-fw`} />
+                <LogoutOutlinedIcon />
               </ListItemIcon>
-              <ListItemText primary={item.text} sx={{ color: "#e5e5e5" }} />
+              <ListItemText primary="Logout" sx={{ color: "#e5e5e5" }} />
             </ListItemButton>
-          ))}
-        </List>
+          </List>
+        </Box>
       </Drawer>
+
       <Box
         component="main"
-        sx={{ flexGrow: 1, p: 3, bgcolor: "#0a0a0a", minHeight: "100vh" }}
+
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          bgcolor: "#0a0a0a",
+          minHeight: "100vh",
+          mt: 7, // Espaço para evitar sobreposição com a navbar
+        }}
       >
         <Outlet />
       </Box>

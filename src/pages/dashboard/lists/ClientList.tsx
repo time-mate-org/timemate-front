@@ -51,7 +51,7 @@ const ClientList = () => {
       </Button>
 
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }}>
+        <Table sx={{ minWidth: 650 }} size="small">
           <TableHead sx={{ bgcolor: "#1a1a1a" }}>
             <TableRow>
               <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
