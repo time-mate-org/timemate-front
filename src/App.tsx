@@ -15,6 +15,7 @@ import ProfessionalNew from "./pages/dashboard/create/ProfessionalNew";
 import AppointmentNew from "./pages/dashboard/create/AppointmentNew";
 import { MainLayout } from "./components/MainLayout";
 import AuthLayout from "./components/AuthLayout";
+import NotFound from "./pages/NotFound";
 
 const DashboardRoutes = () => (
   <Routes>
@@ -49,6 +50,8 @@ function App() {
 
             <Route path="/login" element={<Login />} />
             <Route index element={<Navigate to="/login" replace />} />
+            {/* Rota para capturar tudo o que não foi especificado */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </MainLayout>

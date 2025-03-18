@@ -18,22 +18,18 @@ const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
 
-  // Usa o Zustand para acessar o estado global
   const {
     user,
+    error,
     login,
-    setLoading,
     loading: isLoading,
   } = useAuthStore(
     useShallow((state) => ({
+      error: state.error,
       user: state.user,
       loading: state.loading,
-      error: state.error,
       login: state.login,
-      logout: state.logout,
-      setLoading: state.setLoading,
     }))
   );
 
@@ -47,16 +43,8 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-
-    try {
-      await login(email, password);
-      navigate("/dashboard");
-    } catch {
-      setError("Credenciais inválidas");
-    } finally {
-      setLoading(false);
-    }
+    await login(email, password);
+    if(user)navigate("/dashboard");
   };
 
   return (
@@ -79,9 +67,10 @@ const Login = () => {
           borderRadius: { xs: 0, sm: 2 }, // Sem bordas no sm
           boxShadow: {
             xs: "none",
-            sm: "1px 4px 10px 5px rgba(255, 255, 255, 0.1)",
+            sm: "1px 4px 5px 2px rgba(255, 255, 255, 0.1)",
           }, // Sem sombra no sm
           p: { xs: 3, sm: 4 }, // Padding responsivo
+          border: "1px solid gray",
           transition: "transform 0.3s ease",
           "&:hover": {
             transform: { xs: "none", sm: "translateY(-2px)" }, // Efeito hover apenas em telas maiores
@@ -136,7 +125,7 @@ const Login = () => {
           type="submit"
           variant="contained"
           fullWidth
-          disabled={isLoading}
+          disabled={isLoading || !email || !password} 
           sx={{
             my: 2,
             py: 1.5,

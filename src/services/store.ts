@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { signOut as firebaseSignOut, getAuth } from "firebase/auth";
+import { signOut as firebaseSignOut, getAuth, User } from "firebase/auth";
 import { signIn } from "./firebase";
 import { createJSONStorage, persist } from "zustand/middleware";
 
@@ -11,6 +11,8 @@ export type AuthState = {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   setLoading: (isLoading: boolean) => Promise<void>;
+  setUser: (user?: User) => Promise<void>;
+  setError: (error?: string) => Promise<void>;
 };
 
 // Cria o store de autenticação
@@ -27,9 +29,9 @@ export const useAuthStore = create<AuthState>()(
         try {
           const userCredential = await signIn(email, password);
           set({ user: userCredential.email, loading: false });
-        } catch (err) {
+        } catch {
           set({
-            error: `Credenciais inválidas: ${(err as Error).message}`,
+            error: `Credenciais inválidas.`,
             loading: false,
           });
         }
@@ -51,6 +53,14 @@ export const useAuthStore = create<AuthState>()(
 
       setLoading: async (isLoading: boolean) => {
         set({ loading: isLoading });
+      },
+
+      setUser: async (user?: User) => {
+        set({ user: user?.email });
+      },
+
+      setError: async (error?: string) => {
+        set({ error });
       },
     }),
     {
