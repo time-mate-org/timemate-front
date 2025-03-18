@@ -1,6 +1,26 @@
 import { Box } from "@mui/material";
+import { useAuthStore } from "../services/store";
+import { useNavigate } from "react-router-dom";
+import { useCallback, useEffect } from "react";
+import { useShallow } from "zustand/shallow";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
+  const navigate = useNavigate();
+  const { user } = useAuthStore(
+    useShallow((state) => ({
+      user: state.user,
+    }))
+  );
+
+  // Cria uma função estável com useCallback
+  const redirectToLogin = useCallback(() => {
+    navigate("/login", { replace: true });
+  }, [navigate]);
+
+  useEffect(() => {
+    if (!user) redirectToLogin();
+  }, [user, redirectToLogin]);
+
   return (
     <Box
       sx={{

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Box,
   TextField,
@@ -10,7 +10,8 @@ import {
   useTheme,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { signIn } from "../services/firebase";
+import { useAuthStore } from "../services/store";
+import { useShallow } from "zustand/shallow";
 
 const Login = () => {
   const theme = useTheme();
@@ -18,19 +19,43 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+
+  // Usa o Zustand para acessar o estado global
+  const {
+    user,
+    login,
+    setLoading,
+    loading: isLoading,
+  } = useAuthStore(
+    useShallow((state) => ({
+      user: state.user,
+      loading: state.loading,
+      error: state.error,
+      login: state.login,
+      logout: state.logout,
+      setLoading: state.setLoading,
+    }))
+  );
+
+  const redirectToDashboard = useCallback(() => {
+    navigate("/dashboard", { replace: true });
+  }, [navigate]);
+
+  useEffect(() => {
+    if (user) redirectToDashboard();
+  }, [user, redirectToDashboard]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setLoading(true);
 
     try {
-      console.log(JSON.stringify(await signIn(email, password), null, 2));
+      await login(email, password);
       navigate("/dashboard");
     } catch {
       setError("Credenciais inválidas");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 

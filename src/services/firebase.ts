@@ -16,6 +16,7 @@ const auth = getAuth(app);
 export const signIn = async (email: string, password: string) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    console.log("🚀 ~ signIn ~ userCredential.user:", JSON.stringify(userCredential.user, null, 2))
     return userCredential.user;
   } catch (error) {
     throw new Error("Credenciais inválidas: " + (error as Error).message);

@@ -7,17 +7,23 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { getAuth, signOut } from "firebase/auth";
 import { useNavigate, Outlet } from "react-router-dom";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-import { menuItems } from "./menuItems";
+import { menuItems } from "./MenuItems";
+import { useAuthStore } from "../../services/store";
+import { useShallow } from "zustand/shallow";
 
 const DashboardLayout = () => {
   const navigate = useNavigate();
+  const { logout } = useAuthStore(
+    useShallow((state) => ({
+      logout: state.logout,
+    }))
+  );
 
   const handleLogout = async () => {
-    await signOut(getAuth());
-    navigate("/login");
+    await logout();
+    // navigate("/login");
   };
 
   return (
@@ -80,7 +86,6 @@ const DashboardLayout = () => {
 
       <Box
         component="main"
-
         sx={{
           flexGrow: 1,
           p: 3,
