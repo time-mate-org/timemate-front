@@ -1,5 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
+import { ptBR } from "date-fns/locale"; // Adicione localização
 import { mainTheme } from "./theme/theme";
 import Login from "./pages/Login";
 import DashboardLayout from "./pages/dashboard/Dashboard";
@@ -35,27 +38,32 @@ const DashboardRoutes = () => (
 
 function App() {
   return (
-    <ThemeProvider theme={mainTheme}>
-      <MainLayout>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/dashboard/*"
-              element={
-                <AuthLayout>
-                  <DashboardRoutes />
-                </AuthLayout>
-              }
-            />
+    <LocalizationProvider
+      dateAdapter={AdapterDateFns}
+      adapterLocale={ptBR}
+    >
+      <ThemeProvider theme={mainTheme}>
+        <MainLayout>
+          <BrowserRouter>
+            <Routes>
+              <Route
+                path="/dashboard/*"
+                element={
+                  <AuthLayout>
+                    <DashboardRoutes />
+                  </AuthLayout>
+                }
+              />
 
-            <Route path="/login" element={<Login />} />
-            <Route index element={<Navigate to="/login" replace />} />
-            {/* Rota para capturar tudo o que não foi especificado */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </MainLayout>
-    </ThemeProvider>
+              <Route path="/login" element={<Login />} />
+              <Route index element={<Navigate to="/login" replace />} />
+              {/* Rota para capturar tudo o que não foi especificado */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </MainLayout>
+      </ThemeProvider>
+    </LocalizationProvider>
   );
 }
 

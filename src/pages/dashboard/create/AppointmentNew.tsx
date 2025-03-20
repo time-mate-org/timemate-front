@@ -15,7 +15,6 @@ import { useNavigate } from "react-router-dom";
 
 import { appointmentSchema } from "../../../validation/appointment";
 import { AppointmentFormData } from "../../../types/formData";
-import { format } from "date-fns";
 import { mockedServices } from "../../../mocks/services";
 import { mockedProfessionals } from "../../../mocks/professionals";
 import { mockedClients } from "../../../mocks/clients";
@@ -62,15 +61,12 @@ const AppointmentNew = () => {
               <DatePicker
                 label="Data"
                 value={field.value ? new Date(field.value) : null}
-                onChange={(newDate) =>
-                  newDate ? field.onChange(format(newDate, "dd/MM/yyyy")) : null
-                }
+                onChange={(newDate) => newDate}
                 slotProps={{
                   textField: {
                     helperText: "DD/MM/YYYY",
                   },
                 }}
-                format="DD-MM-YYYY"
               />
             )}
           />
