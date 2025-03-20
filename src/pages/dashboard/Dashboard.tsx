@@ -1,17 +1,17 @@
 import {
   Box,
+  Container,
   Divider,
-  Drawer,
   List,
-  ListItemButton,
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
 import { useNavigate, Outlet } from "react-router-dom";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-import { menuItems } from "./MenuItems";
+import { menuItems } from "./components/menuItems";
 import { useAuthStore } from "../../services/store";
 import { useShallow } from "zustand/shallow";
+import { DashboardDrawer, DrawerListItem, OutletContainer } from "./styled";
 
 const DashboardLayout = () => {
   const navigate = useNavigate();
@@ -27,76 +27,34 @@ const DashboardLayout = () => {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: 240,
-          flexShrink: 0,
-          zIndex: 1,
-          "& .MuiDrawer-paper": {
-            width: 240,
-            bgcolor: "#0a0a0a",
-            borderRight: "none",
-          },
-        }}
-      >
+    <Container sx={{ display: "flex" }}>
+      <DashboardDrawer variant="permanent" sx={{}}>
         <Box sx={{ overflow: "auto", mt: 10 }}>
           <List>
             {menuItems.map((item) => (
-              <ListItemButton
+              <DrawerListItem
                 key={item.text}
                 onClick={() => navigate(item.path)}
-                sx={{
-                  py: 2,
-                  "&.Mui-selected": {
-                    bgcolor: "rgba(0, 255, 157, 0.1)",
-                    "&:hover": {
-                      bgcolor: "rgba(0, 255, 157, 0.2)",
-                    },
-                  },
-                }}
               >
                 <ListItemIcon>{item.icon}</ListItemIcon>
                 <ListItemText primary={item.text} sx={{ color: "#e5e5e5" }} />
-              </ListItemButton>
+              </DrawerListItem>
             ))}
             <Divider />
-            <ListItemButton
-              key="logoutbutton"
-              onClick={handleLogout}
-              sx={{
-                py: 2,
-                "&.Mui-selected": {
-                  bgcolor: "rgba(0, 255, 157, 0.1)",
-                  "&:hover": {
-                    bgcolor: "rgba(0, 255, 157, 0.2)",
-                  },
-                },
-              }}
-            >
+            <DrawerListItem key="logoutbutton" onClick={handleLogout}>
               <ListItemIcon>
                 <LogoutOutlinedIcon />
               </ListItemIcon>
               <ListItemText primary="Logout" sx={{ color: "#e5e5e5" }} />
-            </ListItemButton>
+            </DrawerListItem>
           </List>
         </Box>
-      </Drawer>
+      </DashboardDrawer>
 
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          bgcolor: "#0a0a0a",
-          minHeight: "100vh",
-          mt: 7, // Espaço para evitar sobreposição com a navbar
-        }}
-      >
+      <OutletContainer maxWidth="xl">
         <Outlet />
-      </Box>
-    </Box>
+      </OutletContainer>
+    </Container>
   );
 };
 

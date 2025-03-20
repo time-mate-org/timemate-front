@@ -4,21 +4,21 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/L
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { ptBR } from "date-fns/locale"; // Adicione localização
 import { mainTheme } from "./theme/theme";
-import Login from "./pages/Login";
+import Login from "./pages/login/Login";
 import DashboardLayout from "./pages/dashboard/Dashboard";
 import {
   ClientList,
   ProfessionalList,
   ServiceList,
   AppointmentList,
-} from "./pages/dashboard/lists";
-import ClientNew from "./pages/dashboard/create/ClientNew";
-import ServiceNew from "./pages/dashboard/create/ServiceNew";
-import ProfessionalNew from "./pages/dashboard/create/ProfessionalNew";
-import AppointmentNew from "./pages/dashboard/create/AppointmentNew";
+} from "./pages/dashboard/components/lists";
+import ClientNew from "./pages/dashboard/components/create/ClientNew";
+import ServiceNew from "./pages/dashboard/components/create/ServiceNew";
+import ProfessionalNew from "./pages/dashboard/components/create/ProfessionalNew";
+import AppointmentNew from "./pages/dashboard/components/create/AppointmentNew";
 import { MainLayout } from "./components/MainLayout";
 import AuthLayout from "./components/AuthLayout";
-import NotFound from "./pages/NotFound";
+import NotFound from "./pages/notFound/NotFound";
 
 const DashboardRoutes = () => (
   <Routes>
@@ -38,10 +38,7 @@ const DashboardRoutes = () => (
 
 function App() {
   return (
-    <LocalizationProvider
-      dateAdapter={AdapterDateFns}
-      adapterLocale={ptBR}
-    >
+    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
       <ThemeProvider theme={mainTheme}>
         <MainLayout>
           <BrowserRouter>

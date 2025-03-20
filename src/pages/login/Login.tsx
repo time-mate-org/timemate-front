@@ -2,19 +2,17 @@ import { useCallback, useEffect, useState } from "react";
 import {
   Box,
   TextField,
-  Button,
   Typography,
   Link,
   Alert,
   CircularProgress,
-  useTheme,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../services/store";
+import { useAuthStore } from "../../services/store";
 import { useShallow } from "zustand/shallow";
+import { LoginBox, LoginButton } from "./style";
 
 const Login = () => {
-  const theme = useTheme();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,20 +42,11 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await login(email, password);
-    if(user)navigate("/dashboard");
+    if (user) navigate("/dashboard");
   };
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        ml: -1,
-        display: "grid",
-        placeItems: "center",
-        maxWidth: "100vw",
-        maxHeight: "100vh",
-      }}
-    >
+    <LoginBox>
       <Box
         component="form"
         onSubmit={handleSubmit}
@@ -121,26 +110,18 @@ const Login = () => {
           sx={{ mt: 2 }}
         />
 
-        <Button
+        <LoginButton
           type="submit"
           variant="contained"
           fullWidth
-          disabled={isLoading || !email || !password} 
-          sx={{
-            my: 2,
-            py: 1.5,
-            bgcolor: "primary.main",
-            "&:hover": {
-              bgcolor: theme.palette.primary.dark,
-            },
-          }}
+          disabled={isLoading || !email || !password}
         >
           {isLoading ? (
             <CircularProgress size={24} color="inherit" />
           ) : (
             "Entrar"
           )}
-        </Button>
+        </LoginButton>
 
         <Typography variant="body2" color="text.secondary" textAlign="center">
           Não tem conta?{" "}
@@ -155,11 +136,11 @@ const Login = () => {
               },
             }}
           >
-            Cadastre-se
+            Solicite aqui.
           </Link>
         </Typography>
       </Box>
-    </Box>
+    </LoginBox>
   );
 };
 

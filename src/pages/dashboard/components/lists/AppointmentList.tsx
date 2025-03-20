@@ -16,8 +16,8 @@ import { Add as AddIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom"; // Imports necessários
 import { IconButton } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
-import { mockedAppointments } from "../../../mocks/appointments";
-import { AppointmentTimeline } from "../../../components/timeline/TimeLine";
+import { mockedAppointments } from "../../../../mocks/appointments";
+import { AppointmentTimeline } from "../../../../components/timeline/TimeLine";
 import { format } from "date-fns";
 
 // Função de exclusão
@@ -31,7 +31,7 @@ const handleDelete = async (id: number) => {
 
 const StyledTableCell = styled(TableCell)(() => ({
   align: "center",
-  textAlign: 'center',
+  textAlign: "center",
   color: "#f0f0f0",
   fontWeight: 600,
 }));

@@ -26,7 +26,6 @@ export const AppointmentTimeline = ({
       timeSlots.push(currentTime);
       currentTime = addMinutes(currentTime, 15);
     }
-    console.log("🚀 ~ timeSlots:", timeSlots);
     return timeSlots;
   };
 
@@ -49,8 +48,8 @@ export const AppointmentTimeline = ({
     );
 
   const isActualTimeSlot = (timeSlot: Date) => {
-    // const now = new Date();
-    const now = setHours(new Date(), 15);
+    const now = new Date();
+    // const now = setHours(new Date(), 15);
     return now >= timeSlot && now < addMinutes(timeSlot, 15);
   };
 
