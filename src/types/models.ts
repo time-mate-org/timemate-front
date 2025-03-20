@@ -21,8 +21,11 @@ export type Service = {
 
 export type Appointment = {
   id?: number;
+  clientId: number;
   client: Client;
+  professionalId: number;
   professional: Professional;
+  serviceId: number;
   service: Service;
   date: Date;
 };

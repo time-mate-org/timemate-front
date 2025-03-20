@@ -8,11 +8,17 @@ import {
   TableHead,
   TableRow,
   Button,
+  Divider,
+  styled,
+  Typography,
 } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom"; // Imports necessários
 import { IconButton } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import { mockedAppointments } from "../../../mocks/appointments";
+import { AppointmentTimeline } from "../../../components/timeline/TimeLine";
+import { format } from "date-fns";
 
 // Função de exclusão
 const handleDelete = async (id: number) => {
@@ -23,17 +29,15 @@ const handleDelete = async (id: number) => {
   //   }
 };
 
+const StyledTableCell = styled(TableCell)(() => ({
+  align: "center",
+  textAlign: 'center',
+  color: "#f0f0f0",
+  fontWeight: 600,
+}));
+
 const AppointmentList = () => {
   const navigate = useNavigate();
-  const appointments = [
-    {
-      id: 1,
-      client: { name: "João Silva", id: 1 },
-      professional: { name: "Dr. Jão Silva", id: 1 },
-      service: { name: "Consulta", id: 1 },
-      date: new Date().toISOString(),
-    },
-  ];
 
   return (
     <Box sx={{ p: 3 }}>
@@ -55,27 +59,30 @@ const AppointmentList = () => {
         <Table>
           <TableHead sx={{ bgcolor: "#1a1a1a" }}>
             <TableRow>
-              <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
+              <TableCell
+                align="center"
+                sx={{ color: "#00ff9d", fontWeight: 600 }}
+              >
                 Cliente
               </TableCell>
-              <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
+              <StyledTableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
                 Profissional
-              </TableCell>
-              <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
+              </StyledTableCell>
+              <StyledTableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
                 Serviço
-              </TableCell>
-              <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
+              </StyledTableCell>
+              <StyledTableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
                 Data
-              </TableCell>
-              <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
+              </StyledTableCell>
+              <StyledTableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
                 Operações
-              </TableCell>
+              </StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {appointments.map((app) => (
+            {mockedAppointments.map((appointment) => (
               <TableRow
-                key={app.id}
+                key={appointment.id}
                 sx={{
                   "&:nth-of-type(odd)": {
                     bgcolor: "#121212",
@@ -83,31 +90,38 @@ const AppointmentList = () => {
                   "&:hover": { bgcolor: "#1a1a1a" },
                 }}
               >
-                <TableCell>{app.client.name}</TableCell>
-                <TableCell>{app.professional.name}</TableCell>
-                <TableCell>{app.service.name}</TableCell>
-                <TableCell>{new Date(app.date).toLocaleString()}</TableCell>
-                <TableCell>
-                  <Box sx={{ display: "flex", gap: 1 }}>
-                    <IconButton
-                      onClick={() => navigate(`edit/${app.client.id}`)}
-                      sx={{ color: "#00ff9d" }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => handleDelete(app.client.id)}
-                      sx={{ color: "#ff4444" }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Box>
-                </TableCell>
+                <StyledTableCell>{appointment.client.name}</StyledTableCell>
+                <StyledTableCell>
+                  {appointment.professional.name}
+                </StyledTableCell>
+                <StyledTableCell>{appointment.service.name}</StyledTableCell>
+                <StyledTableCell>
+                  {format(appointment.date, "HH:mm")}
+                </StyledTableCell>
+                <StyledTableCell>
+                  <IconButton
+                    onClick={() => navigate(`edit/${appointment.client.id}`)}
+                    sx={{ color: "#00ff9d" }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={() => handleDelete(appointment.id as number)}
+                    sx={{ color: "#ff4444" }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </StyledTableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <Divider sx={{ mb: 10 }} />
+      <Typography align="center" color="#00ff9d" py={1} fontSize={25}>
+        TIMELINE
+      </Typography>
+      <AppointmentTimeline appointments={mockedAppointments} />
     </Box>
   );
 };
