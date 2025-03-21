@@ -19,6 +19,7 @@ import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { mockedAppointments } from "../../../../mocks/appointments";
 import { AppointmentTimeline } from "../../../../components/timeline/TimeLine";
 import { format } from "date-fns";
+import { toTitle } from "../../../../utils/string";
 
 // Função de exclusão
 const handleDelete = async (id: number) => {
@@ -90,11 +91,11 @@ const AppointmentList = () => {
                   "&:hover": { bgcolor: "#1a1a1a" },
                 }}
               >
-                <StyledTableCell>{appointment.client.name}</StyledTableCell>
+                <StyledTableCell>{toTitle(appointment.client.name)}</StyledTableCell>
                 <StyledTableCell>
-                  {appointment.professional.name}
+                  {toTitle(appointment.professional.name)}
                 </StyledTableCell>
-                <StyledTableCell>{appointment.service.name}</StyledTableCell>
+                <StyledTableCell>{toTitle(appointment.service.name)}</StyledTableCell>
                 <StyledTableCell>
                   {format(appointment.date, "HH:mm")}
                 </StyledTableCell>

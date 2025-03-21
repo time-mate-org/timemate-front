@@ -1,7 +1,7 @@
 export const mockedServices = [
   {
     id: 1,
-    name: "combo",
+    name: "combo 1",
     estimatedTime: 75,
     price: 30,
   },
@@ -15,6 +15,18 @@ export const mockedServices = [
     id: 3,
     name: "pezinho",
     estimatedTime: 15,
+    price: 1,
+  },
+  {
+    id: 4,
+    name: "combo 2",
+    estimatedTime: 60,
+    price: 1,
+  },
+  {
+    id: 5,
+    name: "hidratação",
+    estimatedTime: 45,
     price: 1,
   },
 ];

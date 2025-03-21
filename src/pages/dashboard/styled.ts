@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Container,
   Drawer,
@@ -57,4 +58,12 @@ export const NumberField = styled(TextField)(() => ({
   " input[type=number]": {
     "-moz-appearance": "textfield",
   },
+}));
+
+export const ServiceBox = styled(Box)(() => ({
+  backgroundColor: "#0f172a",
+  padding: 2,
+  borderRadius: 1,
+  transition: "transform 0.2s",
+  "&:hover": { transform: "translateY(-2px)" },
 }));

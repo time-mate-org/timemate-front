@@ -1,25 +1,25 @@
 export const mockedProfessionals = [
   {
     id: 1,
-    name: "professional1",
+    name: "Baltazar",
     title: "barbeiro",
     phone: "1311231233",
   },
   {
     id: 2,
-    name: "profissional2",
+    name: "Frederico",
     title: "barbeiro",
     phone: "1311231233",
   },
   {
     id: 3,
-    name: "profissional3",
+    name: "Dalton",
     title: "barbeiro",
     phone: "1311231233",
   },
   {
     id: 4,
-    name: "profissional4",
+    name: "Mostaco",
     title: "barbeiro",
     phone: "1311231233",
   },

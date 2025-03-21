@@ -1,14 +1,14 @@
 export const mockedClients = [
-  { id: 1, name: "cliente1", address: "casa dele", phone: "1311231233" },
+  { id: 1, name: "Alan", address: "casa dele", phone: "1311231233" },
   {
     id: 2,
-    name: "cliente2",
+    name: "Lucas",
     address: "casa dele",
     phone: "1311231233",
   },
   {
     id: 3,
-    name: "cliente3",
+    name: "Renan",
     address: "casa dele",
     phone: "1311231233",
   },
