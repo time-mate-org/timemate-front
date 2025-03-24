@@ -5,6 +5,7 @@ import {
   Drawer,
   ListItemButton,
   styled,
+  TableCell,
   TextField,
 } from "@mui/material";
 
@@ -60,10 +61,36 @@ export const NumberField = styled(TextField)(() => ({
   },
 }));
 
-export const ServiceBox = styled(Box)(() => ({
+export const ServiceBox = styled(Box)(({theme:{spacing}}) => ({
   backgroundColor: "#0f172a",
-  padding: 2,
+  padding: spacing(2),
   borderRadius: 1,
   transition: "transform 0.2s",
   "&:hover": { transform: "translateY(-2px)" },
+}));
+
+export const CustomDashboardCard = styled(Box)(() => ({
+  background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)",
+  borderRadius: "12px",
+  padding: "1rem",
+  transition: "transform 0.3s ease",
+  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+  color: "#00ff9d",
+  marginBottom: "1rem",
+  "&:hover": { transform: "translateY(-2px)" },
+}));
+
+export const AvailableServicesBox = styled(Box)(({theme: {spacing}}) => ({
+  background: "#1e293b",
+  borderRadius: 2,
+  padding: spacing(2),
+  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+}));
+
+export 
+const StyledTableCell = styled(TableCell)(() => ({
+  align: "center",
+  textAlign: "center",
+  color: "#f0f0f0",
+  fontWeight: 600,
 }));

@@ -27,9 +27,9 @@ import { mockedServices } from "../../mocks/services";
 import { toTitle } from "../../utils/string";
 
 export const AppointmentTimeline = ({
-  appointments,
+  appointments = [],
 }: {
-  appointments: Appointment[];
+  appointments?: Appointment[];
 }) => {
   const [currentTimeSlot, setCurrentTimeSlot] = useState<Date | null>();
   const [colors, setColors] = useState<{ [key: number]: string }>({});
@@ -132,7 +132,9 @@ export const AppointmentTimeline = ({
                       currentTimeSlot as Date
                     )}
                   >
-                    {cellAppointment ? toTitle(cellAppointment.client.name) : ""}
+                    {cellAppointment
+                      ? toTitle(cellAppointment.client.name)
+                      : ""}
                   </CustomTableCell>
                 );
               })}

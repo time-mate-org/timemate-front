@@ -13,6 +13,8 @@ import { Add as AddIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import { DashboardContext } from "../../../../providers/DashboardContext";
+import { useContext } from "react";
 
 // Função de exclusão
 const handleDelete = async (id: number) => {
@@ -24,15 +26,7 @@ const handleDelete = async (id: number) => {
 
 const ClientList = () => {
   const navigate = useNavigate();
-  const clients = [
-    {
-      id: 1,
-      name: "João Silva",
-      address: "Rua A, 123",
-      phone: "(11) 98765-4321",
-    },
-    // Adicione mais dados mockados
-  ];
+  const { clients } = useContext(DashboardContext);
 
   return (
     <Box sx={{ position: "relative", p: 3 }}>
@@ -69,7 +63,7 @@ const ClientList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {clients.map((client) => (
+            {clients?.map((client) => (
               <TableRow
                 key={client.id}
                 sx={{
@@ -89,7 +83,7 @@ const ClientList = () => {
                       <EditIcon />
                     </IconButton>
                     <IconButton
-                      onClick={() => handleDelete(client.id)}
+                      onClick={() => handleDelete(client.id as number)}
                       sx={{ color: "#ff4444" }}
                     >
                       <DeleteIcon />

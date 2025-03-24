@@ -13,6 +13,9 @@ import { Add as AddIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import { useContext } from "react";
+import { DashboardContext } from "../../../../providers/DashboardContext";
+import { toTitle } from "../../../../utils/string";
 
 // Função de exclusão
 const handleDelete = async (id: number) => {
@@ -24,20 +27,7 @@ const handleDelete = async (id: number) => {
 
 const ProfessionalList = () => {
   const navigate = useNavigate();
-  const professionals = [
-    {
-      id: 1,
-      name: "Dr. Carlos",
-      profession: "Médico",
-      phone: "(11) 99999-8888",
-    },
-    {
-      id: 2,
-      name: "Ana Souza",
-      profession: "Advogada",
-      phone: "(11) 99999-7777",
-    },
-  ];
+  const { professionals } = useContext(DashboardContext);
 
   return (
     <Box sx={{ p: 3 }}>
@@ -74,7 +64,7 @@ const ProfessionalList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {professionals.map((prof) => (
+            {professionals?.map((prof) => (
               <TableRow
                 key={prof.id}
                 sx={{
@@ -82,8 +72,8 @@ const ProfessionalList = () => {
                   "&:hover": { bgcolor: "#1a1a1a" },
                 }}
               >
-                <TableCell>{prof.name}</TableCell>
-                <TableCell>{prof.profession}</TableCell>
+                <TableCell>{toTitle(prof.name)}</TableCell>
+                <TableCell>{toTitle(prof.title)}</TableCell>
                 <TableCell>{prof.phone}</TableCell>
                 <TableCell>
                   <Box sx={{ display: "flex", gap: 1 }}>
@@ -94,7 +84,7 @@ const ProfessionalList = () => {
                       <EditIcon />
                     </IconButton>
                     <IconButton
-                      onClick={() => handleDelete(prof.id)}
+                      onClick={() => handleDelete(prof.id as number)}
                       sx={{ color: "#ff4444" }}
                     >
                       <DeleteIcon />

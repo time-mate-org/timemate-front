@@ -5,7 +5,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { ptBR } from "date-fns/locale"; // Adicione localização
 import { mainTheme } from "./theme/theme";
 import Login from "./pages/login/Login";
-import DashboardLayout from "./pages/dashboard/Dashboard";
+import DashboardLayout from "./components/DashboardLayout";
 import {
   ClientList,
   ProfessionalList,
@@ -19,11 +19,12 @@ import AppointmentNew from "./pages/dashboard/components/create/AppointmentNew";
 import { MainLayout } from "./components/MainLayout";
 import AuthLayout from "./components/AuthLayout";
 import NotFound from "./pages/notFound/NotFound";
+import Dashboard2 from "./pages/dashboard/Dashboard";
 
 const DashboardRoutes = () => (
   <Routes>
     <Route path="" element={<DashboardLayout />}>
-      <Route index element={<Navigate to="clients/" replace />} />
+      <Route index element={<Dashboard2 />} />
       <Route path="clients/*" element={<ClientList />} />
       <Route path="client/new" element={<ClientNew />} />
       <Route path="professionals/*" element={<ProfessionalList />} />

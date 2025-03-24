@@ -9,17 +9,18 @@ import {
   TableRow,
   Button,
   Divider,
-  styled,
   Typography,
 } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom"; // Imports necessários
 import { IconButton } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
-import { mockedAppointments } from "../../../../mocks/appointments";
 import { AppointmentTimeline } from "../../../../components/timeline/TimeLine";
 import { format } from "date-fns";
 import { toTitle } from "../../../../utils/string";
+import { StyledTableCell } from "../../styled";
+import { useContext } from "react";
+import { DashboardContext } from "../../../../providers/DashboardContext";
 
 // Função de exclusão
 const handleDelete = async (id: number) => {
@@ -30,15 +31,9 @@ const handleDelete = async (id: number) => {
   //   }
 };
 
-const StyledTableCell = styled(TableCell)(() => ({
-  align: "center",
-  textAlign: "center",
-  color: "#f0f0f0",
-  fontWeight: 600,
-}));
-
 const AppointmentList = () => {
   const navigate = useNavigate();
+  const { appointments } = useContext(DashboardContext);
 
   return (
     <Box sx={{ p: 3 }}>
@@ -81,7 +76,7 @@ const AppointmentList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {mockedAppointments.map((appointment) => (
+            {appointments?.map((appointment) => (
               <TableRow
                 key={appointment.id}
                 sx={{
@@ -122,7 +117,7 @@ const AppointmentList = () => {
       <Typography align="center" color="#00ff9d" py={1} fontSize={25}>
         TIMELINE
       </Typography>
-      <AppointmentTimeline appointments={mockedAppointments} />
+      <AppointmentTimeline appointments={appointments} />
     </Box>
   );
 };

@@ -13,6 +13,9 @@ import { Add as AddIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import { useContext } from "react";
+import { DashboardContext } from "../../../../providers/DashboardContext";
+import { toEstimatedTimeDisplay, toTitle } from "../../../../utils/string";
 
 // Função de exclusão
 const handleDelete = async (id: number) => {
@@ -24,10 +27,7 @@ const handleDelete = async (id: number) => {
 
 const ServiceList = () => {
   const navigate = useNavigate();
-  const services = [
-    { id: 1, name: "Consulta Médica", duration: "30min", price: 250 },
-    { id: 2, name: "Consulta Jurídica", duration: "1h", price: 500 },
-  ];
+  const { services } = useContext(DashboardContext);
 
   return (
     <Box sx={{ p: 3 }}>
@@ -64,7 +64,7 @@ const ServiceList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {services.map((service) => (
+            {services?.map((service) => (
               <TableRow
                 key={service.id}
                 sx={{
@@ -72,8 +72,8 @@ const ServiceList = () => {
                   "&:hover": { bgcolor: "#1a1a1a" },
                 }}
               >
-                <TableCell>{service.name}</TableCell>
-                <TableCell>{service.duration}</TableCell>
+                <TableCell>{toTitle(service.name)}</TableCell>
+                <TableCell>{toEstimatedTimeDisplay(service.estimatedTime)}</TableCell>
                 <TableCell>R$ {service.price.toFixed(2)}</TableCell>
                 <TableCell>
                   <Box sx={{ display: "flex", gap: 1 }}>
@@ -84,7 +84,7 @@ const ServiceList = () => {
                       <EditIcon />
                     </IconButton>
                     <IconButton
-                      onClick={() => handleDelete(service.id)}
+                      onClick={() => handleDelete(service.id as number)}
                       sx={{ color: "#ff4444" }}
                     >
                       <DeleteIcon />
