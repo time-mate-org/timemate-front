@@ -27,9 +27,7 @@ import { FetcherContext } from "../../providers/fetcher/FetcherProvider";
 export const AppointmentTimeline = () => {
   const [currentTimeSlot, setCurrentTimeSlot] = useState<Date | null>();
   const {
-    services,
-    professionals,
-    appointments: allAppointments,
+    cache: { services, professionals, appointments: allAppointments },
   } = useContext(FetcherContext);
   const [colors, setColors] = useState<{ [key: number]: string }>({});
   const timerRef = useRef<NodeJS.Timeout>(undefined);

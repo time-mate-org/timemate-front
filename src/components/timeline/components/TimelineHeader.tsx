@@ -9,7 +9,9 @@ export const TimelineHeader = ({
 }: {
   colors: { [key: number]: string };
 }) => {
-  const { services } = useContext(FetcherContext);
+  const {
+    cache: { services },
+  } = useContext(FetcherContext);
   return (
     <Grid2 container spacing={2} py={2} border="1px solid #f0f0f0">
       <Grid2 size={12}>

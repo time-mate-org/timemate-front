@@ -1,32 +1,42 @@
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
-import { createContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { LoadingContext } from "../loading/LoadingProvider";
 
 interface AuthContextType {
   user: User | null;
-  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
-  isLoading: false,
 });
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { setIsLoadingCallback } = useContext(LoadingContext);
+
+  const setUserCallback = useCallback(
+    async (user: User | null) => setUser(user),
+    [setUser]
+  );
 
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user?.uid ? user : null);
-      setIsLoading(false);
+      setUserCallback(user?.uid ? user : null);
+      setIsLoadingCallback(false);
     });
     return () => unsubscribe();
-  }, []);
+  }, [setIsLoadingCallback, setUserCallback]);
 
   return (
-    <AuthContext.Provider value={{ user, isLoading }}>
-      {!isLoading && children}
+    <AuthContext.Provider value={{ user }}>
+      {children}
     </AuthContext.Provider>
   );
 };

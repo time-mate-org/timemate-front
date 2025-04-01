@@ -7,15 +7,17 @@ import { ServiceBox } from "./styled";
 import { toTitle } from "../../utils/string";
 import { MetricCard } from "./components/MetricCard";
 import { FetcherContext } from "../../providers/fetcher/FetcherProvider";
+import { LoadingContext } from "../../providers/loading/LoadingProvider";
 
 const DashboardPage = () => {
-  const [loading, setLoading] = useState(true);
+  const { isLoading, setIsLoadingCallback } = useContext(LoadingContext);
   const [todayAppointments, setTodayAppointments] = useState<Appointment[]>([]);
   const [tomorrowAppointments, setTomorrowAppointments] = useState<
     Appointment[]
   >([]);
-  const { appointments, clients, professionals, services } =
-    useContext(FetcherContext);
+  const {
+    cache: { appointments, clients, professionals, services },
+  } = useContext(FetcherContext);
 
   useEffect(() => {
     // Simulação de carregamento
@@ -30,11 +32,11 @@ const DashboardPage = () => {
             format(a.start_time, "EEEE", { locale: ptBR }) === "segunda-feira"
         ) ?? []
       );
-      setLoading(false);
+      setIsLoadingCallback(false);
     }, 500);
-  }, [appointments]);
+  }, [appointments, setIsLoadingCallback]);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
         <CircularProgress size={60} />

@@ -4,7 +4,9 @@ import { useContext } from "react";
 import { FetcherContext } from "../../../providers/fetcher/FetcherProvider";
 
 export const AvailableServices = () => {
-  const { services } = useContext(FetcherContext);
+  const {
+    cache: { services },
+  } = useContext(FetcherContext);
   return (
     <AvailableServicesBox>
       <Typography variant="h5" sx={{ color: "#e2e8f0", mb: 2 }}>

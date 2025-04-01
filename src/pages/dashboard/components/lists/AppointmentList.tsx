@@ -33,7 +33,9 @@ const handleDelete = async (id: number) => {
 
 const AppointmentList = () => {
   const navigate = useNavigate();
-  const { appointments } = useContext(FetcherContext);
+  const {
+    cache: { appointments },
+  } = useContext(FetcherContext);
 
   return (
     <Box sx={{ p: 3 }}>
@@ -121,7 +123,7 @@ const AppointmentList = () => {
       <Typography align="center" color="#00ff9d" py={1} fontSize={25}>
         TIMELINE
       </Typography>
-      <AppointmentTimeline/>
+      <AppointmentTimeline />
     </Box>
   );
 };

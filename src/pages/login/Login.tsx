@@ -5,16 +5,19 @@ import {
   Typography,
   Link,
   Alert,
+  CircularProgress,
   // CircularProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { LoginBox, LoginButton } from "./style";
 import { AuthContext } from "../../providers/auth/AuthProvider";
 import { login } from "../../services/firebase";
+import { LoadingContext } from "../../providers/loading/LoadingProvider";
 
 const Login = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
+  const { isLoading } = useContext(LoadingContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -109,14 +112,13 @@ const Login = () => {
           type="submit"
           variant="contained"
           fullWidth
-          disabled={!email || !password} // TODO: isLoading aqui
+          disabled={!email || !password} 
         >
-          {/* {isLoading ? (
-            <CircularProgress size={24} color="inherit" /> // TODO: isLoading aqui
+          {isLoading ? (
+            <CircularProgress size={24} color="inherit" /> 
           ) : (
             "Entrar"
-          )} */}
-          Entrar
+          )}
         </LoginButton>
 
         <Typography variant="body2" color="text.secondary" textAlign="center">

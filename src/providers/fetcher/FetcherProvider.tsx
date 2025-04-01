@@ -8,30 +8,42 @@ import {
 } from "react";
 import { AuthContext } from "../auth/AuthProvider";
 import { Appointment, Client, Professional, Service } from "../../types/models";
+import { LoadingContext } from "../loading/LoadingProvider";
 
-type FetcherResponse = {
+export type CacheType = {
   clients: Client[];
   professionals: Professional[];
   services: Service[];
   appointments: Appointment[];
 };
 
+type FetcherResponse = {
+  cache: CacheType;
+  fetchResource: (resource: keyof CacheType) => Promise<void>;
+  fetchAll: () => Promise<void>;
+};
+
 const defaultContext = {
-  clients: [],
-  professionals: [],
-  services: [],
-  appointments: [],
+  cache: {
+    clients: [],
+    professionals: [],
+    services: [],
+    appointments: [],
+  },
+  fetchResource: () => Promise.resolve(undefined),
+  fetchAll: () => Promise.resolve(undefined),
 };
 const FetcherContext = createContext<FetcherResponse>(defaultContext);
 
 const FetcherProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useContext(AuthContext);
-  const [cache, setCache] = useState<FetcherResponse>(defaultContext);
+  const [cache, setCache] = useState<CacheType>(defaultContext.cache);
+  const { setIsLoadingCallback } = useContext(LoadingContext);
   const [isDataFetched, setIsDataFetched] = useState(false);
   const endpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
 
   const fetchResource = useCallback(
-    async <T,>(resource: keyof FetcherResponse): Promise<T> => {
+    async <T,>(resource: keyof CacheType): Promise<T> => {
       try {
         const response = await fetch(`${endpoint}${resource}/`, {
           headers: {
@@ -88,16 +100,28 @@ const FetcherProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const loadInitialData = async () => {
       if (user && !isDataFetched) {
+        setIsLoadingCallback(true);
+
         await fetchAll();
         setIsDataFetchedCallback(true);
+
+        setIsLoadingCallback(false);
       }
     };
 
     loadInitialData();
-  }, [user, setIsDataFetchedCallback, isDataFetched, fetchAll]);
+  }, [
+    user,
+    setIsDataFetchedCallback,
+    isDataFetched,
+    fetchAll,
+    setIsLoadingCallback,
+  ]);
 
   return (
-    <FetcherContext.Provider value={cache}>{children}</FetcherContext.Provider>
+    <FetcherContext.Provider value={{ cache, fetchAll, fetchResource }}>
+      {children}
+    </FetcherContext.Provider>
   );
 };
 

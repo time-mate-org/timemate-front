@@ -26,7 +26,9 @@ const handleDelete = async (id: number) => {
 
 const ClientList = () => {
   const navigate = useNavigate();
-  const { clients } = useContext(FetcherContext);
+  const {
+    cache: { clients },
+  } = useContext(FetcherContext);
 
   return (
     <Box sx={{ position: "relative", p: 3 }}>

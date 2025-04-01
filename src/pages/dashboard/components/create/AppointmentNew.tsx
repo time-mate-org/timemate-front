@@ -12,7 +12,9 @@ import { CustomSubmitButton } from "../fields/CustomButton";
 import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
 
 const AppointmentNew = () => {
-  const { services, clients, professionals } = useContext(FetcherContext);
+  const {
+    cache: { services, clients, professionals },
+  } = useContext(FetcherContext);
   const {
     control,
     handleSubmit,

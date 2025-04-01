@@ -27,7 +27,9 @@ const handleDelete = async (id: number) => {
 
 const ProfessionalList = () => {
   const navigate = useNavigate();
-  const { professionals } = useContext(FetcherContext);
+  const {
+    cache: { professionals },
+  } = useContext(FetcherContext);
 
   return (
     <Box sx={{ p: 3 }}>

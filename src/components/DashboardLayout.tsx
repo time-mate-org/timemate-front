@@ -6,7 +6,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { useNavigate, Outlet } from "react-router-dom";
+import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import { menuItems } from "../pages/dashboard/components/menuItems";
 import { logout } from "../services/firebase";
@@ -15,9 +15,39 @@ import {
   DrawerListItem,
   OutletContainer,
 } from "../pages/dashboard/styled";
+import { useContext, useEffect } from "react";
+import {
+  CacheType,
+  FetcherContext,
+} from "../providers/fetcher/FetcherProvider";
+import { LoadingContext } from "../providers/loading/LoadingProvider";
 
 const DashboardLayout = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { setIsLoadingCallback } = useContext(LoadingContext);
+  const { fetchResource, fetchAll } = useContext(FetcherContext);
+
+  useEffect(() => {
+    const path = location.pathname.split("/")[2];
+    const dashboardRoutes = [
+      "appointments",
+      "clients",
+      "services",
+      "professionals",
+    ];
+    if (dashboardRoutes.includes(path)) {
+      setIsLoadingCallback(true);
+      fetchResource(path as keyof CacheType);
+      setIsLoadingCallback(false);
+    }
+
+    if (location.pathname === "/dashboard") {
+      setIsLoadingCallback(true);
+      fetchAll();
+      setIsLoadingCallback(false);
+    }
+  }, [fetchResource, location, fetchAll, setIsLoadingCallback]);
 
   const handleLogout = async () => {
     await logout();
