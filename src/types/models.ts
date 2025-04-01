@@ -15,17 +15,21 @@ export type Professional = {
 export type Service = {
   id?: number;
   name: string;
-  estimatedTime: number;
+  estimated_time: number;
+  estimatedTime?: number;
   price: number;
 };
 
 export type Appointment = {
   id?: number;
-  clientId: number;
+  client_id: number;
   client: Client;
-  professionalId: number;
+  professional_id: number;
   professional: Professional;
-  serviceId: number;
+  service_id: number;
   service: Service;
-  date: Date;
+  start_time: string;
+  startTime?: Date;
+  end_time: string;
+  endTime?: Date;
 };

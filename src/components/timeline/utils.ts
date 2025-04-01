@@ -1,6 +1,5 @@
 import { clone, isEmpty } from "ramda";
 import {
-  add,
   addHours,
   addMinutes,
   closestTo,
@@ -62,10 +61,19 @@ const isBusy = ({
 }): boolean =>
   !isEmpty(
     appointments.filter(
-      ({ professionalId, service, date }) =>
-        professionalId === professional.id &&
-        currentTime >= date &&
-        currentTime < addMinutes(date, service.estimatedTime)
+      ({ professional: appointmentProfessional, startTime, endTime }) => {
+        const isSameProfessional =
+          appointmentProfessional.id === professional.id;
+        const nowIsAfterAppointmentStartTime =
+          currentTime >= (startTime as Date);
+        const nowIsBeforeAppointmentEndTime = currentTime < (endTime as Date);
+
+        return (
+          isSameProfessional &&
+          nowIsAfterAppointmentStartTime &&
+          nowIsBeforeAppointmentEndTime
+        );
+      }
     )
   );
 
@@ -75,26 +83,11 @@ const getCellAppointment = (
   appointments: Appointment[]
 ): Appointment | undefined =>
   appointments.find(
-    ({ date, service: { estimatedTime }, professional: { id } }) => {
-      const appointmentStart = date;
-      const appointmentEnd = add(appointmentStart, {
-        minutes: estimatedTime,
-        seconds: -1,
-      });
-
-      return (
-        appointmentStart <= timeSlot &&
-        appointmentEnd > timeSlot &&
-        professional.id === id
-      );
-    }
+    ({ startTime, endTime, professional: { id } }) =>
+      (startTime as Date) <= timeSlot &&
+      (endTime as Date) > timeSlot &&
+      professional.id === id
   );
-// appointments.find(
-//   (appointment) =>
-//     appointment.date >= timeSlot &&
-//     appointment.date < addMinutes(timeSlot, 15) &&
-//     appointment.professionalId === professional.id
-// );
 
 export {
   isBusy,

@@ -1,28 +1,27 @@
 import { Box, Typography } from "@mui/material";
 import { joiResolver } from "@hookform/resolvers/joi";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 import { appointmentSchema } from "../../../../validation/appointment";
 import { AppointmentFormData } from "../../../../types/formData";
-import { mockedServices } from "../../../../mocks/services";
-import { mockedProfessionals } from "../../../../mocks/professionals";
-import { mockedClients } from "../../../../mocks/clients";
 import { CustomDateField } from "../fields/CustomDateField";
 import { CustomSelectField } from "../fields/CustomSelectField";
 import { CustomSubmitButton } from "../fields/CustomButton";
+import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
 
 const AppointmentNew = () => {
+  const { services, clients, professionals } = useContext(FetcherContext);
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<AppointmentFormData>({
     defaultValues: {
-      clientId: "",
-      professionalId: "",
-      serviceId: "",
+      client_id: "",
+      professional_id: "",
+      service_id: "",
       date: new Date(),
     },
     resolver: joiResolver(appointmentSchema),
@@ -31,8 +30,6 @@ const AppointmentNew = () => {
   const [isLoading] = useState(false);
 
   const onSubmit = async (data: AppointmentFormData) => {
-    console.log("🚀 ~ onSubmit ~ data:", JSON.stringify(data, null, 2));
-
     // Simular salvamento no estado global ou mock
     console.log("Agendamento salvo:", data);
     await navigate("/dashboard/appointments");
@@ -49,26 +46,26 @@ const AppointmentNew = () => {
 
         <CustomSelectField
           control={control}
-          controlName="serviceId"
+          controlName="service_id"
           label="Serviço"
           errors={errors}
-          options={mockedServices}
+          options={services}
         />
 
         <CustomSelectField
           control={control}
-          controlName="clientId"
+          controlName="client_id"
           label="Cliente"
           errors={errors}
-          options={mockedClients}
+          options={clients}
         />
 
         <CustomSelectField
           control={control}
-          controlName="professionalId"
+          controlName="professional_id"
           label="Profissional"
           errors={errors}
-          options={mockedProfessionals}
+          options={professionals}
         />
 
         <CustomSubmitButton label="salvar" isLoading={isLoading} />

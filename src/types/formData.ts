@@ -1,7 +1,7 @@
 export type AppointmentFormData = {
   id?: number;
-  clientId: number | '';
-  professionalId: number | '';
-  serviceId: number | '';
+  client_id: number | "";
+  professional_id: number | "";
+  service_id: number | "";
   date: Date;
 };

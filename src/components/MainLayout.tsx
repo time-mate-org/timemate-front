@@ -1,47 +1,30 @@
 import { Box } from "@mui/material";
 import { Navbar } from "./Navbar";
-import { useEffect } from "react";
-import { useAuthStore } from "../services/store";
-import { useShallow } from "zustand/shallow";
 
-const MainLayout = ({ children }: { children: React.ReactNode }) => {
-  const { setError } = useAuthStore(
-    useShallow((state) => ({
-      setError: state.setError,
-    }))
-  );
+const MainLayout = ({ children }: { children: React.ReactNode }) => (
+  <Box
+    sx={{
+      minHeight: "100vh",
+      minWidth: "100vw",
+      ml: -1,
+      mb: -1,
+      display: "flex",
+      flexDirection: "column",
+      bgcolor: "black",
+    }}
+  >
+    <Navbar />
 
-  useEffect(() => {
-    return () => {
-      setError(undefined);
-    };
-  });
-
-  return (
     <Box
       sx={{
-        minHeight: "100vh",
-        minWidth: "100vw",
-        ml: -1,
-        mb: -1,
-        display: "flex",
-        flexDirection: "column",
+        flexGrow: 1,
         bgcolor: "black",
+        backgroundAttachment: "fixed",
       }}
     >
-      <Navbar />
-
-      <Box
-        sx={{
-          flexGrow: 1,
-          bgcolor: "black",
-          backgroundAttachment: "fixed",
-        }}
-      >
-        {children}
-      </Box>
+      {children}
     </Box>
-  );
-};
+  </Box>
+);
 
 export { MainLayout };

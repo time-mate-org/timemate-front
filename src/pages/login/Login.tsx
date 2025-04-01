@@ -1,35 +1,25 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import {
   Box,
   TextField,
   Typography,
   Link,
   Alert,
-  CircularProgress,
+  // CircularProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../../services/store";
-import { useShallow } from "zustand/shallow";
 import { LoginBox, LoginButton } from "./style";
+import { AuthContext } from "../../providers/auth/AuthProvider";
+import { login } from "../../services/firebase";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const {
-    user,
-    error,
-    login,
-    loading: isLoading,
-  } = useAuthStore(
-    useShallow((state) => ({
-      error: state.error,
-      user: state.user,
-      loading: state.loading,
-      login: state.login,
-    }))
-  );
+  // TODO: outlet loading
 
   const redirectToDashboard = useCallback(() => {
     navigate("/dashboard", { replace: true });
@@ -41,8 +31,13 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await login(email, password);
-    if (user) navigate("/dashboard");
+    try {
+      const user = await login(email, password);
+      if (user) navigate("/dashboard");
+    } catch (e) {
+      setError((e as Error).message);
+      console.log("🚀 ~ handleSubmit ~ (e as Error).message:", (e as Error).message)
+    }
   };
 
   return (
@@ -114,13 +109,14 @@ const Login = () => {
           type="submit"
           variant="contained"
           fullWidth
-          disabled={isLoading || !email || !password}
+          disabled={!email || !password} // TODO: isLoading aqui
         >
-          {isLoading ? (
-            <CircularProgress size={24} color="inherit" />
+          {/* {isLoading ? (
+            <CircularProgress size={24} color="inherit" /> // TODO: isLoading aqui
           ) : (
             "Entrar"
-          )}
+          )} */}
+          Entrar
         </LoginButton>
 
         <Typography variant="body2" color="text.secondary" textAlign="center">

@@ -6,7 +6,7 @@ import { Appointment } from "../../types/models";
 import { ServiceBox } from "./styled";
 import { toTitle } from "../../utils/string";
 import { MetricCard } from "./components/MetricCard";
-import { DashboardContext } from "../../providers/DashboardContext";
+import { FetcherContext } from "../../providers/fetcher/FetcherProvider";
 
 const DashboardPage = () => {
   const [loading, setLoading] = useState(true);
@@ -15,17 +15,19 @@ const DashboardPage = () => {
     Appointment[]
   >([]);
   const { appointments, clients, professionals, services } =
-    useContext(DashboardContext);
+    useContext(FetcherContext);
 
   useEffect(() => {
     // Simulação de carregamento
     setTimeout(() => {
-      setTodayAppointments(appointments?.filter((a) => isToday(a.date)) ?? []);
+      setTodayAppointments(
+        appointments?.filter((a) => isToday(a.start_time)) ?? []
+      );
       setTomorrowAppointments(
         appointments?.filter(
           (a) =>
-            isTomorrow(a.date) ||
-            format(a.date, "EEEE", { locale: ptBR }) === "segunda-feira"
+            isTomorrow(a.start_time) ||
+            format(a.start_time, "EEEE", { locale: ptBR }) === "segunda-feira"
         ) ?? []
       );
       setLoading(false);

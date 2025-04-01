@@ -13,13 +13,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-export const signIn = async (email: string, password: string) => {
+export const login = async (email: string, password: string) => {
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
     return userCredential.user;
   } catch (error) {
     throw new Error("Credenciais inválidas: " + (error as Error).message);
   }
 };
 
-export const signOut = () => auth.signOut();
+export const logout = () => auth.signOut();

@@ -20,7 +20,7 @@ import { format } from "date-fns";
 import { toTitle } from "../../../../utils/string";
 import { StyledTableCell } from "../../styled";
 import { useContext } from "react";
-import { DashboardContext } from "../../../../providers/DashboardContext";
+import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
 
 // Função de exclusão
 const handleDelete = async (id: number) => {
@@ -33,7 +33,7 @@ const handleDelete = async (id: number) => {
 
 const AppointmentList = () => {
   const navigate = useNavigate();
-  const { appointments } = useContext(DashboardContext);
+  const { appointments } = useContext(FetcherContext);
 
   return (
     <Box sx={{ p: 3 }}>
@@ -86,13 +86,17 @@ const AppointmentList = () => {
                   "&:hover": { bgcolor: "#1a1a1a" },
                 }}
               >
-                <StyledTableCell>{toTitle(appointment.client.name)}</StyledTableCell>
                 <StyledTableCell>
-                  {toTitle(appointment.professional.name)}
+                  {toTitle(appointment.professional.name ?? "")}
                 </StyledTableCell>
-                <StyledTableCell>{toTitle(appointment.service.name)}</StyledTableCell>
                 <StyledTableCell>
-                  {format(appointment.date, "HH:mm")}
+                  {toTitle(appointment.client.name ?? "")}
+                </StyledTableCell>
+                <StyledTableCell>
+                  {toTitle(appointment.service.name ?? "")}
+                </StyledTableCell>
+                <StyledTableCell>
+                  {format(appointment.start_time, "HH:mm")}
                 </StyledTableCell>
                 <StyledTableCell>
                   <IconButton
@@ -117,7 +121,7 @@ const AppointmentList = () => {
       <Typography align="center" color="#00ff9d" py={1} fontSize={25}>
         TIMELINE
       </Typography>
-      <AppointmentTimeline appointments={appointments} />
+      <AppointmentTimeline/>
     </Box>
   );
 };

@@ -9,11 +9,9 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { format } from "date-fns";
-import { Appointment } from "../../types/models";
-import { mockedProfessionals } from "../../mocks/professionals";
+import { format, isToday } from "date-fns";
 import { CustomTableCell, CustomTableRow } from "./style";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
   getNextTimeSlot,
   getCurrentTimeSlot,
@@ -23,17 +21,22 @@ import {
   getCellAppointment,
 } from "./utils";
 import { TimelineHeader } from "./components/TimelineHeader";
-import { mockedServices } from "../../mocks/services";
 import { toTitle } from "../../utils/string";
+import { FetcherContext } from "../../providers/fetcher/FetcherProvider";
 
-export const AppointmentTimeline = ({
-  appointments = [],
-}: {
-  appointments?: Appointment[];
-}) => {
+export const AppointmentTimeline = () => {
   const [currentTimeSlot, setCurrentTimeSlot] = useState<Date | null>();
+  const {
+    services,
+    professionals,
+    appointments: allAppointments,
+  } = useContext(FetcherContext);
   const [colors, setColors] = useState<{ [key: number]: string }>({});
   const timerRef = useRef<NodeJS.Timeout>(undefined);
+  const appointments =
+    allAppointments?.filter((appointment) =>
+      isToday(appointment.startTime as Date)
+    ) ?? [];
 
   useEffect(() => {
     const setupTimer = () => {
@@ -49,12 +52,12 @@ export const AppointmentTimeline = ({
       }, timeUntilNext);
     };
     const setServiceColors = () =>
-      mockedServices.forEach((service) => {
+      services?.forEach((service) => {
         const newColors = colors;
         const randomColor = "#000000".replace(/0/g, function () {
           return (~~(2 + Math.random() * 6)).toString(16);
         });
-        newColors[service.id] = randomColor;
+        newColors[service?.id ?? -1] = randomColor;
         setColors(newColors);
       });
 
@@ -66,7 +69,7 @@ export const AppointmentTimeline = ({
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [colors]);
+  }, [colors, services]);
 
   return (
     <TableContainer component={Paper}>
@@ -75,7 +78,7 @@ export const AppointmentTimeline = ({
         <TableHead>
           <TableRow>
             <TableCell>Horário</TableCell>
-            {mockedProfessionals.map(({ name }) => (
+            {professionals?.map(({ name }) => (
               <TableCell align="center" key={`${name}-head`}>
                 {toTitle(name)}
               </TableCell>
@@ -110,7 +113,7 @@ export const AppointmentTimeline = ({
                   </Grid2>
                 </Grid2>
               </CustomTableCell>
-              {mockedProfessionals.map((professional, index) => {
+              {professionals?.map((professional, index) => {
                 const isBusyCell = isBusy({
                   professional,
                   currentTime: rowTimeSlot,
@@ -126,7 +129,7 @@ export const AppointmentTimeline = ({
                     key={`${professional.name}-${index}`}
                     align="center"
                     isBusy={isBusyCell}
-                    professionalColor={colors[professional.id]}
+                    professionalColor={colors[professional.id ?? -1]}
                     isCurrentTimeSlot={isCurrentTimeSlot(
                       rowTimeSlot,
                       currentTimeSlot as Date

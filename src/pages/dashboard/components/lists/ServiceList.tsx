@@ -14,8 +14,8 @@ import { useNavigate } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { useContext } from "react";
-import { DashboardContext } from "../../../../providers/DashboardContext";
 import { toEstimatedTimeDisplay, toTitle } from "../../../../utils/string";
+import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
 
 // Função de exclusão
 const handleDelete = async (id: number) => {
@@ -27,7 +27,7 @@ const handleDelete = async (id: number) => {
 
 const ServiceList = () => {
   const navigate = useNavigate();
-  const { services } = useContext(DashboardContext);
+  const { services } = useContext(FetcherContext);
 
   return (
     <Box sx={{ p: 3 }}>
@@ -73,7 +73,9 @@ const ServiceList = () => {
                 }}
               >
                 <TableCell>{toTitle(service.name)}</TableCell>
-                <TableCell>{toEstimatedTimeDisplay(service.estimatedTime)}</TableCell>
+                <TableCell>
+                  {toEstimatedTimeDisplay(service.estimatedTime as number)}
+                </TableCell>
                 <TableCell>R$ {service.price.toFixed(2)}</TableCell>
                 <TableCell>
                   <Box sx={{ display: "flex", gap: 1 }}>

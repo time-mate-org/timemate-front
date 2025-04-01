@@ -13,8 +13,8 @@ import { Add as AddIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
-import { DashboardContext } from "../../../../providers/DashboardContext";
 import { useContext } from "react";
+import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
 
 // Função de exclusão
 const handleDelete = async (id: number) => {
@@ -26,7 +26,7 @@ const handleDelete = async (id: number) => {
 
 const ClientList = () => {
   const navigate = useNavigate();
-  const { clients } = useContext(DashboardContext);
+  const { clients } = useContext(FetcherContext);
 
   return (
     <Box sx={{ position: "relative", p: 3 }}>

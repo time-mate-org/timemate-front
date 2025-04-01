@@ -1,15 +1,17 @@
 import { Typography, Grid2 } from "@mui/material";
-import { mockedServices } from "../../../mocks/services";
 import { AvailableServicesBox, ServiceBox } from "../styled";
+import { useContext } from "react";
+import { FetcherContext } from "../../../providers/fetcher/FetcherProvider";
 
 export const AvailableServices = () => {
+  const { services } = useContext(FetcherContext);
   return (
     <AvailableServicesBox>
       <Typography variant="h5" sx={{ color: "#e2e8f0", mb: 2 }}>
         Serviços Disponíveis
       </Typography>
       <Grid2 container spacing={2}>
-        {mockedServices.map((service) => (
+        {services?.map((service) => (
           <Grid2 size={{ xs: 12, sm: 6, md: 4 }} key={service.id}>
             <ServiceBox>
               <Typography variant="subtitle1" sx={{ color: "#e2e8f0" }}>
