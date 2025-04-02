@@ -12,6 +12,7 @@
     radial-gradient(circle 3px,#eeee89 90%,#0f0f0f) 0 0/20% 100%
     #0f0f0f;
   overflow: hidden;
+  border-radius: 25px;
 }
 .loader::before {
   content: "";
@@ -20,7 +21,7 @@
   border-radius: 50%;
   background: #ffff2d;
   animation: 
-    l5-1 .25s .153s infinite steps(5) alternate,
+    l5-1 .20s .153s infinite steps(5) alternate,
     l5-2  3s        infinite linear;
 }
 @keyframes l5-1{ 
