@@ -13,12 +13,16 @@ import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
 import { createAppointment } from "../../../../services/appointment";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { User } from "firebase/auth";
+import { ToastContext } from "../../../../providers/toast/ToastProvider";
+import { Client, Professional, Service } from "../../../../types/models";
+import { format } from "date-fns";
 
 const AppointmentNew = () => {
   const { user } = useContext(AuthContext);
   const {
     cache: { services, clients, professionals },
   } = useContext(FetcherContext);
+  const { showToast } = useContext(ToastContext);
   const {
     control,
     handleSubmit,
@@ -36,7 +40,24 @@ const AppointmentNew = () => {
   const [isLoading] = useState(false);
 
   const onSubmit = async (data: AppointmentFormData) => {
+    const client = clients.find(
+      (client) => client.id === data.client_id
+    ) as Client;
+    const service = services.find(
+      (service: Service) => service.id === data.service_id
+    ) as Service;
+    const professional = professionals.find(
+      (professional) => professional.id === data.professional_id
+    ) as Professional;
+
     createAppointment(user as User, data);
+    const toastMessage = `${client.name} agendou um ${service.name} com ${
+      professional.name
+    } as ${format(data.start_time, "HH:mm")} do dia ${format(
+      data.start_time,
+      "dd/MM"
+    )}`;
+    showToast(toastMessage);
     navigate("/dashboard/appointments");
   };
 

@@ -23,6 +23,7 @@ import Dashboard2 from "./pages/dashboard/Dashboard";
 import { AuthProvider } from "./providers/auth/AuthProvider";
 import { FetcherProvider } from "./providers/fetcher/FetcherProvider";
 import { LoadingProvider } from "./providers/loading/LoadingProvider";
+import { ToastProvider } from "./providers/toast/ToastProvider";
 
 const DashboardRoutes = () => (
   <Routes>
@@ -47,25 +48,27 @@ function App() {
         <LoadingProvider>
           <AuthProvider>
             <FetcherProvider>
-              <MainLayout>
-                <BrowserRouter>
-                  <Routes>
-                    <Route
-                      path="/dashboard/*"
-                      element={
-                        <AuthLayout>
-                          <DashboardRoutes />
-                        </AuthLayout>
-                      }
-                    />
+              <ToastProvider>
+                <MainLayout>
+                  <BrowserRouter>
+                    <Routes>
+                      <Route
+                        path="/dashboard/*"
+                        element={
+                          <AuthLayout>
+                            <DashboardRoutes />
+                          </AuthLayout>
+                        }
+                      />
 
-                    <Route path="/login" element={<Login />} />
-                    <Route index element={<Navigate to="/login" replace />} />
-                    {/* Rota para capturar tudo o que não foi especificado */}
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </BrowserRouter>
-              </MainLayout>
+                      <Route path="/login" element={<Login />} />
+                      <Route index element={<Navigate to="/login" replace />} />
+                      {/* Rota para capturar tudo o que não foi especificado */}
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </BrowserRouter>
+                </MainLayout>
+              </ToastProvider>
             </FetcherProvider>
           </AuthProvider>
         </LoadingProvider>
