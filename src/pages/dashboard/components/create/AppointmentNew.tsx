@@ -40,6 +40,8 @@ const AppointmentNew = () => {
   const [isLoading] = useState(false);
 
   const onSubmit = async (data: AppointmentFormData) => {
+    console.log("🚀 ~ onSubmit ~ data:", data)
+    let toastMessage: string = "";
     const client = clients.find(
       (client) => client.id === data.client_id
     ) as Client;
@@ -50,15 +52,22 @@ const AppointmentNew = () => {
       (professional) => professional.id === data.professional_id
     ) as Professional;
 
-    createAppointment(user as User, data);
-    const toastMessage = `${client.name} agendou um ${service.name} com ${
-      professional.name
-    } as ${format(data.start_time, "HH:mm")} do dia ${format(
-      data.start_time,
-      "dd/MM"
-    )}`;
-    showToast(toastMessage);
-    navigate("/dashboard/appointments");
+    try {
+      await createAppointment(user as User, data);
+      toastMessage = `${client.name} agendou um ${service.name} com ${
+        professional.name
+      } as ${format(data.start_time, "HH:mm")} do dia ${format(
+        data.start_time,
+        "dd/MM"
+      )}`;
+      navigate("/dashboard/appointments");
+    } catch (err) {
+      toastMessage = `Erro na criação do agendamento: ${
+        (err as Error).message
+      }`;
+    } finally {
+      showToast(toastMessage);
+    }
   };
 
   return (

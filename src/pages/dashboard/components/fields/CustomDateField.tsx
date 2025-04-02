@@ -25,7 +25,7 @@ export const CustomDateField = ({
               field.value ? startOfHour(field.value) : startOfHour(new Date())
             }
             minutesStep={15}
-            onChange={(newDate) => newDate}
+            onChange={(e) => field.onChange(e)}
             slotProps={{
               textField: {
                 helperText: helperTextMessage,

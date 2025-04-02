@@ -18,7 +18,7 @@ const ToastContext = createContext<ToastContextType>({
 
 const ToastProvider = ({ children }: { children: React.ReactNode }) => {
   const [toast, setToast] = useState<ToastType>({
-    open: true,
+    open: false,
     message: "",
     severity: "info",
   });
