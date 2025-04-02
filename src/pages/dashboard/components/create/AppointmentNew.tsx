@@ -10,8 +10,12 @@ import { CustomDateField } from "../fields/CustomDateField";
 import { CustomSelectField } from "../fields/CustomSelectField";
 import { CustomSubmitButton } from "../fields/CustomButton";
 import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
+import { createAppointment } from "../../../../services/appointment";
+import { AuthContext } from "../../../../providers/auth/AuthProvider";
+import { User } from "firebase/auth";
 
 const AppointmentNew = () => {
+  const { user } = useContext(AuthContext);
   const {
     cache: { services, clients, professionals },
   } = useContext(FetcherContext);
@@ -24,7 +28,7 @@ const AppointmentNew = () => {
       client_id: "",
       professional_id: "",
       service_id: "",
-      date: new Date(),
+      start_time: new Date(),
     },
     resolver: joiResolver(appointmentSchema),
   });
@@ -32,9 +36,8 @@ const AppointmentNew = () => {
   const [isLoading] = useState(false);
 
   const onSubmit = async (data: AppointmentFormData) => {
-    // Simular salvamento no estado global ou mock
-    console.log("Agendamento salvo:", data);
-    await navigate("/dashboard/appointments");
+    createAppointment(user as User, data);
+    navigate("/dashboard/appointments");
   };
 
   return (

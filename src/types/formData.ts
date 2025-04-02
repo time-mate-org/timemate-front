@@ -3,5 +3,5 @@ export type AppointmentFormData = {
   client_id: number | "";
   professional_id: number | "";
   service_id: number | "";
-  date: Date;
+  start_time: Date;
 };
