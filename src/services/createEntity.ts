@@ -1,12 +1,11 @@
 import { User } from "firebase/auth";
-import { ClientFormData } from "../types/formData";
 
 const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
-const resource = "clients";
 
-export const createClient = async (
+export const createEntity = async <T extends object>(
   user: User,
-  payload: ClientFormData
+  resource: string,
+  payload: T
 ) => {
   const result = await fetch(`${backendEndpoint}${resource}/create/`, {
     method: "post",
@@ -17,6 +16,11 @@ export const createClient = async (
     },
     body: JSON.stringify(payload),
   });
+
+  if (result.status === 409)
+    throw new Error(
+      `ou cliente ou profissional já esta agendado nesse período.`
+    );
   if (result.status !== 201)
     throw new Error(`erro desconhecido: tente novamente mais tarde.`);
 };

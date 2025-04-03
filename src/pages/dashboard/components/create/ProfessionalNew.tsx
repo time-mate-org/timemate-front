@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -7,8 +7,16 @@ import { Professional } from "../../../../types/models";
 import { professionalSchema } from "../../../../validation/professional";
 import { CustomTextField } from "../fields/CustomTextField";
 import { CustomSubmitButton } from "../fields/CustomButton";
+import { createEntity } from "../../../../services/createEntity";
+import { ProfessionalFormData } from "../../../../types/formData";
+import { AuthContext } from "../../../../providers/auth/AuthProvider";
+import { User } from "firebase/auth";
+import { ToastContext } from "../../../../providers/toast/ToastProvider";
+import { cleanPhoneNumber } from "../../../../utils/string";
 
 const ProfessionalNew = () => {
+  const { user } = useContext(AuthContext);
+  const { showToast } = useContext(ToastContext);
   const {
     register,
     handleSubmit,
@@ -25,8 +33,21 @@ const ProfessionalNew = () => {
   const [isLoading] = useState(false);
 
   const onSubmit = async (data: Professional) => {
-    console.log("Profissional salvo:", data);
-    navigate("/dashboard/professionals");
+    let toastMessage: string = "";
+    try {
+      data.phone = cleanPhoneNumber(data.phone)
+      await createEntity<ProfessionalFormData>(
+        user as User,
+        "professionals",
+        data
+      );
+      toastMessage = `${data.name} é o novo ${data.title}.`;
+      navigate("/dashboard/professionals");
+    } catch (err) {
+      toastMessage = `Erro na criação do profissional: ${(err as Error).message}`;
+    } finally {
+      showToast(toastMessage);
+    }
   };
 
   return (

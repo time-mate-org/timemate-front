@@ -10,12 +10,12 @@ import { CustomDateField } from "../fields/CustomDateField";
 import { CustomSelectField } from "../fields/CustomSelectField";
 import { CustomSubmitButton } from "../fields/CustomButton";
 import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
-import { createAppointment } from "../../../../services/appointment";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { User } from "firebase/auth";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { Client, Professional, Service } from "../../../../types/models";
 import { format } from "date-fns";
+import { createEntity } from "../../../../services/createEntity";
 
 const AppointmentNew = () => {
   const { user } = useContext(AuthContext);
@@ -40,7 +40,6 @@ const AppointmentNew = () => {
   const [isLoading] = useState(false);
 
   const onSubmit = async (data: AppointmentFormData) => {
-    console.log("🚀 ~ onSubmit ~ data:", data)
     let toastMessage: string = "";
     const client = clients.find(
       (client) => client.id === data.client_id
@@ -53,7 +52,11 @@ const AppointmentNew = () => {
     ) as Professional;
 
     try {
-      await createAppointment(user as User, data);
+      await createEntity<AppointmentFormData>(
+        user as User,
+        "appointments",
+        data
+      );
       toastMessage = `${client.name} agendou um ${service.name} com ${
         professional.name
       } as ${format(data.start_time, "HH:mm")} do dia ${format(
@@ -76,7 +79,11 @@ const AppointmentNew = () => {
         Novo Agendamento
       </Typography>
 
-      <Box component="form" id="appointmentCreateForm" onSubmit={handleSubmit(onSubmit)}>
+      <Box
+        component="form"
+        id="appointmentCreateForm"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <CustomDateField control={control} errors={errors} />
 
         <CustomSelectField
@@ -103,7 +110,11 @@ const AppointmentNew = () => {
           options={professionals}
         />
 
-        <CustomSubmitButton formId="appointmentCreateForm" label="salvar" isLoading={isLoading} />
+        <CustomSubmitButton
+          formId="appointmentCreateForm"
+          label="salvar"
+          isLoading={isLoading}
+        />
       </Box>
     </Box>
   );

@@ -1,4 +1,4 @@
-import { createContext, useCallback, useEffect, useState } from "react";
+import { createContext, useCallback, useState } from "react";
 interface LoadingContext {
   isLoading: boolean;
   setIsLoadingCallback: (newIsLoading: boolean) => void;
@@ -11,10 +11,6 @@ const LoadingContext = createContext<LoadingContext>({
 
 const LoadingProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    console.log(`isLoading changed: ${isLoading}`);
-  }, [isLoading]);
 
   const setIsLoadingCallback = useCallback(
     (newIsLoading: boolean) => setIsLoading(newIsLoading),

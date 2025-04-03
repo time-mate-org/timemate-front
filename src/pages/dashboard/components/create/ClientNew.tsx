@@ -7,12 +7,12 @@ import { Box, Typography } from "@mui/material";
 import { Client } from "../../../../types/models";
 import { CustomTextField } from "../fields/CustomTextField";
 import { CustomSubmitButton } from "../fields/CustomButton";
-import { createClient } from "../../../../services/client";
 import { User } from "firebase/auth";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { ClientFormData } from "../../../../types/formData";
 import { cleanPhoneNumber } from "../../../../utils/string";
+import { createEntity } from "../../../../services/createEntity";
 
 const ClientNew = () => {
   const {
@@ -36,9 +36,8 @@ const ClientNew = () => {
     let toastMessage: string = "";
     data.phone = cleanPhoneNumber(data.phone);
     try {
-      await createClient(user as User, data);
-      toastMessage = `O cliente ${data.name} foi criado com sucesso.
-      )}`;
+      await createEntity<ClientFormData>(user as User, "clients", data);
+      toastMessage = `O cliente ${data.name} foi criado com sucesso.`;
       navigate("/dashboard/clients");
     } catch (err) {
       toastMessage = `Erro na criação do cliente: ${(err as Error).message}`;
