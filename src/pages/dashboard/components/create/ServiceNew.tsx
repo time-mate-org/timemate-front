@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -15,26 +15,41 @@ import { serviceSchema } from "../../../../validation/service";
 import { CustomTextField } from "../fields/CustomTextField";
 import { CustomNumberField } from "../fields/CustomNumberField";
 import { CustomSubmitButton } from "../fields/CustomButton";
+import { User } from "firebase/auth";
+import { createEntity } from "../../../../services/createEntity";
+import { ServiceFormData } from "../../../../types/formData";
+import { AuthContext } from "../../../../providers/auth/AuthProvider";
+import { ToastContext } from "../../../../providers/toast/ToastProvider";
 
 const ServiceNew = () => {
+  const { user } = useContext(AuthContext);
+  const { showToast } = useContext(ToastContext);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Service>({
+  } = useForm<ServiceFormData>({
     defaultValues: {
       name: "",
       price: 0.0,
-      estimatedTime: 0,
+      estimated_time: 0,
     },
     resolver: joiResolver(serviceSchema),
   });
   const navigate = useNavigate();
   const [isLoading] = useState(false);
 
-  const onSubmit = async (data: Service) => {
-    console.log("Serviço salvo:", data);
-    navigate("/dashboard/services");
+  const onSubmit = async (data: ServiceFormData) => {
+    let toastMessage: string = "";
+    try {
+      await createEntity<ServiceFormData>(user as User, "services", data);
+      toastMessage = `Agora ${data.name} é mais um serviço que oferecemos.`;
+      navigate("/dashboard/services");
+    } catch (err) {
+      toastMessage = `Erro na criação do serviço: ${(err as Error).message}`;
+    } finally {
+      showToast(toastMessage);
+    }
   };
 
   return (
@@ -58,7 +73,7 @@ const ServiceNew = () => {
 
         <CustomNumberField<Service>
           label="Tempo estimado(em minutos)"
-          name="estimatedTime"
+          name="estimated_time"
           register={register}
           errors={errors}
         />
