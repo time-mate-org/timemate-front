@@ -24,6 +24,7 @@ import { AuthProvider } from "./providers/auth/AuthProvider";
 import { FetcherProvider } from "./providers/fetcher/FetcherProvider";
 import { LoadingProvider } from "./providers/loading/LoadingProvider";
 import { ToastProvider } from "./providers/toast/ToastProvider";
+import ServiceEdit from "./pages/dashboard/components/edit/ServiceEdit";
 
 const DashboardRoutes = () => (
   <Routes>
@@ -35,6 +36,7 @@ const DashboardRoutes = () => (
       <Route path="professional/new" element={<ProfessionalNew />} />
       <Route path="services/*" element={<ServiceList />} />
       <Route path="service/new" element={<ServiceNew />} />
+      <Route path="service/edit/:id" element={<ServiceEdit />} />
       <Route path="appointments/*" element={<AppointmentList />} />
       <Route path="appointment/new" element={<AppointmentNew />} />
     </Route>

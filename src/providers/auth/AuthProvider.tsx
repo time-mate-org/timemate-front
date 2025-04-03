@@ -35,9 +35,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [setIsLoadingCallback, setUserCallback]);
 
   return (
-    <AuthContext.Provider value={{ user }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
   );
 };
 export { AuthProvider, AuthContext };

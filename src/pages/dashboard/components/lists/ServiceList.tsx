@@ -82,7 +82,7 @@ const ServiceList = () => {
                 <TableCell>
                   <Box sx={{ display: "flex", gap: 1 }}>
                     <IconButton
-                      onClick={() => navigate(`edit/${service.id}`)}
+                      onClick={() => navigate(`/dashboard/service/edit/${service.id}`)}
                       sx={{ color: "#00ff9d" }}
                     >
                       <EditIcon />

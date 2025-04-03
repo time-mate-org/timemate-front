@@ -107,7 +107,7 @@ const FetcherProvider = ({ children }: { children: ReactNode }) => {
 
         setIsLoadingCallback(false);
       }
-    };
+    }; //ver carregamentos
 
     loadInitialData();
   }, [
