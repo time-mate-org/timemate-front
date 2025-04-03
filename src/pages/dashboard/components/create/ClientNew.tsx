@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { clientSchema } from "../../../../validation/client";
@@ -7,13 +7,19 @@ import { Box, Typography } from "@mui/material";
 import { Client } from "../../../../types/models";
 import { CustomTextField } from "../fields/CustomTextField";
 import { CustomSubmitButton } from "../fields/CustomButton";
+import { createClient } from "../../../../services/client";
+import { User } from "firebase/auth";
+import { ToastContext } from "../../../../providers/toast/ToastProvider";
+import { AuthContext } from "../../../../providers/auth/AuthProvider";
+import { ClientFormData } from "../../../../types/formData";
+import { cleanPhoneNumber } from "../../../../utils/string";
 
 const ClientNew = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Client>({
+  } = useForm<ClientFormData>({
     defaultValues: {
       name: "",
       address: "",
@@ -21,12 +27,24 @@ const ClientNew = () => {
     },
     resolver: joiResolver(clientSchema),
   });
+  const { showToast } = useContext(ToastContext);
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [isLoading] = useState(false);
 
-  const onSubmit = async (data: Client) => {
-    console.log("Cliente salvo:", data);
-    navigate("/dashboard/clients");
+  const onSubmit = async (data: ClientFormData) => {
+    let toastMessage: string = "";
+    data.phone = cleanPhoneNumber(data.phone);
+    try {
+      await createClient(user as User, data);
+      toastMessage = `O cliente ${data.name} foi criado com sucesso.
+      )}`;
+      navigate("/dashboard/clients");
+    } catch (err) {
+      toastMessage = `Erro na criação do cliente: ${(err as Error).message}`;
+    } finally {
+      showToast(toastMessage);
+    }
   };
 
   return (
@@ -35,9 +53,14 @@ const ClientNew = () => {
         Novo Cliente
       </Typography>
 
-      <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+      <Box
+        component="form"
+        id="clientCreateForm"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <CustomTextField<Client>
           errors={errors}
+          formId="clientCreateForm"
           label="Nome"
           name="name"
           register={register}
@@ -45,6 +68,7 @@ const ClientNew = () => {
 
         <CustomTextField<Client>
           errors={errors}
+          formId="clientCreateForm"
           label="Endereço"
           name="address"
           register={register}
@@ -52,12 +76,13 @@ const ClientNew = () => {
 
         <CustomTextField<Client>
           errors={errors}
+          formId="clientCreateForm"
           label="Telefone"
           name="phone"
           register={register}
         />
 
-        <CustomSubmitButton isLoading={isLoading} />
+        <CustomSubmitButton formId="clientCreateForm" isLoading={isLoading} />
       </Box>
     </Box>
   );

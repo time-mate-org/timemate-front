@@ -76,7 +76,7 @@ const AppointmentNew = () => {
         Novo Agendamento
       </Typography>
 
-      <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+      <Box component="form" id="appointmentCreateForm" onSubmit={handleSubmit(onSubmit)}>
         <CustomDateField control={control} errors={errors} />
 
         <CustomSelectField
@@ -103,7 +103,7 @@ const AppointmentNew = () => {
           options={professionals}
         />
 
-        <CustomSubmitButton label="salvar" isLoading={isLoading} />
+        <CustomSubmitButton formId="appointmentCreateForm" label="salvar" isLoading={isLoading} />
       </Box>
     </Box>
   );

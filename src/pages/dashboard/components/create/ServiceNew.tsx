@@ -43,8 +43,13 @@ const ServiceNew = () => {
         Novo Serviço
       </Typography>
 
-      <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+      <Box
+        component="form"
+        id="serviceCreateForm"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <CustomTextField<Service>
+          formId="serviceCreateForm"
           errors={errors}
           label="Nome"
           name="name"
@@ -70,7 +75,7 @@ const ServiceNew = () => {
           />
         </FormControl>
 
-        <CustomSubmitButton isLoading={isLoading} />
+        <CustomSubmitButton formId="serviceCreateForm" isLoading={isLoading} />
       </Box>
     </Box>
   );

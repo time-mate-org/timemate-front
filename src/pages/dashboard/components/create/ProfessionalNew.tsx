@@ -35,27 +35,37 @@ const ProfessionalNew = () => {
         Novo profissional
       </Typography>
 
-      <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+      <Box
+        component="form"
+        id="professionalCreateForm"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <CustomTextField<Professional>
           errors={errors}
+          formId="professionalCreateForm"
           label="Nome"
           name="name"
           register={register}
         />
         <CustomTextField<Professional>
           errors={errors}
+          formId="professionalCreateForm"
           label="Título(ex: barbeiro)"
           name="title"
           register={register}
         />
         <CustomTextField<Professional>
           errors={errors}
+          formId="professionalCreateForm"
           label="Telefone"
           name="phone"
           register={register}
         />
 
-        <CustomSubmitButton isLoading={isLoading} />
+        <CustomSubmitButton
+          formId="professionalCreateForm"
+          isLoading={isLoading}
+        />
       </Box>
     </Box>
   );
