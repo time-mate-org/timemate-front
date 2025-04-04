@@ -9,6 +9,7 @@ import {
 import { AuthContext } from "../auth/AuthProvider";
 import { Appointment, Client, Professional, Service } from "../../types/models";
 import { LoadingContext } from "../loading/LoadingProvider";
+import { parseAppointments, parseServices } from "./utils";
 
 export type CacheType = {
   clients: Client[];
@@ -37,13 +38,17 @@ const FetcherContext = createContext<FetcherResponse>(defaultContext);
 
 const FetcherProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useContext(AuthContext);
-  const [cache, setCache] = useState<CacheType>(defaultContext.cache);
+  // const [cache, setCache] = useState<CacheType>(defaultContext.cache);
+  const [services, setServices] = useState<Service[]>([]);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [clients, setClients] = useState<Client[]>([]);
+  const [professionals, setProfessionals] = useState<Professional[]>([]);
   const { setIsLoadingCallback } = useContext(LoadingContext);
   const [isDataFetched, setIsDataFetched] = useState(false);
   const endpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
 
   const fetchResource = useCallback(
-    async <T,>(resource: keyof CacheType): Promise<T> => {
+    async <T,>(resource: keyof CacheType): Promise<void> => {
       try {
         const response = await fetch(`${endpoint}${resource}/`, {
           headers: {
@@ -55,7 +60,22 @@ const FetcherProvider = ({ children }: { children: ReactNode }) => {
 
         const data = (await response.json()) as T;
 
-        return data;
+        switch (resource) {
+          case "appointments":
+            setAppointments(parseAppointments(data as Appointment[]));
+            break;
+          case "services":
+            setServices(parseServices(data as Service[]));
+            break;
+          case "professionals":
+            setProfessionals(data as Professional[]);
+            break;
+          case "clients":
+            setClients(data as Client[]);
+            break;
+          default:
+            break;
+        }
       } catch (error) {
         console.error(
           `Fetcher: error fetching ${resource}:`,
@@ -64,33 +84,15 @@ const FetcherProvider = ({ children }: { children: ReactNode }) => {
         throw error;
       }
     },
-    [user, endpoint]
+    [endpoint, user]
   );
 
   const fetchAll = useCallback(async () => {
-    const appointments = (
-      await fetchResource<Appointment[]>("appointments")
-    ).map<Appointment>((appointment) => ({
-      ...appointment,
-      startTime: new Date(appointment.start_time),
-      endTime: new Date(appointment.end_time),
-    }));
-    const services = (await fetchResource<Service[]>("services")).map<Service>(
-      (service) => ({
-        ...service,
-        estimatedTime: service.estimated_time,
-      })
-    );
-    const professionals = await fetchResource<Professional[]>("professionals");
-    const clients = await fetchResource<Client[]>("clients");
-
-    setCache({
-      appointments,
-      services,
-      professionals,
-      clients,
-    });
-  }, [fetchResource, setCache]);
+    await fetchResource<Appointment[]>("appointments");
+    await fetchResource<Service[]>("services");
+    await fetchResource<Professional[]>("professionals");
+    await fetchResource<Client[]>("clients");
+  }, [fetchResource]);
 
   const setIsDataFetchedCallback = useCallback(
     (isFetched: boolean) => setIsDataFetched(isFetched),
@@ -117,6 +119,13 @@ const FetcherProvider = ({ children }: { children: ReactNode }) => {
     fetchAll,
     setIsLoadingCallback,
   ]);
+
+  const cache = {
+    services,
+    appointments,
+    professionals,
+    clients,
+  };
 
   return (
     <FetcherContext.Provider value={{ cache, fetchAll, fetchResource }}>

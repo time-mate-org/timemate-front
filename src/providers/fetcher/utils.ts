@@ -1,14 +1,24 @@
-import { Client, Professional, Service } from "../../types/models";
+import { CacheType } from "../../providers/fetcher/FetcherProvider";
+import { Appointment, Service } from "../../types/models";
 
-export type GetAppointmentEntityType = "service" | "professional" | "client";
+const parseAppointments = (appointments: Appointment[]): Appointment[] =>
+  appointments.map((appointment) => ({
+    ...appointment,
+    startTime: new Date(appointment.start_time),
+    endTime: new Date(appointment.end_time),
+  }));
 
-export const getAppointmentClient = (id: number, clients: Client[]) =>
-  clients.find((client) => client.id === id);
+const parseServices = (services: Service[]): Service[] =>
+  services.map((service) => ({
+    ...service,
+    estimatedTime: service.estimated_time,
+  }));
 
-export const getAppointmentProfessional = (
-  id: number,
-  professionals: Professional[]
-) => professionals.find((professional) => professional.id === id);
+const parseEntity = <T>(data: T[], resource: keyof CacheType)=> {
+  if (resource === "appointments")
+    return parseAppointments(data as Appointment[]);
+  if (resource === "services") return parseServices(data as Service[]);
+  return data;
+};
 
-export const getAppointmentService = (id: number, services: Service[]) =>
-  services.find((service) => service.id === id);
+export { parseEntity, parseAppointments, parseServices };

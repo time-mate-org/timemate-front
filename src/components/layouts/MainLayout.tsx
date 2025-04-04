@@ -1,8 +1,8 @@
 import { Box } from "@mui/material";
-import { Navbar } from "./Navbar";
 import { useContext } from "react";
-import { LoadingContext } from "../providers/loading/LoadingProvider";
-import LoadingComponent from "./loading/Loading";
+import { LoadingContext } from "../../providers/loading/LoadingProvider";
+import LoadingComponent from "../loading/Loading";
+import { Navbar } from "../Navbar";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const { isLoading } = useContext(LoadingContext);

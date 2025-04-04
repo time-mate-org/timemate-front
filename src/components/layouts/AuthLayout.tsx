@@ -1,7 +1,8 @@
 import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useContext, useEffect } from "react";
-import { AuthContext } from "../providers/auth/AuthProvider";
+import { AuthContext } from "../../providers/auth/AuthProvider";
+
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();

@@ -8,19 +8,19 @@ import {
 } from "@mui/material";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-import { menuItems } from "../pages/dashboard/components/menuItems";
-import { logout } from "../services/firebase";
+import { menuItems } from "../../pages/dashboard/components/menuItems";
+import { logout } from "../../services/firebase";
 import {
   DashboardDrawer,
   DrawerListItem,
   OutletContainer,
-} from "../pages/dashboard/styled";
+} from "../../pages/dashboard/styled";
 import { useContext, useEffect } from "react";
 import {
   CacheType,
   FetcherContext,
-} from "../providers/fetcher/FetcherProvider";
-import { LoadingContext } from "../providers/loading/LoadingProvider";
+} from "../../providers/fetcher/FetcherProvider";
+import { LoadingContext } from "../../providers/loading/LoadingProvider";
 
 const DashboardLayout = () => {
   const navigate = useNavigate();
