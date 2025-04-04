@@ -2,31 +2,24 @@ import { useCallback, useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { joiResolver } from "@hookform/resolvers/joi";
-import {
-  Box,
-  Typography,
-  FormControl,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-} from "@mui/material";
-import { serviceSchema } from "../../../../validation/service";
+import { Box, Typography } from "@mui/material";
 import { CustomTextField } from "../fields/CustomTextField";
-import { CustomNumberField } from "../fields/CustomNumberField";
 import { CustomSubmitButton } from "../fields/CustomButton";
 import { User } from "firebase/auth";
 import { updateEntity } from "../../../../services/updateEntity";
-import { ServiceUpdateFormData } from "../../../../types/formData";
+import { ProfessionalUpdateFormData } from "../../../../types/formData";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
 import { LoadingContext } from "../../../../providers/loading/LoadingProvider";
+import { cleanPhoneNumber, formatPhoneNumber } from "../../../../utils/string";
+import { professionalSchema } from "../../../../validation/professional";
 
-const ServiceEdit = () => {
+const ProfessionalEdit = () => {
   const { user } = useContext(AuthContext);
   const { showToast } = useContext(ToastContext);
   const {
-    cache: { services },
+    cache: { professionals },
   } = useContext(FetcherContext);
   const { isLoading, setIsLoadingCallback } = useContext(LoadingContext);
   const navigate = useNavigate();
@@ -37,12 +30,12 @@ const ServiceEdit = () => {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<ServiceUpdateFormData>({
-    resolver: joiResolver(serviceSchema),
+  } = useForm<ProfessionalUpdateFormData>({
+    resolver: joiResolver(professionalSchema),
   });
 
-  const backToServices = useCallback(
-    () => navigate("/dashboard/services"),
+  const backToProfessionals = useCallback(
+    () => navigate("/dashboard/professionals"),
     [navigate]
   );
   const showToastCallback = useCallback(
@@ -50,64 +43,68 @@ const ServiceEdit = () => {
     [showToast]
   );
   const setValueCallback = useCallback(
-    (field: keyof ServiceUpdateFormData, value: string | number | undefined) =>
-      setValue(field, value),
+    (
+      field: keyof ProfessionalUpdateFormData,
+      value: string | number | undefined
+    ) => setValue(field, value),
     [setValue]
   );
 
   useEffect(() => {
-    const getService = async () => {
+    const getProfessional = async () => {
       if (!id) return;
 
       try {
         setIsLoadingCallback(true);
 
-        const service = services.find((s) => s.id === parseInt(id));
+        const profesisonal = professionals.find((s) => s.id === parseInt(id));
 
-        if (service) {
-          setValueCallback("name", service.name);
-          setValueCallback("price", service.price);
-          setValueCallback("estimated_time", service.estimated_time);
+        if (profesisonal) {
+          setValueCallback("name", profesisonal.name);
+          setValueCallback("title", profesisonal.title);
+          setValueCallback("phone", formatPhoneNumber(profesisonal.phone));
         } else {
           showToastCallback("Id de serviço inexistente.");
-          backToServices();
+          backToProfessionals();
         }
       } catch (err) {
         showToastCallback(
-          `Erro ao carregar serviço: ${(err as Error).message}`
+          `Erro ao carregar profissional: ${(err as Error).message}`
         );
       } finally {
         setIsLoadingCallback(false);
       }
     };
 
-    getService();
+    getProfessional();
   }, [
     id,
-    backToServices,
     showToastCallback,
     user,
     setValueCallback,
-    services,
     isLoading,
     setIsLoadingCallback,
+    professionals,
+    backToProfessionals,
   ]);
 
-  const onSubmit = async (data: ServiceUpdateFormData) => {
+  // Função de envio do formulário
+  const onSubmit = async (data: ProfessionalUpdateFormData) => {
     let toastMessage: string = "";
 
     try {
       setIsLoadingCallback(true);
-      await updateEntity<ServiceUpdateFormData>({
+      data.phone = cleanPhoneNumber(data.phone as string);
+      await updateEntity<ProfessionalUpdateFormData>({
         user: user as User,
-        resource: "services",
+        resource: "professionals",
         entityId: parseInt(id as string),
         payload: data,
       });
-      toastMessage = `Serviço ${data.name} atualizado com sucesso.`;
-      navigate("/dashboard/services");
+      toastMessage = `Profissional ${data.name} atualizado com sucesso.`;
+      navigate("/dashboard/professionals");
     } catch (err) {
-      toastMessage = `Erro na atualização do serviço: ${
+      toastMessage = `Erro na atualização do profissional: ${
         (err as Error).message
       }`;
     } finally {
@@ -119,45 +116,45 @@ const ServiceEdit = () => {
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h5" mb={3} color="text.primary">
-        Editar Serviço
+        Editar Profissional
       </Typography>
 
       <Box
         component="form"
-        id="serviceEditForm"
+        id="professionalEditForm"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <CustomTextField<ServiceUpdateFormData>
-          formId="serviceEditForm"
+        <CustomTextField<ProfessionalUpdateFormData>
+          formId="professionalEditForm"
           errors={errors}
           label="Nome"
           name="name"
           register={register}
         />
-
-        <CustomNumberField<ServiceUpdateFormData>
-          label="Tempo estimado (em minutos)"
-          name="estimated_time"
-          register={register}
+        <CustomTextField<ProfessionalUpdateFormData>
+          formId="professionalEditForm"
           errors={errors}
+          label="Especialidade"
+          name="title"
+          register={register}
+        />
+        <CustomTextField<ProfessionalUpdateFormData>
+          formId="professionalEditForm"
+          errors={errors}
+          label="Celular"
+          name="phone"
+          setValue={setValue}
+          isPhone={true}
+          register={register}
         />
 
-        <FormControl fullWidth sx={{ m: 1 }}>
-          <InputLabel htmlFor="outlined-adornment-amount">Preço</InputLabel>
-          <OutlinedInput
-            id="outlined-adornment-amount"
-            {...register("price")}
-            startAdornment={
-              <InputAdornment position="start">R$</InputAdornment>
-            }
-            label="Preço"
-          />
-        </FormControl>
-
-        <CustomSubmitButton formId="serviceEditForm" isLoading={isLoading} />
+        <CustomSubmitButton
+          formId="professionalEditForm"
+          isLoading={isLoading}
+        />
       </Box>
     </Box>
   );
 };
 
-export default ServiceEdit;
+export default ProfessionalEdit;

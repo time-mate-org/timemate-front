@@ -12,10 +12,10 @@ export const professionalSchema = Joi.object({
     "string.max": "O título do profissional deve ter no máximo 200 caracteres.",
   }),
   phone: Joi.string()
-    .pattern(/^\([1-9]{2}\) [9]{0,1}[0-9]{4}-[0-9]{4}$/)
+    .pattern(/^\([1-9]{2}\) [9]{0,1}[0-9]{4}-[0-9]{4,5}$/)
     .required()
     .messages({
       "string.empty": "O telefone é obrigatório.",
-      "string.pattern.base": "Formato inválido (ex: (11) 98765-4321).",
+      "string.pattern.base": "Formato inválido (ex: (xx) 9xxxx-xxxx).",
     }),
 });

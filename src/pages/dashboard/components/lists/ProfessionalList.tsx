@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { useContext } from "react";
-import { toTitle } from "../../../../utils/string";
+import { formatPhoneNumber, toTitle } from "../../../../utils/string";
 import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
 
 // Função de exclusão
@@ -76,11 +76,11 @@ const ProfessionalList = () => {
               >
                 <TableCell>{toTitle(prof.name)}</TableCell>
                 <TableCell>{toTitle(prof.title)}</TableCell>
-                <TableCell>{prof.phone}</TableCell>
+                <TableCell>{formatPhoneNumber(prof.phone)}</TableCell>
                 <TableCell>
                   <Box sx={{ display: "flex", gap: 1 }}>
                     <IconButton
-                      onClick={() => navigate(`edit/${prof.id}`)}
+                      onClick={() => navigate(`/dashboard/professional/edit/${prof.id}`)}
                       sx={{ color: "#00ff9d" }}
                     >
                       <EditIcon />
