@@ -7,19 +7,21 @@ import { CustomTextField } from "../fields/CustomTextField";
 import { CustomSubmitButton } from "../fields/CustomButton";
 import { User } from "firebase/auth";
 import { updateEntity } from "../../../../services/updateEntity";
-import { ProfessionalUpdateFormData } from "../../../../types/formData";
+import {
+  ClientUpdateFormData,
+} from "../../../../types/formData";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
 import { LoadingContext } from "../../../../providers/loading/LoadingProvider";
 import { cleanPhoneNumber, formatPhoneNumber } from "../../../../utils/string";
-import { professionalSchema } from "../../../../validation/professional";
+import { clientSchema } from "../../../../validation/client";
 
-const ProfessionalEdit = () => {
+const ClientEdit = () => {
   const { user } = useContext(AuthContext);
   const { showToast } = useContext(ToastContext);
   const {
-    cache: { professionals },
+    cache: { clients },
   } = useContext(FetcherContext);
   const { isLoading, setIsLoadingCallback } = useContext(LoadingContext);
   const navigate = useNavigate();
@@ -30,12 +32,12 @@ const ProfessionalEdit = () => {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<ProfessionalUpdateFormData>({
-    resolver: joiResolver(professionalSchema),
+  } = useForm<ClientUpdateFormData>({
+    resolver: joiResolver(clientSchema),
   });
 
-  const backToProfessionals = useCallback(
-    () => navigate("/dashboard/professionals"),
+  const backToClients = useCallback(
+    () => navigate("/dashboard/clients"),
     [navigate]
   );
   const showToastCallback = useCallback(
@@ -43,40 +45,38 @@ const ProfessionalEdit = () => {
     [showToast]
   );
   const setValueCallback = useCallback(
-    (
-      field: keyof ProfessionalUpdateFormData,
-      value: string | number | undefined
-    ) => setValue(field, value),
+    (field: keyof ClientUpdateFormData, value: string | number | undefined) =>
+      setValue(field, value),
     [setValue]
   );
 
   useEffect(() => {
-    const getProfessional = async () => {
+    const getClient = async () => {
       if (!id) return;
 
       try {
         setIsLoadingCallback(true);
 
-        const profesisonal = professionals.find((s) => s.id === parseInt(id));
+        const client = clients.find((s) => s.id === parseInt(id));
 
-        if (profesisonal) {
-          setValueCallback("name", profesisonal.name);
-          setValueCallback("title", profesisonal.title);
-          setValueCallback("phone", formatPhoneNumber(profesisonal.phone));
+        if (client) {
+          setValueCallback("name", client.name);
+          setValueCallback("address", client.address);
+          setValueCallback("phone", formatPhoneNumber(client.phone));
         } else {
-          showToastCallback("Id de profissional inexistente.");
-          backToProfessionals();
+          showToastCallback("Id de cliente inexistente.");
+          backToClients();
         }
       } catch (err) {
         showToastCallback(
-          `Erro ao carregar profissional: ${(err as Error).message}`
+          `Erro ao carregar cliente: ${(err as Error).message}`
         );
       } finally {
         setIsLoadingCallback(false);
       }
     };
 
-    getProfessional();
+    getClient();
   }, [
     id,
     showToastCallback,
@@ -84,26 +84,26 @@ const ProfessionalEdit = () => {
     setValueCallback,
     isLoading,
     setIsLoadingCallback,
-    professionals,
-    backToProfessionals,
+    backToClients,
+    clients,
   ]);
 
-  const onSubmit = async (data: ProfessionalUpdateFormData) => {
+  const onSubmit = async (data: ClientUpdateFormData) => {
     let toastMessage: string = "";
 
     try {
       setIsLoadingCallback(true);
       data.phone = cleanPhoneNumber(data.phone as string);
-      await updateEntity<ProfessionalUpdateFormData>({
+      await updateEntity<ClientUpdateFormData>({
         user: user as User,
-        resource: "professionals",
+        resource: "clients",
         entityId: parseInt(id as string),
         payload: data,
       });
-      toastMessage = `Profissional ${data.name} atualizado com sucesso.`;
-      navigate("/dashboard/professionals");
+      toastMessage = `Cliente ${data.name} atualizado com sucesso.`;
+      navigate("/dashboard/clients");
     } catch (err) {
-      toastMessage = `Erro na atualização do profissional: ${
+      toastMessage = `Erro na atualização do cliente: ${
         (err as Error).message
       }`;
     } finally {
@@ -115,30 +115,30 @@ const ProfessionalEdit = () => {
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h5" mb={3} color="text.primary">
-        Editar Profissional
+        Editar Cliente
       </Typography>
 
       <Box
         component="form"
-        id="professionalEditForm"
+        id="clientEditForm"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <CustomTextField<ProfessionalUpdateFormData>
-          formId="professionalEditForm"
+        <CustomTextField<ClientUpdateFormData>
+          formId="clientEditForm"
           errors={errors}
           label="Nome"
           name="name"
           register={register}
         />
-        <CustomTextField<ProfessionalUpdateFormData>
-          formId="professionalEditForm"
+        <CustomTextField<ClientUpdateFormData>
+          formId="clientEditForm"
           errors={errors}
-          label="Especialidade"
-          name="title"
+          label="endereço"
+          name="address"
           register={register}
         />
-        <CustomTextField<ProfessionalUpdateFormData>
-          formId="professionalEditForm"
+        <CustomTextField<ClientUpdateFormData>
+          formId="clientEditForm"
           errors={errors}
           label="Celular"
           name="phone"
@@ -147,13 +147,10 @@ const ProfessionalEdit = () => {
           register={register}
         />
 
-        <CustomSubmitButton
-          formId="professionalEditForm"
-          isLoading={isLoading}
-        />
+        <CustomSubmitButton formId="clientEditForm" isLoading={isLoading} />
       </Box>
     </Box>
   );
 };
 
-export default ProfessionalEdit;
+export default ClientEdit;

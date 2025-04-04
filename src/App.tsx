@@ -26,6 +26,7 @@ import { ToastProvider } from "./providers/toast/ToastProvider";
 import ServiceEdit from "./pages/dashboard/components/edit/ServiceEdit";
 import ProfessionalEdit from "./pages/dashboard/components/edit/ProfessionalEdit";
 import { MainLayout } from "./components/layouts/MainLayout";
+import ClientEdit from "./pages/dashboard/components/edit/ClientEdit";
 
 const DashboardRoutes = () => (
   <Routes>
@@ -33,6 +34,7 @@ const DashboardRoutes = () => (
       <Route index element={<Dashboard2 />} />
       <Route path="clients/*" element={<ClientList />} />
       <Route path="client/new" element={<ClientNew />} />
+      <Route path="client/edit/:id" element={<ClientEdit />} />
       <Route path="professionals/*" element={<ProfessionalList />} />
       <Route path="professional/new" element={<ProfessionalNew />} />
       <Route path="professional/edit/:id" element={<ProfessionalEdit />} />

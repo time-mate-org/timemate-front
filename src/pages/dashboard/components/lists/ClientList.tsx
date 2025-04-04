@@ -15,6 +15,7 @@ import { IconButton } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { useContext } from "react";
 import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
+import { formatPhoneNumber } from "../../../../utils/string";
 
 // Função de exclusão
 const handleDelete = async (id: number) => {
@@ -75,11 +76,13 @@ const ClientList = () => {
               >
                 <TableCell>{client.name}</TableCell>
                 <TableCell>{client.address}</TableCell>
-                <TableCell>{client.phone}</TableCell>
+                <TableCell>{formatPhoneNumber(client.phone)}</TableCell>
                 <TableCell>
                   <Box sx={{ display: "flex", gap: 1 }}>
                     <IconButton
-                      onClick={() => navigate(`edit/${client.id}`)}
+                      onClick={() =>
+                        navigate(`/dashboard/client/edit/${client.id}`)
+                      }
                       sx={{ color: "#00ff9d" }}
                     >
                       <EditIcon />

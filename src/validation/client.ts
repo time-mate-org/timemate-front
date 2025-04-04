@@ -1,6 +1,7 @@
 import Joi from "joi";
 
 export const clientSchema = Joi.object({
+  id: Joi.number(),
   name: Joi.string().min(3).max(100).required().messages({
     "string.empty": "O nome é obrigatório.",
     "string.min": "O nome deve ter no mínimo 3 caracteres.",
