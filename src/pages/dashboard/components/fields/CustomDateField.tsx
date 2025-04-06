@@ -2,7 +2,7 @@ import { FormControl } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { Control, Controller, FieldErrors } from "react-hook-form";
 import { AppointmentFormData } from "../../../../types/formData";
-import { startOfHour } from "date-fns";
+import { startOfHour, toDate } from "date-fns";
 
 export const CustomDateField = ({
   control,
@@ -22,7 +22,9 @@ export const CustomDateField = ({
           <DateTimePicker
             label="Data"
             value={
-              field.value ? startOfHour(field.value) : startOfHour(new Date())
+              field.value
+                ? startOfHour(toDate(field.value))
+                : startOfHour(new Date())
             }
             minutesStep={15}
             onChange={(e) => field.onChange(e)}

@@ -27,6 +27,7 @@ import ServiceEdit from "./pages/dashboard/components/edit/ServiceEdit";
 import ProfessionalEdit from "./pages/dashboard/components/edit/ProfessionalEdit";
 import { MainLayout } from "./components/layouts/MainLayout";
 import ClientEdit from "./pages/dashboard/components/edit/ClientEdit";
+import AppointmentEdit from "./pages/dashboard/components/edit/AppointmentEdit";
 
 const DashboardRoutes = () => (
   <Routes>
@@ -43,6 +44,7 @@ const DashboardRoutes = () => (
       <Route path="service/edit/:id" element={<ServiceEdit />} />
       <Route path="appointments/*" element={<AppointmentList />} />
       <Route path="appointment/new" element={<AppointmentNew />} />
+      <Route path="appointment/edit/:id" element={<AppointmentEdit />} />
     </Route>
   </Routes>
 );

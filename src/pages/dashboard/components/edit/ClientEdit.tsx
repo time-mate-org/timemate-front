@@ -7,9 +7,7 @@ import { CustomTextField } from "../fields/CustomTextField";
 import { CustomSubmitButton } from "../fields/CustomButton";
 import { User } from "firebase/auth";
 import { updateEntity } from "../../../../services/updateEntity";
-import {
-  ClientUpdateFormData,
-} from "../../../../types/formData";
+import { ClientFormData } from "../../../../types/formData";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
@@ -32,7 +30,7 @@ const ClientEdit = () => {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<ClientUpdateFormData>({
+  } = useForm<ClientFormData>({
     resolver: joiResolver(clientSchema),
   });
 
@@ -45,7 +43,7 @@ const ClientEdit = () => {
     [showToast]
   );
   const setValueCallback = useCallback(
-    (field: keyof ClientUpdateFormData, value: string | number | undefined) =>
+    (field: keyof ClientFormData, value: string | number | undefined) =>
       setValue(field, value),
     [setValue]
   );
@@ -88,13 +86,13 @@ const ClientEdit = () => {
     clients,
   ]);
 
-  const onSubmit = async (data: ClientUpdateFormData) => {
+  const onSubmit = async (data: ClientFormData) => {
     let toastMessage: string = "";
 
     try {
       setIsLoadingCallback(true);
       data.phone = cleanPhoneNumber(data.phone as string);
-      await updateEntity<ClientUpdateFormData>({
+      await updateEntity<ClientFormData>({
         user: user as User,
         resource: "clients",
         entityId: parseInt(id as string),
@@ -123,21 +121,21 @@ const ClientEdit = () => {
         id="clientEditForm"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <CustomTextField<ClientUpdateFormData>
+        <CustomTextField<ClientFormData>
           formId="clientEditForm"
           errors={errors}
           label="Nome"
           name="name"
           register={register}
         />
-        <CustomTextField<ClientUpdateFormData>
+        <CustomTextField<ClientFormData>
           formId="clientEditForm"
           errors={errors}
           label="endereço"
           name="address"
           register={register}
         />
-        <CustomTextField<ClientUpdateFormData>
+        <CustomTextField<ClientFormData>
           formId="clientEditForm"
           errors={errors}
           label="Celular"

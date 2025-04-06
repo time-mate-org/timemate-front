@@ -15,8 +15,8 @@ import { Add as AddIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom"; // Imports necessários
 import { IconButton } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
-import { AppointmentTimeline } from "../../../../components/timeline/TimeLine";
 import { format } from "date-fns";
+import { AppointmentTimeline } from "../../../../components/timeline/TimeLine";
 import { toTitle } from "../../../../utils/string";
 import { StyledTableCell } from "../../styled";
 import { useContext } from "react";
@@ -98,11 +98,15 @@ const AppointmentList = () => {
                   {toTitle(appointment.service.name ?? "")}
                 </StyledTableCell>
                 <StyledTableCell>
-                  {format(appointment.start_time, "HH:mm")}
+                  {format(appointment.startTime as Date, "HH:mm")}
                 </StyledTableCell>
                 <StyledTableCell>
                   <IconButton
-                    onClick={() => navigate(`edit/${appointment.client.id}`)}
+                    onClick={() =>
+                      navigate(
+                        `/dashboard/appointment/edit/${appointment.id}`
+                      )
+                    }
                     sx={{ color: "#00ff9d" }}
                   >
                     <EditIcon />

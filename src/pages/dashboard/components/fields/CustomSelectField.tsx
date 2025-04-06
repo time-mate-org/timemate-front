@@ -27,7 +27,7 @@ export const CustomSelectField = ({
           <TextField
             select
             label={label}
-            value={field.value}
+            value={field.value ?? ""}
             onChange={(e) => field.onChange(e.target.value)}
             helperText={helperTextMessage}
             error={!!helperTextMessage}

@@ -4,8 +4,8 @@ import { Appointment, Service } from "../../types/models";
 const parseAppointments = (appointments: Appointment[]): Appointment[] =>
   appointments.map((appointment) => ({
     ...appointment,
-    startTime: new Date(appointment.start_time),
-    endTime: new Date(appointment.end_time),
+    startTime: new Date(`${appointment.start_time}Z`),
+    endTime: new Date(`${appointment.end_time}Z`),
   }));
 
 const parseServices = (services: Service[]): Service[] =>
@@ -14,7 +14,7 @@ const parseServices = (services: Service[]): Service[] =>
     estimatedTime: service.estimated_time,
   }));
 
-const parseEntity = <T>(data: T[], resource: keyof CacheType)=> {
+const parseEntity = <T>(data: T[], resource: keyof CacheType) => {
   if (resource === "appointments")
     return parseAppointments(data as Appointment[]);
   if (resource === "services") return parseServices(data as Service[]);

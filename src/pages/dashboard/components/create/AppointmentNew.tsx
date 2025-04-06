@@ -32,7 +32,7 @@ const AppointmentNew = () => {
       client_id: "",
       professional_id: "",
       service_id: "",
-      start_time: new Date(),
+      start_time: new Date().toISOString(),
     },
     resolver: joiResolver(appointmentSchema),
   });

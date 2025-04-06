@@ -1,7 +1,8 @@
 import Joi from "joi";
 
 export const appointmentSchema = Joi.object({
-  start_time: Joi.date().required().messages({
+  id: Joi.number(),
+  start_time: Joi.date().iso().required().messages({
     "start_time.empty": "O horário do agendamento não pode ser vazio.",
   }),
   client_id: Joi.number().required().messages({

@@ -16,7 +16,7 @@ import { CustomNumberField } from "../fields/CustomNumberField";
 import { CustomSubmitButton } from "../fields/CustomButton";
 import { User } from "firebase/auth";
 import { updateEntity } from "../../../../services/updateEntity";
-import { ServiceUpdateFormData } from "../../../../types/formData";
+import { ServiceFormData } from "../../../../types/formData";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
@@ -37,7 +37,7 @@ const ServiceEdit = () => {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<ServiceUpdateFormData>({
+  } = useForm<ServiceFormData>({
     resolver: joiResolver(serviceSchema),
   });
 
@@ -50,7 +50,7 @@ const ServiceEdit = () => {
     [showToast]
   );
   const setValueCallback = useCallback(
-    (field: keyof ServiceUpdateFormData, value: string | number | undefined) =>
+    (field: keyof ServiceFormData, value: string | number | undefined) =>
       setValue(field, value),
     [setValue]
   );
@@ -93,12 +93,12 @@ const ServiceEdit = () => {
     setIsLoadingCallback,
   ]);
 
-  const onSubmit = async (data: ServiceUpdateFormData) => {
+  const onSubmit = async (data: ServiceFormData) => {
     let toastMessage: string = "";
 
     try {
       setIsLoadingCallback(true);
-      await updateEntity<ServiceUpdateFormData>({
+      await updateEntity<ServiceFormData>({
         user: user as User,
         resource: "services",
         entityId: parseInt(id as string),
@@ -127,7 +127,7 @@ const ServiceEdit = () => {
         id="serviceEditForm"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <CustomTextField<ServiceUpdateFormData>
+        <CustomTextField<ServiceFormData>
           formId="serviceEditForm"
           errors={errors}
           label="Nome"
@@ -135,7 +135,7 @@ const ServiceEdit = () => {
           register={register}
         />
 
-        <CustomNumberField<ServiceUpdateFormData>
+        <CustomNumberField<ServiceFormData>
           label="Tempo estimado (em minutos)"
           name="estimated_time"
           register={register}

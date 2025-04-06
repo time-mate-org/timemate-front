@@ -23,13 +23,13 @@ const DashboardPage = () => {
     // Simulação de carregamento
     setTimeout(() => {
       setTodayAppointments(
-        appointments?.filter((a) => isToday(a.start_time)) ?? []
+        appointments?.filter((a) => isToday(a.startTime as Date)) ?? []
       );
       setTomorrowAppointments(
         appointments?.filter(
           (a) =>
-            isTomorrow(a.start_time) ||
-            format(a.start_time, "EEEE", { locale: ptBR }) === "segunda-feira"
+            isTomorrow(a.startTime as Date) ||
+            format(a.startTime as Date, "EEEE", { locale: ptBR }) === "segunda-feira"
         ) ?? []
       );
       setIsLoadingCallback(false);
