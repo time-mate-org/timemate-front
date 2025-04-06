@@ -8,10 +8,12 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
+  Typography,
 } from "@mui/material";
 import { format, isToday } from "date-fns";
 import { CustomTableCell, CustomTableRow } from "./style";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import {
   getNextTimeSlot,
   getCurrentTimeSlot,
@@ -19,22 +21,31 @@ import {
   isCurrentTimeSlot,
   isBusy,
   getCellAppointment,
+  simplifyName,
 } from "./utils";
 import { TimelineHeader } from "./components/TimelineHeader";
 import { toTitle } from "../../utils/string";
 import { FetcherContext } from "../../providers/fetcher/FetcherProvider";
+import { getNewServiceColors } from "./colors";
+import { useNavigate } from "react-router-dom";
 
 export const AppointmentTimeline = () => {
   const [currentTimeSlot, setCurrentTimeSlot] = useState<Date | null>();
   const {
     cache: { services, professionals, appointments: allAppointments },
   } = useContext(FetcherContext);
+  const navigate = useNavigate();
   const [colors, setColors] = useState<{ [key: number]: string }>({});
   const timerRef = useRef<NodeJS.Timeout>(undefined);
   const appointments =
     allAppointments?.filter((appointment) =>
       isToday(appointment.startTime as Date)
     ) ?? [];
+
+  const setColorsCallback = useCallback(
+    () => setColors(getNewServiceColors(services)),
+    [services]
+  );
 
   useEffect(() => {
     const setupTimer = () => {
@@ -49,30 +60,29 @@ export const AppointmentTimeline = () => {
         setupTimer(); // Reinicia o timer
       }, timeUntilNext);
     };
-    const setServiceColors = () =>
-      services?.forEach((service) => {
-        const newColors = colors;
-        const randomColor = "#000000".replace(/0/g, function () {
-          return (~~(2 + Math.random() * 6)).toString(16);
-        });
-        newColors[service?.id ?? -1] = randomColor;
-        setColors(newColors);
-      });
+    setColorsCallback();
 
     // Inicialização
     setCurrentTimeSlot(getCurrentTimeSlot(new Date()));
     setupTimer();
-    setServiceColors();
 
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [colors, services]);
+  }, [services, setColorsCallback]);
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer
+      component={Paper}
+      sx={{ border: "1px solid fff", maxHeight: "80vh" }}
+    >
       <TimelineHeader colors={colors} />
-      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+      <Table
+        stickyHeader
+        sx={{ minWidth: 650, border: "1px solid fff" }}
+        size="small"
+        aria-label="appointments"
+      >
         <TableHead>
           <TableRow>
             <TableCell>Horário</TableCell>
@@ -102,8 +112,8 @@ export const AppointmentTimeline = () => {
                 isDateCell
               >
                 <Grid2 container spacing={2}>
-                  <Grid2 size={6}>{format(rowTimeSlot, "HH:mm")}</Grid2>
-                  <Grid2 size={6}>
+                  <Grid2 size={8}>{format(rowTimeSlot, "HH:mm")}</Grid2>
+                  <Grid2 size={4}>
                     {isCurrentTimeSlot(
                       rowTimeSlot,
                       currentTimeSlot as Date
@@ -128,14 +138,30 @@ export const AppointmentTimeline = () => {
                     align="center"
                     isBusy={isBusyCell}
                     professionalColor={colors[professional.id ?? -1]}
+                    onClick={() =>
+                      navigate(
+                        `/dashboard/appointment/edit/${cellAppointment?.id}`
+                      )
+                    }
                     isCurrentTimeSlot={isCurrentTimeSlot(
                       rowTimeSlot,
                       currentTimeSlot as Date
                     )}
                   >
-                    {cellAppointment
-                      ? toTitle(cellAppointment.client.name)
-                      : ""}
+                    <Tooltip
+                      title={`${cellAppointment?.professional.name} x ${
+                        cellAppointment?.client.name
+                      } | ${cellAppointment?.service.name} | ${format(
+                        rowTimeSlot as Date,
+                        "HH:mm"
+                      )}`}
+                    >
+                      <Typography m={0} p={0} fontSize={13}>
+                        {cellAppointment
+                          ? toTitle(simplifyName(cellAppointment.client.name))
+                          : ""}
+                      </Typography>
+                    </Tooltip>
                   </CustomTableCell>
                 );
               })}

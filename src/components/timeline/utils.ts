@@ -89,6 +89,18 @@ const getCellAppointment = (
       professional.id === id
   );
 
+const invertColor = (hexColor: string) => {
+  const color = hexColor.replace("#", "");
+  const colorNum = parseInt(color, 16);
+  const invertedNum = 0xffffff - colorNum;
+  const invertedHex = "#" + invertedNum.toString(16).padStart(6, "0");
+  return invertedHex;
+};
+
+const simplifyName = (name: string) =>
+  name.length > 10 ? `${name.substring(0, 7)}...` : name;
+
+
 export {
   isBusy,
   getNextTimeSlot,
@@ -96,4 +108,6 @@ export {
   getTimeSlots,
   isCurrentTimeSlot,
   getCellAppointment,
+  invertColor,
+  simplifyName,
 };
