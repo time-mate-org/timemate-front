@@ -21,21 +21,41 @@ import { toTitle } from "../../../../utils/string";
 import { StyledTableCell } from "../../styled";
 import { useContext } from "react";
 import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
-
-// Função de exclusão
-const handleDelete = async (id: number) => {
-  console.log("🚀 ~ handleDelete ~ id excluido: ", id);
-  //   if (window.confirm('Tem certeza que deseja excluir este cliente?')) {
-  //     await deleteDoc(doc(clientsCollection, id));
-  //     Atualize a lista ou use queryClient.invalidateQueries()
-  //   }
-};
+import { Appointment } from "../../../../types/models";
+import { User } from "firebase/auth";
+import { AuthContext } from "../../../../providers/auth/AuthProvider";
+import { DialogContext } from "../../../../providers/dialog/DialogProvider";
+import { ToastContext } from "../../../../providers/toast/ToastProvider";
+import { deleteEntity } from "../../../../services/deleteEntity";
 
 const AppointmentList = () => {
   const navigate = useNavigate();
   const {
     cache: { appointments },
   } = useContext(FetcherContext);
+  const { user } = useContext(AuthContext);
+  const { openDialog } = useContext(DialogContext);
+  const { showToast } = useContext(ToastContext);
+
+  const handleDelete = (appointment?: Appointment) => {
+    if (appointment)
+      openDialog({
+        title: `Tem certeza que deseja excluir o agendamento?`,
+        description: `A exclusão desse agendamento é irreversível.`,
+        buttonLabel: "Tenho certeza",
+        action: async () => {
+          await deleteEntity(
+            user as User,
+            "appointments",
+            appointment.id as number
+          );
+          showToast(
+            `O agendamento #${appointment.id} foi deletado com sucesso.`
+          );
+          navigate("/dashboard/appointments");
+        },
+      });
+  };
 
   return (
     <Box sx={{ p: 3 }}>
@@ -110,7 +130,7 @@ const AppointmentList = () => {
                     <EditIcon />
                   </IconButton>
                   <IconButton
-                    onClick={() => handleDelete(appointment.id as number)}
+                    onClick={() => handleDelete(appointment)}
                     sx={{ color: "#ff4444" }}
                   >
                     <DeleteIcon />
