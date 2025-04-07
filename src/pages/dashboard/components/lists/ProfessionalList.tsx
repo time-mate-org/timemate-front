@@ -16,20 +16,39 @@ import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { useContext } from "react";
 import { formatPhoneNumber, toTitle } from "../../../../utils/string";
 import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
-
-// Função de exclusão
-const handleDelete = async (id: number) => {
-  if (window.confirm("Tem certeza que deseja excluir este cliente?")) {
-    console.log("🚀 ~ handleDelete ~ id:", id);
-    // Atualize a lista ou use queryClient.invalidateQueries()
-  }
-};
+import { User } from "firebase/auth";
+import { deleteEntity } from "../../../../services/deleteEntity";
+import { Professional } from "../../../../types/models";
+import { AuthContext } from "../../../../providers/auth/AuthProvider";
+import { DialogContext } from "../../../../providers/dialog/DialogProvider";
+import { ToastContext } from "../../../../providers/toast/ToastProvider";
 
 const ProfessionalList = () => {
   const navigate = useNavigate();
   const {
     cache: { professionals },
   } = useContext(FetcherContext);
+  const { user } = useContext(AuthContext);
+  const { openDialog } = useContext(DialogContext);
+  const { showToast } = useContext(ToastContext);
+
+  const handleDelete = (professional?: Professional) => {
+    if (professional)
+      openDialog({
+        title: `Tem certeza que deseja excluir o/a ${professional.name}?`,
+        description: `A exclusão desse profissional é irreversível.`,
+        buttonLabel: "Tenho certeza",
+        action: async () => {
+          await deleteEntity(
+            user as User,
+            "professionals",
+            professional.id as number
+          );
+          showToast(`O serviço ${professional.name} foi deletado com sucesso.`);
+          navigate("/dashboard/professionals");
+        },
+      });
+  };
 
   return (
     <Box sx={{ p: 3 }}>
@@ -66,27 +85,31 @@ const ProfessionalList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {professionals?.map((prof) => (
+            {professionals?.map((profissional) => (
               <TableRow
-                key={prof.id}
+                key={profissional.id}
                 sx={{
                   "&:nth-of-type(odd)": { bgcolor: "#121212" },
                   "&:hover": { bgcolor: "#1a1a1a" },
                 }}
               >
-                <TableCell>{toTitle(prof.name)}</TableCell>
-                <TableCell>{toTitle(prof.title)}</TableCell>
-                <TableCell>{formatPhoneNumber(prof.phone)}</TableCell>
+                <TableCell>{toTitle(profissional.name)}</TableCell>
+                <TableCell>{toTitle(profissional.title)}</TableCell>
+                <TableCell>{formatPhoneNumber(profissional.phone)}</TableCell>
                 <TableCell>
                   <Box sx={{ display: "flex", gap: 1 }}>
                     <IconButton
-                      onClick={() => navigate(`/dashboard/professional/edit/${prof.id}`)}
+                      onClick={() =>
+                        navigate(
+                          `/dashboard/professional/edit/${profissional.id}`
+                        )
+                      }
                       sx={{ color: "#00ff9d" }}
                     >
                       <EditIcon />
                     </IconButton>
                     <IconButton
-                      onClick={() => handleDelete(prof.id as number)}
+                      onClick={() => handleDelete(profissional)}
                       sx={{ color: "#ff4444" }}
                     >
                       <DeleteIcon />
