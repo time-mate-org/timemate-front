@@ -137,7 +137,7 @@ export const AppointmentTimeline = () => {
                     key={`${professional.name}-${index}`}
                     align="center"
                     isBusy={isBusyCell}
-                    professionalColor={colors[professional.id ?? -1]}
+                    professionalColor={colors[cellAppointment?.service.id ?? -1]}
                     onClick={() =>
                       navigate(
                         `/dashboard/appointment/edit/${cellAppointment?.id}`
