@@ -44,7 +44,7 @@ const ProfessionalList = () => {
             "professionals",
             professional.id as number
           );
-          showToast(`O serviço ${professional.name} foi deletado com sucesso.`);
+          showToast(`O profissional ${professional.name} foi deletado com sucesso.`);
           navigate("/dashboard/professionals");
         },
       });
