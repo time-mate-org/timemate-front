@@ -89,13 +89,13 @@ const AppointmentList = () => {
                 }}
               >
                 <StyledTableCell>
-                  {toTitle(appointment.professional.name ?? "")}
+                  {toTitle(appointment.professional?.name ?? "-")}
                 </StyledTableCell>
                 <StyledTableCell>
-                  {toTitle(appointment.client.name ?? "")}
+                  {toTitle(appointment.client?.name ?? "-")}
                 </StyledTableCell>
                 <StyledTableCell>
-                  {toTitle(appointment.service.name ?? "")}
+                  {toTitle(appointment.service?.name ?? "-")}
                 </StyledTableCell>
                 <StyledTableCell>
                   {format(appointment.startTime as Date, "HH:mm")}
@@ -103,9 +103,7 @@ const AppointmentList = () => {
                 <StyledTableCell>
                   <IconButton
                     onClick={() =>
-                      navigate(
-                        `/dashboard/appointment/edit/${appointment.id}`
-                      )
+                      navigate(`/dashboard/appointment/edit/${appointment.id}`)
                     }
                     sx={{ color: "#00ff9d" }}
                   >

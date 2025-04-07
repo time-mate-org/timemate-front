@@ -28,6 +28,7 @@ import ProfessionalEdit from "./pages/dashboard/components/edit/ProfessionalEdit
 import { MainLayout } from "./components/layouts/MainLayout";
 import ClientEdit from "./pages/dashboard/components/edit/ClientEdit";
 import AppointmentEdit from "./pages/dashboard/components/edit/AppointmentEdit";
+import { DialogProvider } from "./providers/dialog/DialogProvider";
 
 const DashboardRoutes = () => (
   <Routes>
@@ -58,23 +59,28 @@ function App() {
             <FetcherProvider>
               <ToastProvider>
                 <MainLayout>
-                  <BrowserRouter>
-                    <Routes>
-                      <Route
-                        path="/dashboard/*"
-                        element={
-                          <AuthLayout>
-                            <DashboardRoutes />
-                          </AuthLayout>
-                        }
-                      />
+                  <DialogProvider>
+                    <BrowserRouter>
+                      <Routes>
+                        <Route
+                          path="/dashboard/*"
+                          element={
+                            <AuthLayout>
+                              <DashboardRoutes />
+                            </AuthLayout>
+                          }
+                        />
 
-                      <Route path="/login" element={<Login />} />
-                      <Route index element={<Navigate to="/login" replace />} />
-                      {/* Rota para capturar tudo o que não foi especificado */}
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </BrowserRouter>
+                        <Route path="/login" element={<Login />} />
+                        <Route
+                          index
+                          element={<Navigate to="/login" replace />}
+                        />
+                        {/* Rota para capturar tudo o que não foi especificado */}
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </BrowserRouter>
+                  </DialogProvider>
                 </MainLayout>
               </ToastProvider>
             </FetcherProvider>

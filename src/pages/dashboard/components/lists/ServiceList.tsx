@@ -16,21 +16,36 @@ import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { useContext } from "react";
 import { toEstimatedTimeDisplay, toTitle } from "../../../../utils/string";
 import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
-
-// Função de exclusão
-const handleDelete = async (id: number) => {
-  if (window.confirm("Tem certeza que deseja excluir este cliente?")) {
-    console.log("🚀 ~ handleDelete ~ id:", id);
-    // Atualize a lista ou use queryClient.invalidateQueries()
-  }
-};
+import { DialogContext } from "../../../../providers/dialog/DialogProvider";
+import { AuthContext } from "../../../../providers/auth/AuthProvider";
+import { User } from "firebase/auth";
+import { deleteEntity } from "../../../../services/deleteEntity";
+import { Service } from "../../../../types/models";
+import { ToastContext } from "../../../../providers/toast/ToastProvider";
 
 const ServiceList = () => {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+  const { openDialog } = useContext(DialogContext);
+  const { showToast } = useContext(ToastContext);
   const {
     cache: { services },
   } = useContext(FetcherContext);
-  
+
+  const handleDelete = (service?: Service) => {
+    if (service)
+      openDialog({
+        title: `Tem certeza que deseja excluir o/a ${service.name}?`,
+        description: `A exclusão desse serviço é irreversível.`,
+        buttonLabel: "Tenho certeza",
+        action: async () => {
+          await deleteEntity(user as User, "services", service.id as number);
+          showToast(`O serviço ${service.name} foi deletado com sucesso.`);
+          navigate("/dashboard/services");
+        },
+      });
+  };
+
   return (
     <Box sx={{ p: 3 }}>
       <Button
@@ -82,13 +97,15 @@ const ServiceList = () => {
                 <TableCell>
                   <Box sx={{ display: "flex", gap: 1 }}>
                     <IconButton
-                      onClick={() => navigate(`/dashboard/service/edit/${service.id}`)}
+                      onClick={() =>
+                        navigate(`/dashboard/service/edit/${service.id}`)
+                      }
                       sx={{ color: "#00ff9d" }}
                     >
                       <EditIcon />
                     </IconButton>
                     <IconButton
-                      onClick={() => handleDelete(service.id as number)}
+                      onClick={() => handleDelete(service)}
                       sx={{ color: "#ff4444" }}
                     >
                       <DeleteIcon />
