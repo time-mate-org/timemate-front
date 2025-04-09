@@ -10,23 +10,20 @@ import { updateEntity } from "../../../../services/updateEntity";
 import { ClientFormData } from "../../../../types/formData";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
-import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
 import { LoadingContext } from "../../../../providers/loading/LoadingProvider";
-import { cleanPhoneNumber, formatPhoneNumber } from "../../../../utils/string";
+import { cleanPhoneNumber } from "../../../../utils/string";
 import { clientSchema } from "../../../../validation/client";
+import { getEntity } from "../../../../services/getEntity";
+import { Client } from "../../../../types/models";
 
 const ClientEdit = () => {
   const { user } = useContext(AuthContext);
   const { showToast } = useContext(ToastContext);
-  const {
-    cache: { clients },
-  } = useContext(FetcherContext);
   const { isLoading, setIsLoadingCallback } = useContext(LoadingContext);
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-
   const {
-    register,
+    control,
     handleSubmit,
     setValue,
     formState: { errors },
@@ -38,53 +35,32 @@ const ClientEdit = () => {
     () => navigate("/dashboard/clients"),
     [navigate]
   );
-  const showToastCallback = useCallback(
-    (message: string) => showToast(message),
-    [showToast]
-  );
+
   const setValueCallback = useCallback(
     (field: keyof ClientFormData, value: string | number | undefined) =>
       setValue(field, value),
     [setValue]
   );
 
+  const fetchData = useCallback(async () => {
+    const fetchedClient = await getEntity<Client>({
+      user,
+      resource: "clients",
+      id: parseInt(id ?? "0"),
+    });
+
+    if (!fetchedClient) backToClients();
+
+    setValueCallback("name", fetchedClient.name);
+    setValueCallback("phone", fetchedClient.phone);
+    setValueCallback("address", fetchedClient.address);
+  }, [backToClients, id, setValueCallback, user]);
+
   useEffect(() => {
-    const getClient = async () => {
-      if (!id) return;
-
-      try {
-        setIsLoadingCallback(true);
-
-        const client = clients.find((s) => s.id === parseInt(id));
-
-        if (client) {
-          setValueCallback("name", client.name);
-          setValueCallback("address", client.address);
-          setValueCallback("phone", formatPhoneNumber(client.phone));
-        } else {
-          showToastCallback("Id de cliente inexistente.");
-          backToClients();
-        }
-      } catch (err) {
-        showToastCallback(
-          `Erro ao carregar cliente: ${(err as Error).message}`
-        );
-      } finally {
-        setIsLoadingCallback(false);
-      }
-    };
-
-    getClient();
-  }, [
-    id,
-    showToastCallback,
-    user,
-    setValueCallback,
-    isLoading,
-    setIsLoadingCallback,
-    backToClients,
-    clients,
-  ]);
+    setIsLoadingCallback(true);
+    fetchData();
+    setIsLoadingCallback(false);
+  }, [fetchData, setIsLoadingCallback]);
 
   const onSubmit = async (data: ClientFormData) => {
     let toastMessage: string = "";
@@ -126,23 +102,22 @@ const ClientEdit = () => {
           errors={errors}
           label="Nome"
           name="name"
-          register={register}
+          control={control}
         />
         <CustomTextField<ClientFormData>
           formId="clientEditForm"
           errors={errors}
           label="endereço"
           name="address"
-          register={register}
+          control={control}
         />
         <CustomTextField<ClientFormData>
           formId="clientEditForm"
           errors={errors}
           label="Celular"
           name="phone"
-          setValue={setValue}
           isPhone={true}
-          register={register}
+          control={control}
         />
 
         <CustomSubmitButton formId="clientEditForm" isLoading={isLoading} />

@@ -19,26 +19,46 @@ import { format, isToday } from "date-fns";
 import { AppointmentTimeline } from "../../../../components/timeline/TimeLine";
 import { toTitle } from "../../../../utils/string";
 import { StyledTableCell } from "../../styled";
-import { useContext } from "react";
-import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Appointment } from "../../../../types/models";
 import { User } from "firebase/auth";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { DialogContext } from "../../../../providers/dialog/DialogProvider";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { deleteEntity } from "../../../../services/deleteEntity";
+import { getEntity } from "../../../../services/getEntity";
+import { LoadingContext } from "../../../../providers/loading/LoadingProvider";
+import { toUTCDate } from "../../../../utils/date";
 
 const AppointmentList = () => {
   const navigate = useNavigate();
-  const {
-    cache: { appointments: allAppointments },
-  } = useContext(FetcherContext);
   const { user } = useContext(AuthContext);
   const { openDialog } = useContext(DialogContext);
   const { showToast } = useContext(ToastContext);
-  const appointments = allAppointments.filter((appointment) =>
-    isToday(appointment.startTime as Date)
-  );
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [shouldFetch, setShouldFetch] = useState(true);
+  const { setIsLoadingCallback } = useContext(LoadingContext);
+
+  const fetchData = useCallback(async () => {
+    if (!shouldFetch) return;
+    const fetchedAppointments = await getEntity<Appointment[]>({
+      user,
+      resource: "appointments",
+    });
+
+    setIsLoadingCallback(true);
+    setAppointments(
+      fetchedAppointments.filter((appointment) =>
+        isToday(toUTCDate(appointment.start_time) as Date)
+      )
+    );
+    setShouldFetch(false);
+    setIsLoadingCallback(false);
+  }, [setIsLoadingCallback, shouldFetch, user]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleDelete = (appointment?: Appointment) => {
     if (appointment)
@@ -55,7 +75,7 @@ const AppointmentList = () => {
           showToast(
             `O agendamento #${appointment.id} foi deletado com sucesso.`
           );
-          navigate("/dashboard/appointments");
+          setShouldFetch(true);
         },
       });
   };
@@ -79,7 +99,7 @@ const AppointmentList = () => {
       <Typography align="center" color="#00ff9d" py={1} fontSize={25}>
         Hoje
       </Typography>
-      {appointments.length > 0 ? (
+      {appointments && appointments.length > 0 ? (
         <TableContainer component={Paper}>
           <Table>
             <TableHead sx={{ bgcolor: "#1a1a1a" }}>
@@ -125,7 +145,7 @@ const AppointmentList = () => {
                     {toTitle(appointment.service?.name ?? "-")}
                   </StyledTableCell>
                   <StyledTableCell>
-                    {format(appointment.startTime as Date, "HH:mm")}
+                    {format(toUTCDate(appointment.start_time) as Date, "HH:mm")}
                   </StyledTableCell>
                   <StyledTableCell>
                     <IconButton
@@ -158,10 +178,14 @@ const AppointmentList = () => {
 
       <Divider sx={{ mb: 10 }} />
 
-      <Typography align="center" color="#00ff9d" py={1} fontSize={25}>
-        TIMELINE
-      </Typography>
-      <AppointmentTimeline />
+      {appointments && appointments.length > 0 && (
+        <>
+          <Typography align="center" color="#00ff9d" py={1} fontSize={25}>
+            TIMELINE
+          </Typography>
+          <AppointmentTimeline />
+        </>
+      )}
     </Box>
   );
 };

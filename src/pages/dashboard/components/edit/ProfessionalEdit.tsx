@@ -10,23 +10,20 @@ import { updateEntity } from "../../../../services/updateEntity";
 import { ProfessionalFormData } from "../../../../types/formData";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
-import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
 import { LoadingContext } from "../../../../providers/loading/LoadingProvider";
 import { cleanPhoneNumber, formatPhoneNumber } from "../../../../utils/string";
 import { professionalSchema } from "../../../../validation/professional";
+import { Professional } from "../../../../types/models";
+import { getEntity } from "../../../../services/getEntity";
 
 const ProfessionalEdit = () => {
   const { user } = useContext(AuthContext);
-  const { showToast } = useContext(ToastContext);
-  const {
-    cache: { professionals },
-  } = useContext(FetcherContext);
   const { isLoading, setIsLoadingCallback } = useContext(LoadingContext);
   const navigate = useNavigate();
+  const { showToast } = useContext(ToastContext);
   const { id } = useParams<{ id: string }>();
-
   const {
-    register,
+    control,
     handleSubmit,
     setValue,
     formState: { errors },
@@ -38,53 +35,33 @@ const ProfessionalEdit = () => {
     () => navigate("/dashboard/professionals"),
     [navigate]
   );
-  const showToastCallback = useCallback(
-    (message: string) => showToast(message),
-    [showToast]
-  );
+
   const setValueCallback = useCallback(
     (field: keyof ProfessionalFormData, value: string | number | undefined) =>
       setValue(field, value),
     [setValue]
   );
 
+  const fetchData = useCallback(async () => {
+    const fetchedProfessional = await getEntity<Professional>({
+      user,
+      resource: "professionals",
+      id: parseInt(id ?? "0"),
+    });
+    console.log("🚀 ~ fetchData ~ fetchedProfessional:", fetchedProfessional);
+
+    if (!fetchedProfessional) backToProfessionals();
+
+    setValueCallback("name", fetchedProfessional.name);
+    setValueCallback("phone", formatPhoneNumber(fetchedProfessional.phone));
+    setValueCallback("title", fetchedProfessional.title);
+  }, [backToProfessionals, id, setValueCallback, user]);
+
   useEffect(() => {
-    const getProfessional = async () => {
-      if (!id) return;
-
-      try {
-        setIsLoadingCallback(true);
-
-        const profesisonal = professionals.find((s) => s.id === parseInt(id));
-
-        if (profesisonal) {
-          setValueCallback("name", profesisonal.name);
-          setValueCallback("title", profesisonal.title);
-          setValueCallback("phone", formatPhoneNumber(profesisonal.phone));
-        } else {
-          showToastCallback("Id de profissional inexistente.");
-          backToProfessionals();
-        }
-      } catch (err) {
-        showToastCallback(
-          `Erro ao carregar profissional: ${(err as Error).message}`
-        );
-      } finally {
-        setIsLoadingCallback(false);
-      }
-    };
-
-    getProfessional();
-  }, [
-    id,
-    showToastCallback,
-    user,
-    setValueCallback,
-    isLoading,
-    setIsLoadingCallback,
-    professionals,
-    backToProfessionals,
-  ]);
+    setIsLoadingCallback(true);
+    fetchData();
+    setIsLoadingCallback(false);
+  }, [fetchData, setIsLoadingCallback]);
 
   const onSubmit = async (data: ProfessionalFormData) => {
     let toastMessage: string = "";
@@ -126,23 +103,22 @@ const ProfessionalEdit = () => {
           errors={errors}
           label="Nome"
           name="name"
-          register={register}
+          control={control}
         />
         <CustomTextField<ProfessionalFormData>
           formId="professionalEditForm"
           errors={errors}
           label="Especialidade"
           name="title"
-          register={register}
+          control={control}
         />
         <CustomTextField<ProfessionalFormData>
           formId="professionalEditForm"
           errors={errors}
           label="Celular"
           name="phone"
-          setValue={setValue}
           isPhone={true}
-          register={register}
+          control={control}
         />
 
         <CustomSubmitButton

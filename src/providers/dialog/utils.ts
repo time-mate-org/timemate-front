@@ -1,14 +1,13 @@
 import { User } from "firebase/auth";
-import { CacheType } from "../fetcher/FetcherProvider";
 
 export type GetCancelDialogParamType = {
   user: User;
-  resource: keyof CacheType;
+  resource: string;
   id: number;
   callback: () => void;
 };
 
-export const translateResource = (resource: keyof CacheType): string => {
+export const translateResource = (resource: string): string => {
   switch (resource) {
     case "appointments":
       return "agendamento";

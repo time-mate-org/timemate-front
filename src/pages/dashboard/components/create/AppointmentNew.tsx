@@ -1,28 +1,30 @@
 import { Box, Typography } from "@mui/material";
 import { joiResolver } from "@hookform/resolvers/joi";
-import { useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { closestTo, format, setMinutes } from "date-fns";
+import { User } from "firebase/auth";
 
 import { appointmentSchema } from "../../../../validation/appointment";
 import { AppointmentFormData } from "../../../../types/formData";
 import { CustomDateField } from "../fields/CustomDateField";
 import { CustomSelectField } from "../fields/CustomSelectField";
 import { CustomSubmitButton } from "../fields/CustomButton";
-import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
-import { User } from "firebase/auth";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { Client, Professional, Service } from "../../../../types/models";
-import { format } from "date-fns";
+import { LoadingContext } from "../../../../providers/loading/LoadingProvider";
+import { getEntity } from "../../../../services/getEntity";
 import { createEntity } from "../../../../services/createEntity";
 
 const AppointmentNew = () => {
   const { user } = useContext(AuthContext);
-  const {
-    cache: { services, clients, professionals },
-  } = useContext(FetcherContext);
+  const [clients, setClients] = useState<Client[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
+  const [professionals, setProfessionals] = useState<Professional[]>([]);
   const { showToast } = useContext(ToastContext);
+  const now = new Date();
   const {
     control,
     handleSubmit,
@@ -32,22 +34,30 @@ const AppointmentNew = () => {
       client_id: "",
       professional_id: "",
       service_id: "",
-      start_time: new Date().toISOString(),
+      start_time: (
+        closestTo(now, [
+          setMinutes(now, 0),
+          setMinutes(now, 15),
+          setMinutes(now, 30),
+          setMinutes(now, 45),
+        ]) ?? now
+      ).toISOString(),
     },
     resolver: joiResolver(appointmentSchema),
   });
   const navigate = useNavigate();
-  const [isLoading] = useState(false);
+  const { isLoading, setIsLoadingCallback } = useContext(LoadingContext);
 
   const onSubmit = async (data: AppointmentFormData) => {
+    console.log("🚀 ~ onSubmit ~ data:", data);
     let toastMessage: string = "";
     const client = clients.find(
       (client) => client.id === data.client_id
     ) as Client;
-    const service = services.find(
+    const service = services?.find(
       (service: Service) => service.id === data.service_id
     ) as Service;
-    const professional = professionals.find(
+    const professional = professionals?.find(
       (professional) => professional.id === data.professional_id
     ) as Professional;
 
@@ -73,6 +83,30 @@ const AppointmentNew = () => {
     }
   };
 
+  const fetchData = useCallback(async () => {
+    const fetchedClients = await getEntity<Client[]>({
+      user,
+      resource: "clients",
+    });
+    const fetchedProfessionals = await getEntity<Professional[]>({
+      user,
+      resource: "professionals",
+    });
+    const fetchedServices = await getEntity<Service[]>({
+      user,
+      resource: "services",
+    });
+    setClients(fetchedClients);
+    setProfessionals(fetchedProfessionals);
+    setServices(fetchedServices);
+  }, [user]);
+
+  useEffect(() => {
+    setIsLoadingCallback(true);
+    fetchData();
+    setIsLoadingCallback(false);
+  }, [fetchData, setIsLoadingCallback]);
+
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h5" mb={3} color="text.primary">
@@ -91,7 +125,7 @@ const AppointmentNew = () => {
           controlName="service_id"
           label="Serviço"
           errors={errors}
-          options={services}
+          options={services ?? []}
         />
 
         <CustomSelectField
@@ -99,7 +133,7 @@ const AppointmentNew = () => {
           controlName="client_id"
           label="Cliente"
           errors={errors}
-          options={clients}
+          options={clients ?? []}
         />
 
         <CustomSelectField
@@ -107,7 +141,7 @@ const AppointmentNew = () => {
           controlName="professional_id"
           label="Profissional"
           errors={errors}
-          options={professionals}
+          options={professionals ?? []}
         />
 
         <CustomSubmitButton

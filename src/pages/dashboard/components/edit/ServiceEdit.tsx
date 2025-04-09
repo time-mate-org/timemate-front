@@ -2,14 +2,7 @@ import { useCallback, useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { joiResolver } from "@hookform/resolvers/joi";
-import {
-  Box,
-  Typography,
-  FormControl,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { serviceSchema } from "../../../../validation/service";
 import { CustomTextField } from "../fields/CustomTextField";
 import { CustomNumberField } from "../fields/CustomNumberField";
@@ -19,21 +12,20 @@ import { updateEntity } from "../../../../services/updateEntity";
 import { ServiceFormData } from "../../../../types/formData";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
-import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
 import { LoadingContext } from "../../../../providers/loading/LoadingProvider";
+import { Service } from "../../../../types/models";
+import { getEntity } from "../../../../services/getEntity";
+import { CustomPriceField } from "../fields/CustomPriceField";
 
 const ServiceEdit = () => {
   const { user } = useContext(AuthContext);
-  const { showToast } = useContext(ToastContext);
-  const {
-    cache: { services },
-  } = useContext(FetcherContext);
   const { isLoading, setIsLoadingCallback } = useContext(LoadingContext);
   const navigate = useNavigate();
+  const { showToast } = useContext(ToastContext);
   const { id } = useParams<{ id: string }>();
 
   const {
-    register,
+    control,
     handleSubmit,
     setValue,
     formState: { errors },
@@ -45,53 +37,32 @@ const ServiceEdit = () => {
     () => navigate("/dashboard/services"),
     [navigate]
   );
-  const showToastCallback = useCallback(
-    (message: string) => showToast(message),
-    [showToast]
-  );
+
   const setValueCallback = useCallback(
     (field: keyof ServiceFormData, value: string | number | undefined) =>
       setValue(field, value),
     [setValue]
   );
 
+  const fetchData = useCallback(async () => {
+    const fetchedService = await getEntity<Service>({
+      user,
+      resource: "services",
+      id: parseInt(id ?? "0"),
+    });
+
+    if (!fetchedService) backToServices();
+
+    setValueCallback("name", fetchedService.name);
+    setValueCallback("estimated_time", fetchedService.estimated_time);
+    setValueCallback("price", fetchedService.price);
+  }, [backToServices, id, setValueCallback, user]);
+
   useEffect(() => {
-    const getService = async () => {
-      if (!id) return;
-
-      try {
-        setIsLoadingCallback(true);
-
-        const service = services.find((s) => s.id === parseInt(id));
-
-        if (service) {
-          setValueCallback("name", service.name);
-          setValueCallback("price", service.price);
-          setValueCallback("estimated_time", service.estimated_time);
-        } else {
-          showToastCallback("Id de serviço inexistente.");
-          backToServices();
-        }
-      } catch (err) {
-        showToastCallback(
-          `Erro ao carregar serviço: ${(err as Error).message}`
-        );
-      } finally {
-        setIsLoadingCallback(false);
-      }
-    };
-
-    getService();
-  }, [
-    id,
-    backToServices,
-    showToastCallback,
-    user,
-    setValueCallback,
-    services,
-    isLoading,
-    setIsLoadingCallback,
-  ]);
+    setIsLoadingCallback(true);
+    fetchData();
+    setIsLoadingCallback(false);
+  }, [fetchData, setIsLoadingCallback]);
 
   const onSubmit = async (data: ServiceFormData) => {
     let toastMessage: string = "";
@@ -132,27 +103,22 @@ const ServiceEdit = () => {
           errors={errors}
           label="Nome"
           name="name"
-          register={register}
+          control={control}
         />
 
         <CustomNumberField<ServiceFormData>
           label="Tempo estimado (em minutos)"
           name="estimated_time"
-          register={register}
+          control={control}
           errors={errors}
         />
 
-        <FormControl fullWidth sx={{ m: 1 }}>
-          <InputLabel htmlFor="outlined-adornment-amount">Preço</InputLabel>
-          <OutlinedInput
-            id="outlined-adornment-amount"
-            {...register("price")}
-            startAdornment={
-              <InputAdornment position="start">R$</InputAdornment>
-            }
-            label="Preço"
-          />
-        </FormControl>
+        <CustomPriceField
+          control={control}
+          errors={errors}
+          label="Preço"
+          name="price"
+        />
 
         <CustomSubmitButton formId="serviceEditForm" isLoading={isLoading} />
       </Box>

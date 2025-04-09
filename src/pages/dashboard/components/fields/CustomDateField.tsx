@@ -2,8 +2,7 @@ import { FormControl } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { Control, Controller, FieldErrors } from "react-hook-form";
 import { AppointmentFormData } from "../../../../types/formData";
-import { set, startOfHour, toDate } from "date-fns";
-import { useMemo } from "react";
+import { closestTo, set, setMinutes, toDate } from "date-fns";
 
 export const CustomDateField = ({
   control,
@@ -12,9 +11,15 @@ export const CustomDateField = ({
   control: Control<AppointmentFormData>;
   errors: FieldErrors<AppointmentFormData>;
 }) => {
-  const defaultDate = useMemo(() => startOfHour(new Date()), []);
-
   const helperTextMessage = errors.start_time?.message;
+  const now = new Date();
+  const defaultDate =
+    closestTo(now, [
+      setMinutes(now, 0),
+      setMinutes(now, 15),
+      setMinutes(now, 30),
+      setMinutes(now, 45),
+    ]) ?? now;
 
   return (
     <FormControl fullWidth sx={{ m: 1 }}>

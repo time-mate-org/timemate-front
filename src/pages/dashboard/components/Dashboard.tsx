@@ -1,48 +1,70 @@
-import { Box, Grid2, Typography, CircularProgress } from "@mui/material";
+import { Box, Grid2, Typography } from "@mui/material";
 import { format, isToday, isTomorrow, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { useEffect, useState, useContext } from "react";
-import { Appointment } from "../../types/models";
-import { ServiceBox } from "./styled";
-import { toTitle } from "../../utils/string";
-import { MetricCard } from "./components/MetricCard";
-import { FetcherContext } from "../../providers/fetcher/FetcherProvider";
-import { LoadingContext } from "../../providers/loading/LoadingProvider";
+import { useEffect, useState, useContext, useCallback } from "react";
+import {
+  Appointment,
+  Client,
+  Professional,
+  Service,
+} from "../../../types/models";
+import { ServiceBox } from "../styled";
+import { toTitle } from "../../../utils/string";
+import { MetricCard } from "./MetricCard";
+import { LoadingContext } from "../../../providers/loading/LoadingProvider";
+import { getEntity } from "../../../services/getEntity";
+import { AuthContext } from "../../../providers/auth/AuthProvider";
+import { toUTCDate } from "../../../utils/date";
 
-const DashboardPage = () => {
-  const { isLoading, setIsLoadingCallback } = useContext(LoadingContext);
+const Dashboard = () => {
+  const { user } = useContext(AuthContext);
+  const { setIsLoadingCallback } = useContext(LoadingContext);
   const [todayAppointments, setTodayAppointments] = useState<Appointment[]>([]);
   const [tomorrowAppointments, setTomorrowAppointments] = useState<
     Appointment[]
   >([]);
-  const {
-    cache: { appointments, clients, professionals, services },
-  } = useContext(FetcherContext);
+  const [services, setServices] = useState<Service[]>([]);
+  const [professionals, setProfessionals] = useState<Professional[]>([]);
+  const [clients, setClients] = useState<Client[]>([]);
+
+  const fetchData = useCallback(async () => {
+    const fetchedClients = await getEntity<Client[]>({
+      user,
+      resource: "clients",
+    });
+    const fetchedProfessionals = await getEntity<Professional[]>({
+      user,
+      resource: "professionals",
+    });
+    const fetchedServices = await getEntity<Service[]>({
+      user,
+      resource: "services",
+    });
+    const fetchedAppointments = await getEntity<Appointment[]>({
+      user,
+      resource: "appointments",
+    });
+
+    setClients(fetchedClients);
+    setProfessionals(fetchedProfessionals);
+    setServices(fetchedServices);
+    setTodayAppointments(
+      fetchedAppointments.filter((appointment) =>
+        isToday(toUTCDate(appointment.start_time))
+      )
+    );
+    setTomorrowAppointments(
+      fetchedAppointments.filter((appointment) =>
+        isTomorrow(toUTCDate(appointment.start_time))
+      )
+    );
+  }, [user]);
 
   useEffect(() => {
-    // Simulação de carregamento
-    setTimeout(() => {
-      setTodayAppointments(
-        appointments?.filter((a) => isToday(a.startTime as Date)) ?? []
-      );
-      setTomorrowAppointments(
-        appointments?.filter(
-          (a) =>
-            isTomorrow(a.startTime as Date) ||
-            format(a.startTime as Date, "EEEE", { locale: ptBR }) === "segunda-feira"
-        ) ?? []
-      );
-      setIsLoadingCallback(false);
-    }, 500);
-  }, [appointments, setIsLoadingCallback]);
-
-  if (isLoading) {
-    return (
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-        <CircularProgress size={60} />
-      </Box>
-    );
-  }
+    setIsLoadingCallback(true);
+    fetchData();
+    setIsLoadingCallback(false);
+  }, [fetchData, setIsLoadingCallback]);
 
   return (
     <Grid2 container spacing={5} justifyContent="center" alignItems="center">
@@ -112,7 +134,7 @@ const DashboardPage = () => {
                         {service.name}
                       </Typography>
                       <Typography variant="body2" sx={{ color: "#94a3b8" }}>
-                        Duração: {service.estimatedTime} min
+                        Duração: {service.estimated_time} min
                       </Typography>
                       <Typography variant="h6" sx={{ color: "#00ff9d", mt: 1 }}>
                         R$ {service.price.toFixed(2)}
@@ -129,4 +151,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default Dashboard;

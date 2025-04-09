@@ -16,7 +16,7 @@ import { createEntity } from "../../../../services/createEntity";
 
 const ClientNew = () => {
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<ClientFormData>({
@@ -62,7 +62,7 @@ const ClientNew = () => {
           formId="clientCreateForm"
           label="Nome"
           name="name"
-          register={register}
+          control={control}
         />
 
         <CustomTextField<Client>
@@ -70,7 +70,7 @@ const ClientNew = () => {
           formId="clientCreateForm"
           label="Endereço"
           name="address"
-          register={register}
+          control={control}
         />
 
         <CustomTextField<Client>
@@ -78,7 +78,8 @@ const ClientNew = () => {
           formId="clientCreateForm"
           label="Telefone"
           name="phone"
-          register={register}
+          isPhone={true}
+          control={control}
         />
 
         <CustomSubmitButton formId="clientCreateForm" isLoading={isLoading} />

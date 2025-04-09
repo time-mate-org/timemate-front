@@ -13,24 +13,42 @@ import { Add as AddIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
-import { useContext } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { formatPhoneNumber, toTitle } from "../../../../utils/string";
-import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
 import { User } from "firebase/auth";
 import { deleteEntity } from "../../../../services/deleteEntity";
 import { Professional } from "../../../../types/models";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { DialogContext } from "../../../../providers/dialog/DialogProvider";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
+import { LoadingContext } from "../../../../providers/loading/LoadingProvider";
+import { getEntity } from "../../../../services/getEntity";
 
 const ProfessionalList = () => {
   const navigate = useNavigate();
-  const {
-    cache: { professionals },
-  } = useContext(FetcherContext);
   const { user } = useContext(AuthContext);
   const { openDialog } = useContext(DialogContext);
   const { showToast } = useContext(ToastContext);
+  const [professionals, setProfessionals] = useState<Professional[]>([]);
+  const [shouldFetch, setShouldFetch] = useState(true);
+  const { setIsLoadingCallback } = useContext(LoadingContext);
+
+  const fetchData = useCallback(async () => {
+    if (!shouldFetch) return;
+    const fetchedProfessionals = await getEntity<Professional[]>({
+      user,
+      resource: "professionals",
+    });
+
+    setIsLoadingCallback(true);
+    setProfessionals(fetchedProfessionals);
+    setShouldFetch(false);
+    setIsLoadingCallback(false);
+  }, [setIsLoadingCallback, shouldFetch, user]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleDelete = (professional?: Professional) => {
     if (professional)
@@ -44,8 +62,10 @@ const ProfessionalList = () => {
             "professionals",
             professional.id as number
           );
-          showToast(`O profissional ${professional.name} foi deletado com sucesso.`);
-          navigate("/dashboard/professionals");
+          showToast(
+            `O profissional ${professional.name} foi deletado com sucesso.`
+          );
+          setShouldFetch(true);
         },
       });
   };

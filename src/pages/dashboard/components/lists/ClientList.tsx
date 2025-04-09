@@ -13,8 +13,7 @@ import { Add as AddIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
-import { useContext } from "react";
-import { FetcherContext } from "../../../../providers/fetcher/FetcherProvider";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { formatPhoneNumber } from "../../../../utils/string";
 import { User } from "firebase/auth";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
@@ -22,15 +21,34 @@ import { DialogContext } from "../../../../providers/dialog/DialogProvider";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { deleteEntity } from "../../../../services/deleteEntity";
 import { Client } from "../../../../types/models";
+import { LoadingContext } from "../../../../providers/loading/LoadingProvider";
+import { getEntity } from "../../../../services/getEntity";
 
 const ClientList = () => {
   const navigate = useNavigate();
-  const {
-    cache: { clients },
-  } = useContext(FetcherContext);
   const { user } = useContext(AuthContext);
   const { openDialog } = useContext(DialogContext);
   const { showToast } = useContext(ToastContext);
+  const [clients, setClients] = useState<Client[]>([]);
+  const [shouldFetch, setShouldFetch] = useState(true);
+  const { setIsLoadingCallback } = useContext(LoadingContext);
+
+  const fetchData = useCallback(async () => {
+    if (!shouldFetch) return;
+    const fetchedClients = await getEntity<Client[]>({
+      user,
+      resource: "clients",
+    });
+
+    setIsLoadingCallback(true);
+    setClients(fetchedClients);
+    setShouldFetch(false);
+    setIsLoadingCallback(false);
+  }, [setIsLoadingCallback, shouldFetch, user]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleDelete = (client?: Client) => {
     if (client)
@@ -41,7 +59,7 @@ const ClientList = () => {
         action: async () => {
           await deleteEntity(user as User, "clients", client.id as number);
           showToast(`O cliente ${client.name} foi deletado com sucesso.`);
-          navigate("/dashboard/clients");
+          setShouldFetch(true);
         },
       });
   };

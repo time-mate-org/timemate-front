@@ -2,14 +2,7 @@ import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { joiResolver } from "@hookform/resolvers/joi";
-import {
-  Box,
-  Typography,
-  FormControl,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Service } from "../../../../types/models";
 import { serviceSchema } from "../../../../validation/service";
 import { CustomTextField } from "../fields/CustomTextField";
@@ -20,12 +13,13 @@ import { createEntity } from "../../../../services/createEntity";
 import { ServiceFormData } from "../../../../types/formData";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
+import { CustomPriceField } from "../fields/CustomPriceField";
 
 const ServiceNew = () => {
   const { user } = useContext(AuthContext);
   const { showToast } = useContext(ToastContext);
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<ServiceFormData>({
@@ -68,27 +62,22 @@ const ServiceNew = () => {
           errors={errors}
           label="Nome"
           name="name"
-          register={register}
+          control={control}
         />
 
         <CustomNumberField<Service>
           label="Tempo estimado(em minutos)"
           name="estimated_time"
-          register={register}
+          control={control}
           errors={errors}
         />
 
-        <FormControl fullWidth sx={{ m: 1 }}>
-          <InputLabel htmlFor="outlined-adornment-amount">Preço</InputLabel>
-          <OutlinedInput
-            id="outlined-adornment-amount"
-            {...register("price")}
-            startAdornment={
-              <InputAdornment position="start">R$</InputAdornment>
-            }
-            label="Preço"
-          />
-        </FormControl>
+        <CustomPriceField
+          label="Preço"
+          name="price"
+          control={control}
+          errors={errors}
+        />
 
         <CustomSubmitButton formId="serviceCreateForm" isLoading={isLoading} />
       </Box>

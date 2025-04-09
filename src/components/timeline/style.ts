@@ -20,13 +20,22 @@ export const CustomTableCell = styled(TableCell, {
     professionalColor = "#f44336", // vermelho moderno
   }) => {
     let backgroundColor: string;
+    let opacity: number = 0;
 
     // Se a célula representa uma data, usa fundo mais escuro e negrito
-    if (isDateCell) backgroundColor = "#1e1e2f";
-    else if (isBusy) backgroundColor = professionalColor;
-    else backgroundColor = "#2c2c3a";
+    if (isDateCell) {
+      backgroundColor = "#1e1e2f";
+      opacity = 1;
+    } else if (isBusy) {
+      backgroundColor = professionalColor;
+      opacity = isCurrentTimeSlot ? 1 : 0.9;
+    } else {
+      backgroundColor = "#2c2c3a";
+      opacity = 0.9;
+    }
 
     return {
+      opacity,
       backgroundColor,
       textAlign: "center",
       color: isCurrentTimeSlot ? invertColor(backgroundColor) : "#e0e0e0",
@@ -38,6 +47,8 @@ export const CustomTableCell = styled(TableCell, {
       "&:hover": {
         cursor: isBusy ? "pointer" : "default",
       },
+      borderBottom: isCurrentTimeSlot ? "1px dotted yellow" : "none",
+      borderTop: isCurrentTimeSlot ? "1px dotted yellow" : "none",
     };
   }
 );
@@ -45,12 +56,12 @@ export const CustomTableCell = styled(TableCell, {
 export const CustomTableRow = styled(TableRow, {
   shouldForwardProp: (prop) => prop !== "isCurrentTimeSlot",
 })<{ isCurrentTimeSlot: boolean }>(({ isCurrentTimeSlot }) => ({
-  backgroundColor: "transparent",
+  backgroundColor: "#1faf1f",
   borderBottom: "none",
   // Efeito hover para modernidade e melhor usabilidade
   "&:hover": {
-    backgroundColor: "#333342",
-    borderBottom: '1px dotted #fff'
+    backgroundColor: "#1fff1f",
+    borderBottom: "2px dotted #fff",
   },
   // Se for o slot de tempo atual, adiciona um destaque lateral
   ...(isCurrentTimeSlot && {
@@ -59,6 +70,7 @@ export const CustomTableRow = styled(TableRow, {
     borderTop: "1px dotted rgba(255,255,255, 0.5)",
     marginLeft: "4px",
     paddingLeft: "4px",
+    backgroundColor: "#3a5",
   }),
 }));
 

@@ -1,6 +1,5 @@
-import { useContext } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import CircleIcon from "@mui/icons-material/Circle";
-import { FetcherContext } from "../../../providers/fetcher/FetcherProvider";
 import { toTitle } from "../../../utils/string";
 import { Grid2 } from "@mui/material";
 import {
@@ -10,15 +9,32 @@ import {
   ServiceGrid,
   ServiceCard,
 } from "../style";
+import { Service } from "../../../types/models";
+import { AuthContext } from "../../../providers/auth/AuthProvider";
+import { LoadingContext } from "../../../providers/loading/LoadingProvider";
+import { getEntity } from "../../../services/getEntity";
 
 export const TimelineHeader = ({
   colors,
 }: {
   colors: { [key: number]: string };
 }) => {
-  const {
-    cache: { services },
-  } = useContext(FetcherContext);
+  const { user } = useContext(AuthContext);
+  const { setIsLoadingCallback } = useContext(LoadingContext);
+  const [services, setServices] = useState<Service[]>([]);
+  const fetchData = useCallback(async () => {
+    const fetchedServices = await getEntity<Service[]>({
+      user,
+      resource: "services",
+    });
+    setServices(fetchedServices);
+  }, [user]);
+
+  useEffect(() => {
+    setIsLoadingCallback(true);
+    fetchData();
+    setIsLoadingCallback(false);
+  }, [fetchData, setIsLoadingCallback]);
 
   return (
     <TimelineContainer container spacing={2}>

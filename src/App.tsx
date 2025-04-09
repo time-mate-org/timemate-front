@@ -18,9 +18,7 @@ import ProfessionalNew from "./pages/dashboard/components/create/ProfessionalNew
 import AppointmentNew from "./pages/dashboard/components/create/AppointmentNew";
 import AuthLayout from "./components/layouts/AuthLayout";
 import NotFound from "./pages/notFound/NotFound";
-import Dashboard2 from "./pages/dashboard/Dashboard";
 import { AuthProvider } from "./providers/auth/AuthProvider";
-import { FetcherProvider } from "./providers/fetcher/FetcherProvider";
 import { LoadingProvider } from "./providers/loading/LoadingProvider";
 import { ToastProvider } from "./providers/toast/ToastProvider";
 import ServiceEdit from "./pages/dashboard/components/edit/ServiceEdit";
@@ -29,11 +27,12 @@ import { MainLayout } from "./components/layouts/MainLayout";
 import ClientEdit from "./pages/dashboard/components/edit/ClientEdit";
 import AppointmentEdit from "./pages/dashboard/components/edit/AppointmentEdit";
 import { DialogProvider } from "./providers/dialog/DialogProvider";
+import Dashboard from "./pages/dashboard/components/Dashboard";
 
 const DashboardRoutes = () => (
   <Routes>
     <Route path="" element={<DashboardLayout />}>
-      <Route index element={<Dashboard2 />} />
+      <Route index element={<Dashboard />} />
       <Route path="clients/*" element={<ClientList />} />
       <Route path="client/new" element={<ClientNew />} />
       <Route path="client/edit/:id" element={<ClientEdit />} />
@@ -56,7 +55,6 @@ function App() {
       <ThemeProvider theme={mainTheme}>
         <LoadingProvider>
           <AuthProvider>
-            <FetcherProvider>
               <ToastProvider>
                 <MainLayout>
                   <DialogProvider>
@@ -83,7 +81,6 @@ function App() {
                   </DialogProvider>
                 </MainLayout>
               </ToastProvider>
-            </FetcherProvider>
           </AuthProvider>
         </LoadingProvider>
       </ThemeProvider>

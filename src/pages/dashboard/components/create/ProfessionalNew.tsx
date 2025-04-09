@@ -18,7 +18,7 @@ const ProfessionalNew = () => {
   const { user } = useContext(AuthContext);
   const { showToast } = useContext(ToastContext);
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<Professional>({
@@ -66,21 +66,22 @@ const ProfessionalNew = () => {
           formId="professionalCreateForm"
           label="Nome"
           name="name"
-          register={register}
+          control={control}
         />
         <CustomTextField<Professional>
           errors={errors}
           formId="professionalCreateForm"
           label="Título(ex: barbeiro)"
           name="title"
-          register={register}
+          control={control}
         />
         <CustomTextField<Professional>
           errors={errors}
           formId="professionalCreateForm"
           label="Telefone"
           name="phone"
-          register={register}
+          isPhone={true}
+          control={control}
         />
 
         <CustomSubmitButton

@@ -1,20 +1,12 @@
 import { FormControl, TextField } from "@mui/material";
-import { SyntheticEvent } from "react";
-import {
-  FieldErrors,
-  Path,
-  PathValue,
-  UseFormRegister,
-  UseFormSetValue,
-} from "react-hook-form";
+import { Control, Controller, FieldErrors, Path } from "react-hook-form";
 import { formatPhoneNumber } from "../../../../utils/string";
 
 type CustomTextFieldPropsType<T extends object> = {
   label: string;
   formId: string;
-  name: keyof T;
-  register: UseFormRegister<T>;
-  setValue?: UseFormSetValue<T>;
+  name: Path<T>;
+  control: Control<T>;
   errors: FieldErrors<T>;
   isPhone?: boolean;
 };
@@ -23,33 +15,33 @@ export const CustomTextField = <T extends object>({
   label,
   name,
   formId,
-  register,
+  control,
   errors,
   isPhone,
-  setValue,
 }: CustomTextFieldPropsType<T>) => {
-  const onChange = (event: SyntheticEvent) => {
-    const inputElement = event.target as HTMLInputElement;
-    const rawValue = inputElement.value.replace(/\D/g, "");
-    const formattedValue = formatPhoneNumber(rawValue);
-
-    if (setValue)
-      setValue("phone" as Path<T>, formattedValue as PathValue<T, Path<T>>);
-  };
+  const onChange = (value: string) =>
+    isPhone ? formatPhoneNumber(value) : value;
 
   return (
     <FormControl fullWidth sx={{ m: 1 }}>
-      <TextField
-        id={`${formId}-${name as string}`}
-        label={label}
-        {...register(name as unknown as Path<T>, {
-          ...(isPhone && { onChange }),
-        })}
-        fullWidth
-        margin="normal"
-        slotProps={{ input: { sx: { color: "text.primary" } } }}
-        error={!!errors[name]?.message}
-        helperText={errors[name]?.message as unknown as string}
+      <Controller
+        name={name}
+        control={control}
+        render={({ field }) => (
+          <TextField
+            id={`${formId}-${name as string}`}
+            label={label}
+            fullWidth
+            margin="normal"
+            onChange={(e) => field.onChange(onChange(e.target.value))}
+            value={field.value ?? ""}
+            slotProps={{ input: { sx: { color: "text.primary" } } }}
+            error={!!errors[name as unknown as keyof T]?.message}
+            helperText={
+              errors[name as unknown as keyof T]?.message as unknown as string
+            }
+          />
+        )}
       />
     </FormControl>
   );

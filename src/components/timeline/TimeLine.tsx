@@ -25,22 +25,52 @@ import {
 } from "./utils";
 import { TimelineHeader } from "./components/TimelineHeader";
 import { toTitle } from "../../utils/string";
-import { FetcherContext } from "../../providers/fetcher/FetcherProvider";
 import { getNewServiceColors } from "./colors";
 import { useNavigate } from "react-router-dom";
+import { Appointment, Professional, Service } from "../../types/models";
+import { AuthContext } from "../../providers/auth/AuthProvider";
+import { getEntity } from "../../services/getEntity";
+import { toUTCDate } from "../../utils/date";
+import { LoadingContext } from "../../providers/loading/LoadingProvider";
 
 export const AppointmentTimeline = () => {
+  const { user } = useContext(AuthContext);
+  const { setIsLoadingCallback } = useContext(LoadingContext);
   const [currentTimeSlot, setCurrentTimeSlot] = useState<Date | null>();
-  const {
-    cache: { services, professionals, appointments: allAppointments },
-  } = useContext(FetcherContext);
   const navigate = useNavigate();
   const [colors, setColors] = useState<{ [key: number]: string }>({});
   const timerRef = useRef<NodeJS.Timeout>(undefined);
-  const appointments =
-    allAppointments?.filter((appointment) =>
-      isToday(appointment.startTime as Date)
-    ) ?? [];
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
+  const [professionals, setProfessionals] = useState<Professional[]>([]);
+
+  const fetchData = useCallback(async () => {
+    const fetchedProfessionals = await getEntity<Professional[]>({
+      user,
+      resource: "professionals",
+    });
+    const fetchedServices = await getEntity<Service[]>({
+      user,
+      resource: "services",
+    });
+    const fetchedAppointments = await getEntity<Appointment[]>({
+      user,
+      resource: "appointments",
+    });
+    setProfessionals(fetchedProfessionals);
+    setServices(fetchedServices);
+    setAppointments(
+      fetchedAppointments.filter((appointment) =>
+        isToday(toUTCDate(appointment.start_time))
+      )
+    );
+  }, [user]);
+
+  useEffect(() => {
+    setIsLoadingCallback(true);
+    fetchData();
+    setIsLoadingCallback(false);
+  }, [fetchData, setIsLoadingCallback]);
 
   const setColorsCallback = useCallback(
     () => setColors(getNewServiceColors(services)),
@@ -137,7 +167,9 @@ export const AppointmentTimeline = () => {
                     key={`${professional.name}-${index}`}
                     align="center"
                     isBusy={isBusyCell}
-                    professionalColor={colors[cellAppointment?.service.id ?? -1]}
+                    professionalColor={
+                      colors[cellAppointment?.service.id ?? -1]
+                    }
                     onClick={() =>
                       navigate(
                         `/dashboard/appointment/edit/${cellAppointment?.id}`

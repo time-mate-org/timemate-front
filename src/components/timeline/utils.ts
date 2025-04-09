@@ -13,6 +13,7 @@ import {
   setMinutes,
 } from "date-fns";
 import { Appointment, Professional } from "../../types/models";
+import { toUTCDate } from "../../utils/date";
 
 const isCurrentTimeSlot = (timeSlot: Date, currentTimeSlot: Date) =>
   isSameMinute(timeSlot, currentTimeSlot as Date) &&
@@ -61,12 +62,13 @@ const isBusy = ({
 }): boolean =>
   !isEmpty(
     appointments.filter(
-      ({ professional: appointmentProfessional, startTime, endTime }) => {
+      ({ professional: appointmentProfessional, start_time, end_time }) => {
         const isSameProfessional =
           appointmentProfessional.id === professional.id;
         const nowIsAfterAppointmentStartTime =
-          currentTime >= (startTime as Date);
-        const nowIsBeforeAppointmentEndTime = currentTime < (endTime as Date);
+          currentTime >= (toUTCDate(start_time) as Date);
+        const nowIsBeforeAppointmentEndTime =
+          currentTime < (toUTCDate(end_time) as Date);
 
         return (
           isSameProfessional &&
@@ -83,9 +85,9 @@ const getCellAppointment = (
   appointments: Appointment[]
 ): Appointment | undefined =>
   appointments.find(
-    ({ startTime, endTime, professional: { id } }) =>
-      (startTime as Date) <= timeSlot &&
-      (endTime as Date) > timeSlot &&
+    ({ start_time, end_time, professional: { id } }) =>
+      (toUTCDate(start_time) as Date) <= timeSlot &&
+      (toUTCDate(end_time) as Date) > timeSlot &&
       professional.id === id
   );
 
@@ -99,7 +101,6 @@ const invertColor = (hexColor: string) => {
 
 const simplifyName = (name: string) =>
   name.length > 10 ? `${name.substring(0, 7)}...` : name;
-
 
 export {
   isBusy,

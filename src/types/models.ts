@@ -16,7 +16,6 @@ export type Service = {
   id?: number;
   name: string;
   estimated_time: number;
-  estimatedTime?: number;
   price: number;
 };
 
@@ -29,7 +28,5 @@ export type Appointment = {
   service_id: number;
   service: Service;
   start_time: string;
-  startTime?: Date;
   end_time: string;
-  endTime?: Date;
 };
