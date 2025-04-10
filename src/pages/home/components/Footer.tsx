@@ -1,23 +1,29 @@
-import { Box, Container, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Box, Grid2, Typography } from "@mui/material";
 
 export const HomeFooter = () => {
   return (
-    <Box component="footer" sx={{ bgcolor: "grey.900", py: 2 }}>
-      <Container maxWidth="lg">
-        <Typography variant="body2" color="white" align="center">
-          <strong>Baltazar</strong> - 2025, Todos os Direitos Reservados.
-        </Typography>
-        <Typography variant="body2" color="white" align="center">
-          Por:{" "}
-          <Link
-            to={{ pathname: "https://www.timemate-frontonerender.com/" }}
-            color="inherit"
-          >
-            DRP-12
-          </Link>
-        </Typography>
-      </Container>
+    <Box component="footer" sx={{ bgcolor: "#0e2a34", py: 2 }}>
+      <Grid2 container maxWidth="lg">
+        <Grid2 size={6}>
+          <Typography variant="body2" color="#f1f1f1" align="center">
+            <strong>Baltazar</strong> - 2025, Todos os Direitos Reservados.
+          </Typography>
+        </Grid2>
+        <Grid2 size={6}>
+          <Typography variant="body2" color="#f1f1f1" align="center">
+            Por:
+            <Box
+              component="a"
+              href="https://github.com/timemate-org"
+              color="inherit"
+              sx={{ textDecoration: "none" }}
+            >
+              {" "}
+              DRP-12
+            </Box>
+          </Typography>
+        </Grid2>
+      </Grid2>
     </Box>
   );
 };

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
@@ -28,6 +28,7 @@ import ClientEdit from "./pages/dashboard/components/edit/ClientEdit";
 import AppointmentEdit from "./pages/dashboard/components/edit/AppointmentEdit";
 import { DialogProvider } from "./providers/dialog/DialogProvider";
 import Dashboard from "./pages/dashboard/components/Dashboard";
+import { Home } from "./pages/home/Home";
 
 const DashboardRoutes = () => (
   <Routes>
@@ -55,32 +56,30 @@ function App() {
       <ThemeProvider theme={mainTheme}>
         <LoadingProvider>
           <AuthProvider>
-              <ToastProvider>
-                <MainLayout>
-                  <DialogProvider>
-                    <BrowserRouter>
-                      <Routes>
-                        <Route
-                          path="/dashboard/*"
-                          element={
-                            <AuthLayout>
-                              <DashboardRoutes />
-                            </AuthLayout>
-                          }
-                        />
+            <ToastProvider>
+              <MainLayout>
+                <DialogProvider>
+                  <BrowserRouter>
+                    <Routes>
+                      <Route index element={<Home />} />
+                      <Route
+                        path="/dashboard/*"
+                        element={
+                          <AuthLayout>
+                            <DashboardRoutes />
+                          </AuthLayout>
+                        }
+                      />
 
-                        <Route path="/login" element={<Login />} />
-                        <Route
-                          index
-                          element={<Navigate to="/login" replace />}
-                        />
-                        {/* Rota para capturar tudo o que não foi especificado */}
-                        <Route path="*" element={<NotFound />} />
-                      </Routes>
-                    </BrowserRouter>
-                  </DialogProvider>
-                </MainLayout>
-              </ToastProvider>
+                      <Route path="/login" element={<Login />} />
+
+                      {/* Rota para capturar tudo o que não foi especificado */}
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </BrowserRouter>
+                </DialogProvider>
+              </MainLayout>
+            </ToastProvider>
           </AuthProvider>
         </LoadingProvider>
       </ThemeProvider>

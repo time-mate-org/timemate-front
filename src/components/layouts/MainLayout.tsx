@@ -2,7 +2,6 @@ import { Box } from "@mui/material";
 import { useContext } from "react";
 import { LoadingContext } from "../../providers/loading/LoadingProvider";
 import LoadingComponent from "../loading/Loading";
-import { Navbar } from "../Navbar";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const { isLoading } = useContext(LoadingContext);
@@ -20,17 +19,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         bgcolor: "black",
       }}
     >
-      <Navbar />
-
-      <Box
-        sx={{
-          flexGrow: 1,
-          bgcolor: "black",
-          backgroundAttachment: "fixed",
-        }}
-      >
-        {children}
-      </Box>
+      {children}
     </Box>
   );
 };

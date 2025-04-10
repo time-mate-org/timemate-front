@@ -3,13 +3,12 @@ import  MenuIcon  from "@mui/icons-material/Menu"
 
 export const HomeHeader = () => {
   return (
-    <AppBar position="static" sx={{backgroundColor: '#f1f1f1'}}>
+    <AppBar position="fixed" sx={{backgroundColor: '#f1f1f1'}}>
       <Container maxWidth="lg">
         <Toolbar disableGutters>
-          {/* Logo */}
           <Box
             component="img"
-            src="/img/logo.png"
+            src="/images/logo.png"
             alt="BALTAZAR"
             sx={{ height: 50 }}
           />
@@ -24,7 +23,7 @@ export const HomeHeader = () => {
           </Box>
           {/* Ícone de menu para mobile */}
           <IconButton color="inherit" sx={{ display: { xs: 'flex', md: 'none' } }}>
-            <MenuIcon />
+            <MenuIcon color="primary"/>
           </IconButton>
         </Toolbar>
       </Container>

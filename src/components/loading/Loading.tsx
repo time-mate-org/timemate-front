@@ -17,10 +17,12 @@ const LoadingComponent = () => {
         width: "100vw", // Largura total d'a viewport
         height: "100vh", // Altura total da viewport
         bgcolor: "#0f0f0f", // Cor de fundo
+        opacity:0.9
       }}
     >
       {/* Loader centralizado */}
-      <Box className="loader" sx={{ margin: "auto" }} />
+      <Box component='img' src='/images/logo.png' sx={{width: "40vw", height: "40vh", margin: "auto"}} />
+      <Box className="loader" sx={{ mx: "auto" }} />
     </Box>
   );
 };

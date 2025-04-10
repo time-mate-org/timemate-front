@@ -1,4 +1,5 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
+import { ResponsiveTypography } from "../style";
 
 export const HomeHero = () => {
   return (
@@ -8,11 +9,12 @@ export const HomeHero = () => {
         position: "relative",
         textAlign: "center",
         color: "white",
+        pt: 7
       }}
     >
       <Box
         component="img"
-        src="/uploads/capa/banner-home.jpg"
+        src="/images/capa/banner-home.jpg"
         alt="BALTAZAR"
         sx={{ width: "100%" }}
       />
@@ -24,8 +26,12 @@ export const HomeHero = () => {
           transform: "translate(-50%, -50%)",
         }}
       >
-        <Typography variant="h2">BALTAZAR</Typography>
-        <Typography variant="h5">Cortes de Cabelo Masculino</Typography>
+        <ResponsiveTypography initialVariant="h2">
+          BALTAZAR
+        </ResponsiveTypography>
+        <ResponsiveTypography initialVariant="h5">
+          Cortes de Cabelo Masculino
+        </ResponsiveTypography>
       </Box>
     </Box>
   );
