@@ -1,8 +1,8 @@
-import { styled, Typography } from "@mui/material";
+import { Button, styled, Typography } from "@mui/material";
 
 // Define os tamanhos para cada variante, ordenados por breakpoints
 const variantSizes = {
-  h1: { large: "3rem", md: "2.5rem", sm: "2rem", xs: "1.5rem" },
+  h1: { large: "4rem", md: "5rem", sm: "2rem", xs: "1.5rem" },
   h2: { large: "2.5rem", md: "2rem", sm: "1.75rem", xs: "1.5rem" },
   h3: { large: "2rem", md: "1.75rem", sm: "1.5rem", xs: "1.25rem" },
   h4: { large: "1.75rem", md: "1.5rem", sm: "1.25rem", xs: "1rem" },
@@ -38,4 +38,14 @@ const ResponsiveTypography = styled(Typography, {
   };
 });
 
-export { ResponsiveTypography };
+const CustomNavItem = styled(Button)(() => ({
+  color: "#1f1f1f",
+  fontSize: 18,
+  fontWeight: 600,
+  "&:hover": {
+    color: "#a1a1f1",
+    backgroundColor: "transparent"
+  },
+}));
+
+export { ResponsiveTypography, CustomNavItem };

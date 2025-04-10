@@ -18,3 +18,6 @@ export const services = [
       image: "/images/servicos/casa-e-decoracao.jpg",
     },
   ];
+
+  export const BLUE = "#0e2a34";
+  export const LIGHTBLUE = "#3e5ac6";

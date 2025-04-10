@@ -1,21 +1,23 @@
 import { Container, Typography, Grid2, Box, IconButton } from "@mui/material";
 import { Search } from "@mui/icons-material";
+import { BLUE } from "./utils";
 
 export const HomeGallery = () => {
   // Array de nomes/índices das imagens
   const images = [1, 2, 3, 4, 5, 6, 7, 8];
 
   return (
-    <Box id="galeria" sx={{ py: 4, bgcolor: "#0e2a34", width: 1 }}>
+    <Box id="galeria" sx={{ py: 4, bgcolor: BLUE, width: 1 }}>
       <Container>
         <Typography
           py={5}
           variant="h4"
           align="center"
           color="common.white"
+          fontWeight={700}
           gutterBottom
         >
-          Galeria de Fotos
+          GALERIA DE FOTOS
         </Typography>
         <Grid2 container spacing={2}>
           {images.map((img, index) => (

@@ -9,7 +9,7 @@ export const HomeHero = () => {
         position: "relative",
         textAlign: "center",
         color: "white",
-        pt: 7
+        pt: 7,
       }}
     >
       <Box
@@ -26,11 +26,11 @@ export const HomeHero = () => {
           transform: "translate(-50%, -50%)",
         }}
       >
-        <ResponsiveTypography initialVariant="h2">
+        <ResponsiveTypography initialVariant="h1">
           BALTAZAR
         </ResponsiveTypography>
-        <ResponsiveTypography initialVariant="h5">
-          Cortes de Cabelo Masculino
+        <ResponsiveTypography initialVariant="h5" sx={{fontWeight: 300, letterSpacing: 7}}>
+          CORTES DE CABELO MASCULINO
         </ResponsiveTypography>
       </Box>
     </Box>

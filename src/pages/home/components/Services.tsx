@@ -4,22 +4,24 @@ import {
   Paper,
   Box,
   Grid2,
-  IconButton,
 } from "@mui/material";
 import { Star } from "@mui/icons-material";
-import { services } from "./utils";
+import { LIGHTBLUE, services } from "./utils";
 import { ResponsiveTypography } from "../style";
 
 export const HomeServices = () => {
   return (
     <Container id="servicos" sx={{ py: 4, background: "#f1f1f1" }}>
       <ResponsiveTypography
-        initialVariant="h4"
+        initialVariant="h3"
         align="center"
-        color="primary"
+        color={LIGHTBLUE}
         gutterBottom
+        py={5}
+        letterSpacing={2}
+        sx={{fontWeight: 800}}
       >
-        Serviços
+        SERVIÇOS
       </ResponsiveTypography>
       <Grid2 container spacing={4}>
         {services.map((service, index) => (
@@ -41,33 +43,37 @@ export const HomeServices = () => {
                   sx={{
                     width: "100%",
                     height: "100%",
-                    background: "transparent",
                     borderRadius: 100,
+                    opacity: 1,
                   }}
                 />
                 <Box
                   sx={{
+                    cursor: 'pointer',
                     position: "absolute",
                     borderRadius: 100,
                     top: 0,
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    bgcolor: "rgba(6, 9, 82, 0.48)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
+                    bgcolor: LIGHTBLUE,
                     opacity: 0,
-                    transition: "opacity 0.3s",
-                    "&:hover": { opacity: 1 },
-                    zIndex: 0,
+                    transition: "opacity 0.8s",
+                    "&:hover": { opacity: 0.8 },
                   }}
                 >
-                  <Grid2 container sx={{ width: "100%", textAlign: "center" }}>
+                  <Grid2
+                    container
+                    sx={{
+                      width: "100%",
+                      textAlign: "center",
+                    }}
+                  >
                     <Grid2 size={12}>
-                      <IconButton sx={{ color: "white", textAlign: "center" }}>
-                        <Star sx={{ fontSize: 100 }} />
-                      </IconButton>
+                      <Star sx={{ fontSize: 100 }} />
                     </Grid2>
                     <Grid2 size={12}>
                       <p>{service.title}</p>
@@ -77,13 +83,15 @@ export const HomeServices = () => {
               </Box>
 
               <Box sx={{ p: 2 }}>
-                <Typography variant="h6" color="primary" textAlign="center">
+                <Typography variant="h6" color={LIGHTBLUE} textAlign="center">
                   {service.title}
                 </Typography>
                 <Typography
                   variant="body2"
                   color="secondary"
                   textAlign="center"
+                  fontFamily="Ubuntu"
+                  py={5}
                 >
                   {service.description}
                 </Typography>

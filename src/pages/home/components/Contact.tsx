@@ -9,6 +9,7 @@ import {
 import { Instagram, Facebook } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { ResponsiveTypography } from "../style";
+import { LIGHTBLUE } from "./utils";
 
 export const HomeContact = () => {
   const navigate = useNavigate();
@@ -18,16 +19,23 @@ export const HomeContact = () => {
       <ResponsiveTypography
         initialVariant="h4"
         align="center"
-        color="primary"
+        color={LIGHTBLUE}
         gutterBottom
       >
-        Fale Conosco
+        FALE CONOSCO
       </ResponsiveTypography>
       <Grid2 container spacing={4}>
         {/* Formulário */}
         <Grid2 size={{ xs: 12, md: 6 }}>
-          <Box component="form" noValidate autoComplete="off">
-            <TextField fullWidth label="Nome" margin="normal" required />
+          <Box component="form" noValidate autoComplete="off" color="info">
+            <TextField
+              fullWidth
+              label="Nome"
+              margin="normal"
+              required
+              sx={{ borderColor: LIGHTBLUE }}
+              color="secondary"
+            />
             <TextField fullWidth label="E-mail" margin="normal" required />
             <TextField
               fullWidth
@@ -37,7 +45,11 @@ export const HomeContact = () => {
               rows={3}
               required
             />
-            <Button variant="contained" color="primary" type="submit">
+            <Button
+              variant="contained"
+              type="submit"
+              sx={{ backgroundColor: LIGHTBLUE }}
+            >
               Enviar
             </Button>
           </Box>
@@ -92,13 +104,12 @@ export const HomeContact = () => {
                 >
                   <Instagram
                     onClick={() => handleRedirect("https://instagram.com")}
-                    color="primary"
-                    sx={{ fontSize: 40 }}
+                    sx={{ color: LIGHTBLUE, fontSize: 40 }}
                   />
                   <Facebook
                     onClick={() => handleRedirect("http://facebook.com")}
                     color="primary"
-                    sx={{ fontSize: 40, marginLeft: 2 }}
+                    sx={{ color: LIGHTBLUE, fontSize: 40, marginLeft: 2 }}
                   />
                 </Grid2>
               </Grid2>
