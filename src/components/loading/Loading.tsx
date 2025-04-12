@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
 import "./loading.css";
+import { ResponsiveTypography } from "../../pages/home/style";
 
 const LoadingComponent = () => {
   return (
@@ -17,11 +18,22 @@ const LoadingComponent = () => {
         width: "100vw", // Largura total d'a viewport
         height: "100vh", // Altura total da viewport
         bgcolor: "#0f0f0f", // Cor de fundo
-        opacity:0.9
+        opacity: 1,
       }}
     >
       {/* Loader centralizado */}
-      <Box component='img' src='/images/logo.png' sx={{width: "40vw", height: "40vh", margin: "auto"}} />
+      <ResponsiveTypography
+        initialVariant="h1"
+        sx={{ color: "#f1f1f1", mt: "30vh" }}
+      >
+        BALTAZAR
+      </ResponsiveTypography>
+      <ResponsiveTypography
+        initialVariant="h5"
+        sx={{ fontWeight: 300, letterSpacing: 7, color: "#f1f1f1", mb: 0 }}
+      >
+        CORTES DE CABELO MASCULINO
+      </ResponsiveTypography>
       <Box className="loader" sx={{ mx: "auto" }} />
     </Box>
   );
