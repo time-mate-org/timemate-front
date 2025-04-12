@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { closestTo, format, setMinutes } from "date-fns";
 import { User } from "firebase/auth";
 
@@ -23,6 +23,9 @@ const AppointmentNew = () => {
   const [clients, setClients] = useState<Client[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [professionals, setProfessionals] = useState<Professional[]>([]);
+  const {
+    state: { professionalId, timeSlot },
+  } = useLocation();
   const { showToast } = useContext(ToastContext);
   const now = new Date();
   const {
@@ -32,16 +35,18 @@ const AppointmentNew = () => {
   } = useForm<AppointmentFormData>({
     defaultValues: {
       client_id: "",
-      professional_id: "",
+      professional_id: professionalId ?? "",
       service_id: "",
-      start_time: (
-        closestTo(now, [
-          setMinutes(now, 0),
-          setMinutes(now, 15),
-          setMinutes(now, 30),
-          setMinutes(now, 45),
-        ]) ?? now
-      ).toISOString(),
+      start_time:
+        timeSlot?.toISOString() ??
+        (
+          closestTo(now, [
+            setMinutes(now, 0),
+            setMinutes(now, 15),
+            setMinutes(now, 30),
+            setMinutes(now, 45),
+          ]) ?? now
+        ).toISOString(),
     },
     resolver: joiResolver(appointmentSchema),
   });

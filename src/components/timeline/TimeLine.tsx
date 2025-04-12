@@ -171,9 +171,17 @@ export const AppointmentTimeline = () => {
                       colors[cellAppointment?.service.id ?? -1]
                     }
                     onClick={() =>
-                      navigate(
-                        `/dashboard/appointment/edit/${cellAppointment?.id}`
-                      )
+                      isBusyCell
+                        ? navigate(
+                            `/dashboard/appointment/edit/${cellAppointment?.id}`,
+                            { state: {} }
+                          )
+                        : navigate("/dashboard/appointment/new", {
+                            state: {
+                              professionalId: professional.id,
+                              timeSlot: rowTimeSlot,
+                            },
+                          })
                     }
                     isCurrentTimeSlot={isCurrentTimeSlot(
                       rowTimeSlot,

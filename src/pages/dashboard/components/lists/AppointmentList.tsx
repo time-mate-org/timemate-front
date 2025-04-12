@@ -178,14 +178,10 @@ const AppointmentList = () => {
 
       <Divider sx={{ mb: 10 }} />
 
-      {appointments && appointments.length > 0 && (
-        <>
-          <Typography align="center" color="#00ff9d" py={1} fontSize={25}>
-            TIMELINE
-          </Typography>
-          <AppointmentTimeline />
-        </>
-      )}
+      <Typography align="center" color="#00ff9d" py={1} fontSize={25}>
+        TIMELINE
+      </Typography>
+      <AppointmentTimeline />
     </Box>
   );
 };
