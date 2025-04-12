@@ -6,7 +6,8 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import { useNavigate, Outlet } from "react-router-dom";
+import { ArrowBack } from "@mui/icons-material";
+import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import { menuItems } from "../../pages/dashboard/components/menuItems";
 import {
@@ -19,6 +20,8 @@ import { Navbar } from "../Navbar";
 
 const DashboardLayout = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isDashboard = location.pathname === "/dashboard";
 
   return (
     <>
@@ -55,6 +58,12 @@ const DashboardLayout = () => {
         </DashboardDrawer>
 
         <OutletContainer maxWidth="xl">
+          {!isDashboard && (
+            <ArrowBack
+              onClick={() => navigate(-1)}
+              sx={{ color: "#f1f1f1", cursor: "pointer", pl: 2, pb: 0 }}
+            />
+          )}
           <Outlet />
         </OutletContainer>
       </Container>

@@ -7,7 +7,8 @@ export const LoginBox = styled(Box)(() => ({
   placeItems: "center",
   maxWidth: "100vw",
   maxHeight: "100vh",
-  background: "url('../public/login-background.jpeg') no-repeat fixed",
+  background: "url('images/login_background.jpg') no-repeat fixed",
+  backgroundSize: 'cover'
 }));
 
 export const LoginForm = styled(Box)(({ theme }) => ({

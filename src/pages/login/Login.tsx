@@ -6,13 +6,14 @@ import {
   Link,
   Alert,
   CircularProgress,
-  // CircularProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { LoginBox, LoginButton } from "./style";
 import { AuthContext } from "../../providers/auth/AuthProvider";
 import { login } from "../../services/firebase";
 import { LoadingContext } from "../../providers/loading/LoadingProvider";
+import { ResponsiveTypography } from "../home/style";
+import { LIGHTBLUE } from "../home/components/utils";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -21,8 +22,6 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
-  // TODO: outlet loading
 
   const redirectToDashboard = useCallback(() => {
     navigate("/dashboard", { replace: true });
@@ -39,17 +38,42 @@ const Login = () => {
       if (user) navigate("/dashboard");
     } catch (e) {
       setError((e as Error).message);
-      console.log("🚀 ~ handleSubmit ~ (e as Error).message:", (e as Error).message)
+      console.log(
+        "🚀 ~ handleSubmit ~ (e as Error).message:",
+        (e as Error).message
+      );
     }
   };
 
   return (
     <LoginBox>
+      <ResponsiveTypography
+        initialVariant="h1"
+        sx={{
+          color: LIGHTBLUE,
+          margin: 0,
+          textShadow: "15px 20px 6px #1f1f1f",
+        }}
+      >
+        BALTAZAR
+      </ResponsiveTypography>
+      <ResponsiveTypography
+        initialVariant="h5"
+        sx={{
+          fontWeight: 300,
+          letterSpacing: 7,
+          color: "#f1f1f1",
+          my: 0,
+          textShadow: "5px 10px 2px #1f1f1f",
+        }}
+      >
+        DASHBOARD
+      </ResponsiveTypography>
       <Box
         component="form"
         onSubmit={handleSubmit}
         sx={{
-          width: { xs: "100%", sm: "0%", md: 420 }, // Responsivo: tela cheia no sm
+          width: { xs: "95%", sm: "80%", md: 420 }, // Responsivo: tela cheia no sm
           bgcolor: "background.paper",
           borderRadius: { xs: 0, sm: 2 }, // Sem bordas no sm
           boxShadow: {
@@ -112,10 +136,10 @@ const Login = () => {
           type="submit"
           variant="contained"
           fullWidth
-          disabled={!email || !password} 
+          disabled={!email || !password}
         >
           {isLoading ? (
-            <CircularProgress size={24} color="inherit" /> 
+            <CircularProgress size={24} color="inherit" />
           ) : (
             "Entrar"
           )}
@@ -127,11 +151,8 @@ const Login = () => {
             href="/signup"
             underline="hover"
             sx={{
-              color: "primary.main",
+              color: "#f1f1f1",
               fontWeight: 500,
-              "&:hover": {
-                textDecorationColor: "primary.light",
-              },
             }}
           >
             Solicite aqui.

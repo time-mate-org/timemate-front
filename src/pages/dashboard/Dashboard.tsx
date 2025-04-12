@@ -115,6 +115,7 @@ const Dashboard = () => {
                 background: "#1e293b",
                 borderRadius: 2,
                 p: 3,
+                mb: 10,
                 boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
               }}
             >
