@@ -1,19 +1,73 @@
-import {
-  Container,
-  Typography,
-  Box,
-  TextField,
-  Button,
-  Grid2,
-} from "@mui/material";
+import { Container, Typography, Box, Button, Grid2 } from "@mui/material";
 import { Instagram, Facebook } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { ResponsiveTypography } from "../style";
 import { LIGHTBLUE } from "./utils";
+import { ContactFormData } from "../../../types/formData";
+import { contactFormSchema } from "../../../validation/contact";
+import { joiResolver } from "@hookform/resolvers/joi";
+import { useForm } from "react-hook-form";
+import { useContext } from "react";
+import { LoadingContext } from "../../../providers/loading/LoadingProvider";
+import { sendEmail } from "../../../services/sendEmail";
+import { AuthContext } from "../../../providers/auth/AuthProvider";
+import { toTitle } from "../../../utils/string";
+import { ToastContext } from "../../../providers/toast/ToastProvider";
+import { CustomTextField } from "../../dashboard/components/fields/CustomTextField";
 
 export const HomeContact = () => {
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const handleRedirect = (url: string) => navigate(url);
+  const { setIsLoadingCallback } = useContext(LoadingContext);
+  const { showToast } = useContext(ToastContext);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ContactFormData>({
+    resolver: joiResolver(contactFormSchema),
+  });
+
+  const onSubmit = async (data: ContactFormData) => {
+    let toastMessage: string = "";
+
+    try {
+      setIsLoadingCallback(true);
+
+      const { name, email, message } = data;
+      const content = `\
+      <h2 style="color: ${LIGHTBLUE}; padding: 30px 0; text-align: center;">
+        ${toTitle(
+          name
+        )} entrou em contato por uma página sua: <strong>Bar Beer Baltazar</strong>.
+      </h1>
+
+      <p style="text-align: left;font-size: 15px;">Email: <strong>${email}</strong></p>
+      <p style="text-align: left;font-size: 15px;"> ${name} disse: <strong>${message}</strong></p>`;
+
+      await sendEmail(user, {
+        category: "contato",
+        content,
+        subject: "Alguém entrou em contato pelo formulário",
+        subtitle: "Bar Beer Baltazar",
+        origin: {
+          name: "Bar Beer Baltazar",
+          email: "baltazar.timemate@ennes.dev",
+        },
+        to: { name, email },
+      });
+      toastMessage = `Seu email foi enviado para nós e retornaremos em breve.`;
+    } catch (err) {
+      toastMessage = `Erro na atualização do agtendamento: ${
+        (err as Error).message
+      }`;
+    } finally {
+      setIsLoadingCallback(false);
+      showToast(toastMessage);
+    }
+  };
+
   return (
     <Container id="contato" sx={{ py: 4 }}>
       <ResponsiveTypography
@@ -25,26 +79,37 @@ export const HomeContact = () => {
         FALE CONOSCO
       </ResponsiveTypography>
       <Grid2 container spacing={4}>
-        {/* Formulário */}
         <Grid2 size={{ xs: 12, md: 6 }}>
-          <Box component="form" noValidate autoComplete="off" color="info">
-            <TextField
-              fullWidth
+          <Box
+            component="form"
+            noValidate
+            autoComplete="off"
+            color="info"
+            id="contactForm"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <CustomTextField
+              control={control}
+              errors={errors}
+              formId="contactForm"
               label="Nome"
-              margin="normal"
-              required
-              sx={{ borderColor: LIGHTBLUE }}
-              color="secondary"
+              name="name"
             />
-            <TextField fullWidth label="E-mail" margin="normal" required />
-            <TextField
-              fullWidth
+            <CustomTextField
+              control={control}
+              errors={errors}
+              formId="contactForm"
+              label="E-mail"
+              name="email"
+            />
+            <CustomTextField
+              control={control}
+              errors={errors}
+              formId="contactForm"
               label="Mensagem"
-              margin="normal"
-              multiline
-              rows={3}
-              required
+              name="message"
             />
+
             <Button
               variant="contained"
               type="submit"
@@ -54,7 +119,7 @@ export const HomeContact = () => {
             </Button>
           </Box>
         </Grid2>
-        {/* Informações de contato */}
+
         <Grid2 size={{ xs: 12, md: 6 }}>
           <Grid2 container spacing={1} pt={2}>
             <Grid2 size={2}>

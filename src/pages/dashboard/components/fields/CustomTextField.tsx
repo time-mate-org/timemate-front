@@ -1,6 +1,7 @@
-import { FormControl, TextField } from "@mui/material";
+import { FormControl } from "@mui/material";
 import { Control, Controller, FieldErrors, Path } from "react-hook-form";
 import { formatPhoneNumber } from "../../../../utils/string";
+import { CustomizedTextField } from "../../styled";
 
 type CustomTextFieldPropsType<T extends object> = {
   label: string;
@@ -28,14 +29,14 @@ export const CustomTextField = <T extends object>({
         name={name}
         control={control}
         render={({ field }) => (
-          <TextField
+          <CustomizedTextField
             id={`${formId}-${name as string}`}
             label={label}
             fullWidth
             margin="normal"
             onChange={(e) => field.onChange(onChange(e.target.value))}
             value={field.value ?? ""}
-            slotProps={{ input: { sx: { color: "text.primary" } } }}
+            slotProps={{ input: { sx: { color: "black" } } }}
             error={!!errors[name as unknown as keyof T]?.message}
             helperText={
               errors[name as unknown as keyof T]?.message as unknown as string

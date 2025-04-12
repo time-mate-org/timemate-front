@@ -3,7 +3,7 @@ import { BLUE } from "./utils";
 
 export const HomeFooter = () => {
   return (
-    <Box component="footer" sx={{ bgcolor: BLUE, py: 2 }}>
+    <Box component="footer" sx={{ bgcolor: BLUE, py: 5 }}>
       <Grid2 container maxWidth="lg">
         <Grid2 size={6}>
           <Typography variant="body2" color="#f1f1f1" align="center">

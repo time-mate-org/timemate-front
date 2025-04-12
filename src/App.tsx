@@ -27,7 +27,7 @@ import { MainLayout } from "./components/layouts/MainLayout";
 import ClientEdit from "./pages/dashboard/components/edit/ClientEdit";
 import AppointmentEdit from "./pages/dashboard/components/edit/AppointmentEdit";
 import { DialogProvider } from "./providers/dialog/DialogProvider";
-import Dashboard from "./pages/dashboard/components/Dashboard";
+import Dashboard from "./pages/dashboard/Dashboard";
 import { Home } from "./pages/home/Home";
 
 const DashboardRoutes = () => (

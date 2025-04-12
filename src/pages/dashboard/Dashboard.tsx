@@ -2,19 +2,14 @@ import { Box, Grid2, Typography } from "@mui/material";
 import { format, isToday, isTomorrow, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useEffect, useState, useContext, useCallback } from "react";
-import {
-  Appointment,
-  Client,
-  Professional,
-  Service,
-} from "../../../types/models";
-import { ServiceBox } from "../styled";
-import { toTitle } from "../../../utils/string";
-import { MetricCard } from "./MetricCard";
-import { LoadingContext } from "../../../providers/loading/LoadingProvider";
-import { getEntity } from "../../../services/getEntity";
-import { AuthContext } from "../../../providers/auth/AuthProvider";
-import { toUTCDate } from "../../../utils/date";
+import { Appointment, Client, Professional, Service } from "../../types/models";
+import { ServiceBox } from "./styled";
+import { toTitle } from "../../utils/string";
+import { MetricCard } from "./components/MetricCard";
+import { LoadingContext } from "../../providers/loading/LoadingProvider";
+import { getEntity } from "../../services/getEntity";
+import { AuthContext } from "../../providers/auth/AuthProvider";
+import { toUTCDate } from "../../utils/date";
 
 const Dashboard = () => {
   const { user } = useContext(AuthContext);

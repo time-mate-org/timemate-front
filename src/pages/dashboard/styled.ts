@@ -8,6 +8,7 @@ import {
   TableCell,
   TextField,
 } from "@mui/material";
+import { LIGHTBLUE } from "../home/components/utils";
 
 export const DashboardDrawer = styled(Drawer)(({ theme }) => ({
   width: theme.spacing(25),
@@ -61,7 +62,7 @@ export const NumberField = styled(TextField)(() => ({
   },
 }));
 
-export const ServiceBox = styled(Box)(({theme:{spacing}}) => ({
+export const ServiceBox = styled(Box)(({ theme: { spacing } }) => ({
   backgroundColor: "#0f172a",
   padding: spacing(2),
   borderRadius: 1,
@@ -80,17 +81,44 @@ export const CustomDashboardCard = styled(Box)(() => ({
   "&:hover": { transform: "translateY(-2px)" },
 }));
 
-export const AvailableServicesBox = styled(Box)(({theme: {spacing}}) => ({
+export const AvailableServicesBox = styled(Box)(({ theme: { spacing } }) => ({
   background: "#1e293b",
   borderRadius: 2,
   padding: spacing(2),
   boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
 }));
 
-export 
-const StyledTableCell = styled(TableCell)(() => ({
+export const StyledTableCell = styled(TableCell)(() => ({
   align: "center",
   textAlign: "center",
   color: "#f0f0f0",
   fontWeight: 600,
+}));
+
+const darkBlue = "#0d47a1";
+
+export const CustomizedTextField = styled(TextField)(({ theme }) => ({
+  "& .MuiOutlinedInput-root": {
+    "& fieldset": {
+      borderColor: theme.palette.grey[400],
+      borderWidth: "1px",
+    },
+    // Borda azul escura no hover
+    "&:hover fieldset": {
+      borderColor: darkBlue,
+    },
+    // Borda mais grossa e azul escura quando em foco
+    "&.Mui-focused fieldset": {
+      borderColor: darkBlue,
+      borderWidth: "2px",
+    },
+  },
+  // Altera a cor do label quando o campo está em foco para verde
+  "& label.Mui-focused": {
+    color: LIGHTBLUE,
+  },
+  // Define a cor da legenda (helper text) para verde
+  "& .MuiFormHelperText-root": {
+    color: LIGHTBLUE,
+  },
 }));
