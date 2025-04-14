@@ -80,7 +80,7 @@ const ServiceList = () => {
       >
         Novo Serviço
       </Button>
-      {services ? (
+      {services && services.length > 0 ? (
         <TableContainer component={Paper}>
           <Table>
             <TableHead sx={{ bgcolor: "#1a1a1a" }}>
@@ -138,7 +138,13 @@ const ServiceList = () => {
         </TableContainer>
       ) : (
         <Typography align="center" color="#00ff9d" py={1} fontSize={15}>
-          Não há serviços cadastrados
+          Não há serviços cadastrados.{" "}
+          <strong
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("/dashboard/service/new")}
+          >
+            Cadastre um aqui.
+          </strong>
         </Typography>
       )}
     </Box>

@@ -8,6 +8,7 @@ import {
   TableHead,
   TableRow,
   Button,
+  Typography,
 } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -86,61 +87,73 @@ const ProfessionalList = () => {
         Novo Profissional
       </Button>
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead sx={{ bgcolor: "#1a1a1a" }}>
-            <TableRow>
-              <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                Nome
-              </TableCell>
-              <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                Profissão
-              </TableCell>
-              <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                Telefone
-              </TableCell>
-              <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                Operações
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {professionals?.map((profissional) => (
-              <TableRow
-                key={profissional.id}
-                sx={{
-                  "&:nth-of-type(odd)": { bgcolor: "#121212" },
-                  "&:hover": { bgcolor: "#1a1a1a" },
-                }}
-              >
-                <TableCell>{toTitle(profissional.name)}</TableCell>
-                <TableCell>{toTitle(profissional.title)}</TableCell>
-                <TableCell>{formatPhoneNumber(profissional.phone)}</TableCell>
-                <TableCell>
-                  <Box sx={{ display: "flex", gap: 1 }}>
-                    <IconButton
-                      onClick={() =>
-                        navigate(
-                          `/dashboard/professional/edit/${profissional.id}`
-                        )
-                      }
-                      sx={{ color: "#00ff9d" }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => handleDelete(profissional)}
-                      sx={{ color: "#ff4444" }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Box>
+      {professionals && professionals.length > 0 ? (
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead sx={{ bgcolor: "#1a1a1a" }}>
+              <TableRow>
+                <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
+                  Nome
+                </TableCell>
+                <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
+                  Profissão
+                </TableCell>
+                <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
+                  Telefone
+                </TableCell>
+                <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
+                  Operações
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {professionals?.map((profissional) => (
+                <TableRow
+                  key={profissional.id}
+                  sx={{
+                    "&:nth-of-type(odd)": { bgcolor: "#121212" },
+                    "&:hover": { bgcolor: "#1a1a1a" },
+                  }}
+                >
+                  <TableCell>{toTitle(profissional.name)}</TableCell>
+                  <TableCell>{toTitle(profissional.title)}</TableCell>
+                  <TableCell>{formatPhoneNumber(profissional.phone)}</TableCell>
+                  <TableCell>
+                    <Box sx={{ display: "flex", gap: 1 }}>
+                      <IconButton
+                        onClick={() =>
+                          navigate(
+                            `/dashboard/professional/edit/${profissional.id}`
+                          )
+                        }
+                        sx={{ color: "#00ff9d" }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleDelete(profissional)}
+                        sx={{ color: "#ff4444" }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : (
+        <Typography align="center" color="#00ff9d" py={1} fontSize={15}>
+          Não há profissionais cadastrados.{" "}
+          <strong
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("/dashboard/professional/new")}
+          >
+            Cadastre um aqui.
+          </strong>
+        </Typography>
+      )}
     </Box>
   );
 };

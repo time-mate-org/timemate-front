@@ -45,7 +45,7 @@ export const CustomTableCell = styled(TableCell, {
       fontWeight: isDateCell ? "bold" : "normal",
       transition: "box-shadow 0.3s ease, background-color 0.3s ease",
       "&:hover": {
-        cursor: isBusy ? "pointer" : "default",
+        cursor: "pointer",
       },
       borderBottom: isCurrentTimeSlot ? "1px dotted yellow" : "none",
       borderTop: isCurrentTimeSlot ? "1px dotted yellow" : "none",

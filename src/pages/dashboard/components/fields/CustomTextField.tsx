@@ -9,6 +9,8 @@ type CustomTextFieldPropsType<T extends object> = {
   name: Path<T>;
   control: Control<T>;
   errors: FieldErrors<T>;
+  rows?: number;
+  color?: string;
   isPhone?: boolean;
 };
 
@@ -19,6 +21,8 @@ export const CustomTextField = <T extends object>({
   control,
   errors,
   isPhone,
+  color,
+  rows
 }: CustomTextFieldPropsType<T>) => {
   const onChange = (value: string) =>
     isPhone ? formatPhoneNumber(value) : value;
@@ -32,11 +36,12 @@ export const CustomTextField = <T extends object>({
           <CustomizedTextField
             id={`${formId}-${name as string}`}
             label={label}
+            rows={rows ?? 1}
             fullWidth
             margin="normal"
             onChange={(e) => field.onChange(onChange(e.target.value))}
             value={field.value ?? ""}
-            slotProps={{ input: { sx: { color: "black" } } }}
+            slotProps={{ input: { sx: { color: color ?? "#f1f1f1" } } }}
             error={!!errors[name as unknown as keyof T]?.message}
             helperText={
               errors[name as unknown as keyof T]?.message as unknown as string

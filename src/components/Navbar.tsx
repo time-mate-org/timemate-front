@@ -15,11 +15,11 @@ const Navbar = () => (
     }}
   >
     <Toolbar disableGutters sx={{ ml: 1 }}>
-      <ContentCutOutlinedIcon
-        sx={{ display: { xs: "none", md: "flex" }, mr: 1, color: "#00ff9d" }}
-      />
-      <SportsBarOutlinedIcon
-        sx={{ display: { xs: "none", md: "flex" }, mr: 1, color: "yellow" }}
+      <Box
+        component="img"
+        src="/images/logo.png"
+        alt="BALTAZAR"
+        sx={{ height: 50 }}
       />
       <Typography
         variant="h6"
@@ -27,7 +27,7 @@ const Navbar = () => (
         component="a"
         href="#app-bar-with-responsive-menu"
         sx={{
-          mr: 2,
+          ml: 3,
           display: { xs: "none", md: "flex" },
           fontFamily: "monospace",
           fontWeight: 700,

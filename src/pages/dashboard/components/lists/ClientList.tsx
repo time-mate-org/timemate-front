@@ -8,6 +8,7 @@ import {
   TableHead,
   TableRow,
   Button,
+  Typography,
 } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -80,59 +81,71 @@ const ClientList = () => {
         Novo Cliente
       </Button>
 
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} size="small">
-          <TableHead sx={{ bgcolor: "#1a1a1a" }}>
-            <TableRow>
-              <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                Nome
-              </TableCell>
-              <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                Endereço
-              </TableCell>
-              <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                Telefone
-              </TableCell>
-              <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                Operações
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {clients?.map((client) => (
-              <TableRow
-                key={client.id}
-                sx={{
-                  "&:nth-of-type(odd)": { bgcolor: "#121212" },
-                  "&:hover": { bgcolor: "#1a1a1a" },
-                }}
-              >
-                <TableCell>{client.name}</TableCell>
-                <TableCell>{client.address}</TableCell>
-                <TableCell>{formatPhoneNumber(client.phone)}</TableCell>
-                <TableCell>
-                  <Box sx={{ display: "flex", gap: 1 }}>
-                    <IconButton
-                      onClick={() =>
-                        navigate(`/dashboard/client/edit/${client.id}`)
-                      }
-                      sx={{ color: "#00ff9d" }}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => handleDelete(client)}
-                      sx={{ color: "#ff4444" }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Box>
+      {clients && clients.length > 0 ? (
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} size="small">
+            <TableHead sx={{ bgcolor: "#1a1a1a" }}>
+              <TableRow>
+                <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
+                  Nome
+                </TableCell>
+                <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
+                  Endereço
+                </TableCell>
+                <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
+                  Telefone
+                </TableCell>
+                <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
+                  Operações
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {clients?.map((client) => (
+                <TableRow
+                  key={client.id}
+                  sx={{
+                    "&:nth-of-type(odd)": { bgcolor: "#121212" },
+                    "&:hover": { bgcolor: "#1a1a1a" },
+                  }}
+                >
+                  <TableCell>{client.name}</TableCell>
+                  <TableCell>{client.address}</TableCell>
+                  <TableCell>{formatPhoneNumber(client.phone)}</TableCell>
+                  <TableCell>
+                    <Box sx={{ display: "flex", gap: 1 }}>
+                      <IconButton
+                        onClick={() =>
+                          navigate(`/dashboard/client/edit/${client.id}`)
+                        }
+                        sx={{ color: "#00ff9d" }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleDelete(client)}
+                        sx={{ color: "#ff4444" }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : (
+        <Typography align="center" color="#00ff9d" py={1} fontSize={15}>
+          Não há clientes cadastrados.{" "}
+          <strong
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("/dashboard/client/new")}
+          >
+            Cadastre um aqui.
+          </strong>
+        </Typography>
+      )}
     </Box>
   );
 };

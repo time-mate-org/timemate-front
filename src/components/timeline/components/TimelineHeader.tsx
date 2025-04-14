@@ -31,13 +31,22 @@ export const TimelineHeader = ({
   }, [user]);
 
   useEffect(() => {
+    const doFetch = async() => {
     setIsLoadingCallback(true);
-    fetchData();
-    setIsLoadingCallback(false);
+    await fetchData();
+    setIsLoadingCallback(false);}
+
+    doFetch();
   }, [fetchData, setIsLoadingCallback]);
 
   return (
-    <TimelineContainer container spacing={2}>
+    <TimelineContainer
+      container
+      spacing={2}
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+    >
       <HeaderGrid>
         <HeaderTypography>SERVIÇOS</HeaderTypography>
       </HeaderGrid>
@@ -47,12 +56,7 @@ export const TimelineHeader = ({
           size={{ xs: 12, sm: 4, md: 3 }}
         >
           <ServiceCard container>
-            <Grid2
-              container
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-            >
+            <Grid2 container>
               <CircleIcon sx={{ color: colors[service?.id ?? -1] }} />
             </Grid2>
             <Grid2>

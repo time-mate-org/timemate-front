@@ -1,6 +1,5 @@
 import { Container, Typography, Box, Button, Grid2 } from "@mui/material";
 import { Instagram, Facebook } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
 import { ResponsiveTypography } from "../style";
 import { LIGHTBLUE } from "./utils";
 import { ContactFormData } from "../../../types/formData";
@@ -17,8 +16,7 @@ import { CustomTextField } from "../../dashboard/components/fields/CustomTextFie
 
 export const HomeContact = () => {
   const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
-  const handleRedirect = (url: string) => navigate(url);
+  const handleRedirect = (url: string) => window.open(url);
   const { setIsLoadingCallback } = useContext(LoadingContext);
   const { showToast } = useContext(ToastContext);
   const {
@@ -88,32 +86,36 @@ export const HomeContact = () => {
             id="contactForm"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <CustomTextField
+            <CustomTextField<ContactFormData>
               control={control}
               errors={errors}
               formId="contactForm"
               label="Nome"
               name="name"
+              color="#1f1f1f"
             />
-            <CustomTextField
+            <CustomTextField<ContactFormData>
               control={control}
               errors={errors}
               formId="contactForm"
               label="E-mail"
+              color="#1f1f1f"
               name="email"
             />
-            <CustomTextField
+            <CustomTextField<ContactFormData>
               control={control}
               errors={errors}
+              rows={5}
               formId="contactForm"
               label="Mensagem"
+              color="#1f1f1f"
               name="message"
             />
 
             <Button
               variant="contained"
               type="submit"
-              sx={{ backgroundColor: LIGHTBLUE, ml:1 }}
+              sx={{ backgroundColor: LIGHTBLUE, ml: 1 }}
             >
               Enviar
             </Button>
@@ -151,12 +153,12 @@ export const HomeContact = () => {
                       <strong>Whatsapp:</strong> 18 99662-3429
                     </Typography>
                     <Typography variant="body1">
-                      <strong>Local:</strong> Rua Ciro Maoa, 1433 - Pereira
+                      <strong>Local:</strong> Rua Ciro Maia, 1433 - Pereira
                       Barreto/SP
                     </Typography>
                     <Typography variant="body1">
-                      <strong>Atendimento:</strong> SEG a SEX 9:30 às 19:30<br/> Sáb.
-                      9:30 às 16:00
+                      <strong>Atendimento:</strong> SEG a SEX 9:30 às 19:30
+                      <br /> Sáb. 9:30 às 16:00
                     </Typography>
                     <Typography variant="body1"></Typography>
                   </Box>
@@ -168,13 +170,24 @@ export const HomeContact = () => {
                   alignItems="center"
                 >
                   <Instagram
-                    onClick={() => handleRedirect("https://instagram.com")}
-                    sx={{ color: LIGHTBLUE, fontSize: 40 }}
+                    onClick={() =>
+                      handleRedirect(
+                        "https://www.instagram.com/barbeer_baltazar/"
+                      )
+                    }
+                    sx={{ color: LIGHTBLUE, fontSize: 40, cursor: "pointer" }}
                   />
                   <Facebook
-                    onClick={() => handleRedirect("http://facebook.com")}
+                    onClick={() =>
+                      handleRedirect("https://www.facebook.com/dom.baltazar.9/")
+                    }
                     color="primary"
-                    sx={{ color: LIGHTBLUE, fontSize: 40, marginLeft: 2 }}
+                    sx={{
+                      color: LIGHTBLUE,
+                      fontSize: 40,
+                      marginLeft: 2,
+                      cursor: "pointer",
+                    }}
                   />
                 </Grid2>
               </Grid2>

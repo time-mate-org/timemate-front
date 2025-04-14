@@ -162,6 +162,11 @@ export const AppointmentTimeline = () => {
                   rowTimeSlot,
                   appointments
                 );
+                const cellTime = format(rowTimeSlot as Date, "HH:mm");
+                const tooltipText = isBusyCell
+                  ? `${cellAppointment?.professional.name} x ${cellAppointment?.client.name} | ${cellAppointment?.service.name} | ${cellTime}`
+                  : `Clique para marcar as ${cellTime}.`;
+
                 return (
                   <CustomTableCell
                     key={`${professional.name}-${index}`}
@@ -188,14 +193,7 @@ export const AppointmentTimeline = () => {
                       currentTimeSlot as Date
                     )}
                   >
-                    <Tooltip
-                      title={`${cellAppointment?.professional.name} x ${
-                        cellAppointment?.client.name
-                      } | ${cellAppointment?.service.name} | ${format(
-                        rowTimeSlot as Date,
-                        "HH:mm"
-                      )}`}
-                    >
+                    <Tooltip title={tooltipText}>
                       <Typography m={0} p={0} fontSize={13}>
                         {cellAppointment
                           ? toTitle(simplifyName(cellAppointment.client.name))
