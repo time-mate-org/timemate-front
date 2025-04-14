@@ -113,7 +113,7 @@ export const HomeContact = () => {
             <Button
               variant="contained"
               type="submit"
-              sx={{ backgroundColor: LIGHTBLUE }}
+              sx={{ backgroundColor: LIGHTBLUE, ml:1 }}
             >
               Enviar
             </Button>
@@ -145,20 +145,20 @@ export const HomeContact = () => {
                       <strong>Email:</strong> baltazar@baltazar.com
                     </Typography>
                     <Typography variant="body1">
-                      <strong>Telefone:</strong> 18 99125-2142
+                      <strong>Telefone:</strong> 18 99662-3429
                     </Typography>
                     <Typography variant="body1">
-                      <strong>Whatsapp:</strong> 18 99173-0525
+                      <strong>Whatsapp:</strong> 18 99662-3429
                     </Typography>
                     <Typography variant="body1">
-                      <strong>Local:</strong> Pereira Barreto/SP
+                      <strong>Local:</strong> Rua Ciro Maoa, 1433 - Pereira
+                      Barreto/SP
                     </Typography>
                     <Typography variant="body1">
-                      <strong>Atendimento:</strong> Segunda a Sexta
+                      <strong>Atendimento:</strong> SEG a SEX 9:30 às 19:30<br/> Sáb.
+                      9:30 às 16:00
                     </Typography>
-                    <Typography variant="body1">
-                      <strong>Horário:</strong> 9:00 às 20:00
-                    </Typography>
+                    <Typography variant="body1"></Typography>
                   </Box>
                 </Grid2>
                 <Grid2

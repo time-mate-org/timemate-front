@@ -15,6 +15,9 @@ import {
 import { Appointment, Professional } from "../../types/models";
 import { toUTCDate } from "../../utils/date";
 
+const START_OF_BUSINESS_HOUR = 9 
+const END_OF_BUSINESS = 20
+
 const isCurrentTimeSlot = (timeSlot: Date, currentTimeSlot: Date) =>
   isSameMinute(timeSlot, currentTimeSlot as Date) &&
   isSameHour(timeSlot, currentTimeSlot as Date) &&
@@ -23,8 +26,8 @@ const isCurrentTimeSlot = (timeSlot: Date, currentTimeSlot: Date) =>
 
 const getTimeSlots = (): Date[] => {
   const timeSlots: Date[] = [];
-  let currentTime = setHours(setMinutes(new Date(), 0), 8);
-  while (getHours(currentTime) < 18) {
+  let currentTime = setHours(setMinutes(new Date(), 0), START_OF_BUSINESS_HOUR);
+  while (getHours(currentTime) < END_OF_BUSINESS) {
     timeSlots.push(currentTime);
     currentTime = addMinutes(currentTime, 15);
   }

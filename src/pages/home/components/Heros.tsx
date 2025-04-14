@@ -4,7 +4,7 @@ import { ResponsiveTypography } from "../style";
 export const HomeHero = () => {
   return (
     <Box
-      id="inicio"
+      id="início"
       sx={{
         position: "relative",
         textAlign: "center",
@@ -14,9 +14,9 @@ export const HomeHero = () => {
     >
       <Box
         component="img"
-        src="/images/capa/banner-home.jpg"
+        src="/images/capa/banner.jpg"
         alt="BALTAZAR"
-        sx={{ width: "100%" }}
+        sx={{ width: "100%", height: "100vh", zoom: "initial" }}
       />
       <Box
         sx={{

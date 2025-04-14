@@ -20,14 +20,14 @@ export const HomeGallery = () => {
           GALERIA DE FOTOS
         </Typography>
         <Grid2 container spacing={2}>
-          {images.map((img, index) => (
+          {images.reverse().map((img, index) => (
             <Grid2 size={{ xs: 12, md: 6 }} p={2} key={index}>
               <Box sx={{ position: "relative", borderRadius: 2 }}>
                 <Box
                   component="img"
                   src={`/images/galeria/${img}.jpg`}
                   alt={`Galeria ${img}`}
-                  sx={{ width: "100%" }}
+                  sx={{ width: "100%" ,minHeight: '100%' }}
                 />
                 <Box
                   sx={{

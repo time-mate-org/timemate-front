@@ -11,7 +11,7 @@ import { ResponsiveTypography } from "../style";
 
 export const HomeServices = () => {
   return (
-    <Container id="servicos" sx={{ py: 4, background: "#f1f1f1" }}>
+    <Container id="serviços" sx={{ py: 4, background: "#f1f1f1" }}>
       <ResponsiveTypography
         initialVariant="h3"
         align="center"

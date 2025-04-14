@@ -8,7 +8,7 @@ import { HomeHero } from "./components/Heros";
 import { HomeServices } from "./components/Services";
 
 export const Home = () => (
-  <Box sx={{ backgroundColor: "#f1f1f1", width: 1 }}>
+  <Box sx={{ backgroundColor: "#f1f1f1", width: 1}}>
     <HomeHeader />
     <main>
       <HomeHero />
