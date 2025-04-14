@@ -24,7 +24,6 @@ const ResponsiveTypography = styled(Typography, {
     fontSize: sizes.large,
     margin: 0,
     padding: 0,
-    lineHeight: 0,
     fontWeight: 700,
     // A partir do breakpoint 'lg' (abaixo de telas muito grandes) ajusta para 'md'
     [theme.breakpoints.down("lg")]: {
