@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -9,7 +9,6 @@ import { updateEntity } from "../../../../services/updateEntity";
 import { AppointmentFormData } from "../../../../types/formData";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
-import { LoadingContext } from "../../../../providers/loading/LoadingProvider";
 import { appointmentSchema } from "../../../../validation/appointment";
 import { CustomDateField } from "../fields/CustomDateField";
 import { CustomSelectField } from "../fields/CustomSelectField";
@@ -20,17 +19,13 @@ import {
   Service,
 } from "../../../../types/models";
 import { getEntity } from "../../../../services/getEntity";
-import { toUTCDate } from "../../../../utils/date";
+import { useQuery } from "@tanstack/react-query";
 
 const AppointmentEdit = () => {
   const { user } = useContext(AuthContext);
   const { id } = useParams<{ id: string }>();
   const { showToast } = useContext(ToastContext);
-  const { isLoading, setIsLoadingCallback } = useContext(LoadingContext);
   const navigate = useNavigate();
-  const [clients, setClients] = useState<Client[]>([]);
-  const [services, setServices] = useState<Service[]>([]);
-  const [professionals, setProfessionals] = useState<Professional[]>([]);
   const {
     control,
     handleSubmit,
@@ -39,65 +34,61 @@ const AppointmentEdit = () => {
   } = useForm<AppointmentFormData>({
     resolver: joiResolver(appointmentSchema),
   });
-
-  const backToAppointments = useCallback(
-    () => navigate("/dashboard/appointments"),
-    [navigate]
-  );
+  const professionalsQuery = useQuery({
+    enabled: !!user,
+    queryKey: ["professionals"],
+    queryFn: () =>
+      getEntity<Professional[]>({ user, resource: "professionals" }),
+  });
+  const clientsQuery = useQuery({
+    enabled: !!user,
+    queryKey: ["clients"],
+    queryFn: () => getEntity<Client[]>({ user, resource: "clients" }),
+  });
+  const servicesQuery = useQuery({
+    enabled: !!user,
+    queryKey: ["services"],
+    queryFn: () => getEntity<Service[]>({ user, resource: "services" }),
+  });
+  const appointmentQuery = useQuery({
+    enabled: !!user,
+    queryKey: ["appointment"],
+    queryFn: () =>
+      getEntity<Appointment>({
+        user,
+        resource: "appointments",
+        id: parseInt(id ?? "-1"),
+      }),
+  });
 
   const setValueCallback = useCallback(
-    (field: keyof AppointmentFormData, value: string | number | undefined) =>
-      setValue(field, value),
+    (
+      field:
+        | "id"
+        | "start_time"
+        | "client_id"
+        | "service_id"
+        | "professional_id",
+      newValue: string | number | undefined
+    ) => setValue(field, newValue),
     [setValue]
   );
 
-  const fetchData = useCallback(async () => {
-    const fetchedAppointment = await getEntity<Appointment>({
-      user,
-      resource: "appointments",
-      id: parseInt(id ?? "0"),
-    });
-
-    if (!fetchedAppointment) backToAppointments();
-
-    const fetchedClients = await getEntity<Client[]>({
-      user,
-      resource: "clients",
-    });
-    const fetchedProfessionals = await getEntity<Professional[]>({
-      user,
-      resource: "professionals",
-    });
-    const fetchedServices = await getEntity<Service[]>({
-      user,
-      resource: "services",
-    });
-
-    setValueCallback("client_id", fetchedAppointment.client.id);
-    setValueCallback("professional_id", fetchedAppointment.professional.id);
-    setValueCallback("service_id", fetchedAppointment.service.id);
-    setValueCallback(
-      "start_time",
-      toUTCDate(fetchedAppointment.start_time).toISOString()
-    );
-
-    setServices(fetchedServices);
-    setProfessionals(fetchedProfessionals);
-    setClients(fetchedClients);
-  }, [backToAppointments, id, setValueCallback, user]);
-
   useEffect(() => {
-    setIsLoadingCallback(true);
-    fetchData();
-    setIsLoadingCallback(false);
-  }, [fetchData, setIsLoadingCallback]);
+    const { data } = appointmentQuery;
+    if (data && data.client) {
+      const { client, service, professional, start_time } = data;
+      setValueCallback("client_id", client.id);
+      setValueCallback("service_id", service.id);
+      setValueCallback("professional_id", professional.id);
+      setValueCallback("start_time", start_time);
+    }
+  }, [appointmentQuery, setValueCallback]);
 
   const onSubmit = async (data: AppointmentFormData) => {
     let toastMessage: string = "";
 
     try {
-      setIsLoadingCallback(true);
-
       await updateEntity<AppointmentFormData>({
         user: user as User,
         resource: "appointments",
@@ -111,7 +102,6 @@ const AppointmentEdit = () => {
         (err as Error).message
       }`;
     } finally {
-      setIsLoadingCallback(false);
       showToast(toastMessage);
     }
   };
@@ -134,7 +124,7 @@ const AppointmentEdit = () => {
           controlName="service_id"
           label="Serviço"
           errors={errors}
-          options={services ?? []}
+          options={servicesQuery.data ?? []}
         />
 
         <CustomSelectField
@@ -142,7 +132,7 @@ const AppointmentEdit = () => {
           controlName="client_id"
           label="Cliente"
           errors={errors}
-          options={clients ?? []}
+          options={clientsQuery.data ?? []}
         />
 
         <CustomSelectField
@@ -150,13 +140,10 @@ const AppointmentEdit = () => {
           controlName="professional_id"
           label="Profissional"
           errors={errors}
-          options={professionals ?? []}
+          options={professionalsQuery.data ?? []}
         />
 
-        <CustomSubmitButton
-          formId="appointmentEditForm"
-          isLoading={isLoading}
-        />
+        <CustomSubmitButton formId="appointmentEditForm" />
       </Box>
     </Box>
   );

@@ -10,18 +10,27 @@ import { updateEntity } from "../../../../services/updateEntity";
 import { ProfessionalFormData } from "../../../../types/formData";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
-import { LoadingContext } from "../../../../providers/loading/LoadingProvider";
 import { cleanPhoneNumber, formatPhoneNumber } from "../../../../utils/string";
 import { professionalSchema } from "../../../../validation/professional";
 import { Professional } from "../../../../types/models";
 import { getEntity } from "../../../../services/getEntity";
+import { useQuery } from "@tanstack/react-query";
 
 const ProfessionalEdit = () => {
   const { user } = useContext(AuthContext);
-  const { isLoading, setIsLoadingCallback } = useContext(LoadingContext);
   const navigate = useNavigate();
   const { showToast } = useContext(ToastContext);
   const { id } = useParams<{ id: string }>();
+  const professionalQuery = useQuery({
+    enabled: !!user,
+    queryKey: ["professionals"],
+    queryFn: () =>
+      getEntity<Professional>({
+        user,
+        resource: "professionals",
+        id: parseInt(id ?? "-1"),
+      }),
+  });
   const {
     control,
     handleSubmit,
@@ -31,43 +40,28 @@ const ProfessionalEdit = () => {
     resolver: joiResolver(professionalSchema),
   });
 
-  const backToProfessionals = useCallback(
-    () => navigate("/dashboard/professionals"),
-    [navigate]
-  );
-
   const setValueCallback = useCallback(
-    (field: keyof ProfessionalFormData, value: string | number | undefined) =>
-      setValue(field, value),
+    (
+      field: "id" | "name" | "title" | "phone",
+      newValue: string | number | undefined
+    ) => setValue(field, newValue),
     [setValue]
   );
 
-  const fetchData = useCallback(async () => {
-    const fetchedProfessional = await getEntity<Professional>({
-      user,
-      resource: "professionals",
-      id: parseInt(id ?? "0"),
-    });
-    console.log("🚀 ~ fetchData ~ fetchedProfessional:", fetchedProfessional);
-
-    if (!fetchedProfessional) backToProfessionals();
-
-    setValueCallback("name", fetchedProfessional.name);
-    setValueCallback("phone", formatPhoneNumber(fetchedProfessional.phone));
-    setValueCallback("title", fetchedProfessional.title);
-  }, [backToProfessionals, id, setValueCallback, user]);
-
   useEffect(() => {
-    setIsLoadingCallback(true);
-    fetchData();
-    setIsLoadingCallback(false);
-  }, [fetchData, setIsLoadingCallback]);
+    const { data } = professionalQuery;
+    if (data && data.phone) {
+      const { name, phone, title } = data;
+      setValueCallback("name", name);
+      setValueCallback("phone", formatPhoneNumber(phone));
+      setValueCallback("title", title);
+    }
+  }, [professionalQuery, setValueCallback]);
 
   const onSubmit = async (data: ProfessionalFormData) => {
     let toastMessage: string = "";
 
     try {
-      setIsLoadingCallback(true);
       data.phone = cleanPhoneNumber(data.phone as string);
       await updateEntity<ProfessionalFormData>({
         user: user as User,
@@ -82,7 +76,6 @@ const ProfessionalEdit = () => {
         (err as Error).message
       }`;
     } finally {
-      setIsLoadingCallback(false);
       showToast(toastMessage);
     }
   };
@@ -121,10 +114,7 @@ const ProfessionalEdit = () => {
           control={control}
         />
 
-        <CustomSubmitButton
-          formId="professionalEditForm"
-          isLoading={isLoading}
-        />
+        <CustomSubmitButton formId="professionalEditForm" />
       </Box>
     </Box>
   );

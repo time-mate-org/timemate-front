@@ -3,14 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { useCallback, useContext, useEffect } from "react";
 import { AuthContext } from "../../providers/auth/AuthProvider";
 
-
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
   // Cria uma função estável com useCallback
   const redirectToLogin = useCallback(() => {
-    navigate("/login", { replace: true });
+    navigate("/login", {
+      replace: true,
+    });
   }, [navigate]);
 
   useEffect(() => {

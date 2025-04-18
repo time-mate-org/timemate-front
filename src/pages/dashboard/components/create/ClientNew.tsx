@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { clientSchema } from "../../../../validation/client";
@@ -30,7 +30,6 @@ const ClientNew = () => {
   const { showToast } = useContext(ToastContext);
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [isLoading] = useState(false);
 
   const onSubmit = async (data: ClientFormData) => {
     let toastMessage: string = "";
@@ -82,7 +81,7 @@ const ClientNew = () => {
           control={control}
         />
 
-        <CustomSubmitButton formId="clientCreateForm" isLoading={isLoading} />
+        <CustomSubmitButton formId="clientCreateForm"/>
       </Box>
     </Box>
   );

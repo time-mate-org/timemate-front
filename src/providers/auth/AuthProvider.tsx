@@ -1,41 +1,53 @@
+import { useQuery } from "@tanstack/react-query";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import {
   createContext,
   useCallback,
-  useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
-import { LoadingContext } from "../loading/LoadingProvider";
 
 interface AuthContextType {
   user: User | null;
+  setUser: (user: User | null) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
+  setUser: () => Promise.resolve(undefined),
 });
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const { setIsLoadingCallback } = useContext(LoadingContext);
+  const { data: auth } = useQuery({
+    enabled: !!user,
+    queryKey: ["firebase"],
+    queryFn: () => getAuth(),
+  });
 
   const setUserCallback = useCallback(
     async (user: User | null) => setUser(user),
     [setUser]
   );
 
+  const memoizedUser = useMemo(() => user, [user]);
+
   useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUserCallback(user?.uid ? user : null);
-      setIsLoadingCallback(false);
-    });
-    return () => unsubscribe();
-  }, [setIsLoadingCallback, setUserCallback]);
+    if (auth) {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        setUserCallback(user?.uid ? user : null);
+      });
+      return () => unsubscribe();
+    }
+  }, [auth, setUserCallback]);
 
   return (
-    <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider
+      value={{ user: memoizedUser, setUser: setUserCallback }}
+    >
+      {children}
+    </AuthContext.Provider>
   );
 };
 export { AuthProvider, AuthContext };

@@ -5,20 +5,17 @@ import {
   Typography,
   Link,
   Alert,
-  CircularProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { LoginBox, LoginButton } from "./style";
 import { AuthContext } from "../../providers/auth/AuthProvider";
 import { login } from "../../services/firebase";
-import { LoadingContext } from "../../providers/loading/LoadingProvider";
 import { ResponsiveTypography } from "../home/style";
 import { LIGHTBLUE } from "../home/components/utils";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
-  const { isLoading } = useContext(LoadingContext);
+  const { user, setUser } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -35,6 +32,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const user = await login(email, password);
+      setUser(user);
       if (user) navigate("/dashboard");
     } catch (e) {
       setError((e as Error).message);
@@ -138,11 +136,7 @@ const Login = () => {
           fullWidth
           disabled={!email || !password}
         >
-          {isLoading ? (
-            <CircularProgress size={24} color="inherit" />
-          ) : (
-            "Entrar"
-          )}
+          Entrar
         </LoginButton>
 
         <Typography variant="body2" color="text.secondary" textAlign="center">

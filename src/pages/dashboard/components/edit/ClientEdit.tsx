@@ -10,18 +10,27 @@ import { updateEntity } from "../../../../services/updateEntity";
 import { ClientFormData } from "../../../../types/formData";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
-import { LoadingContext } from "../../../../providers/loading/LoadingProvider";
-import { cleanPhoneNumber } from "../../../../utils/string";
+import { cleanPhoneNumber, formatPhoneNumber } from "../../../../utils/string";
 import { clientSchema } from "../../../../validation/client";
 import { getEntity } from "../../../../services/getEntity";
 import { Client } from "../../../../types/models";
+import { useQuery } from "@tanstack/react-query";
 
 const ClientEdit = () => {
   const { user } = useContext(AuthContext);
   const { showToast } = useContext(ToastContext);
-  const { isLoading, setIsLoadingCallback } = useContext(LoadingContext);
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  const clientQuery = useQuery({
+    enabled: !!user,
+    queryKey: ["clients"],
+    queryFn: () =>
+      getEntity<Client>({
+        user,
+        resource: "clients",
+        id: parseInt(id ?? "-1"),
+      }),
+  });
   const {
     control,
     handleSubmit,
@@ -31,42 +40,28 @@ const ClientEdit = () => {
     resolver: joiResolver(clientSchema),
   });
 
-  const backToClients = useCallback(
-    () => navigate("/dashboard/clients"),
-    [navigate]
-  );
-
   const setValueCallback = useCallback(
-    (field: keyof ClientFormData, value: string | number | undefined) =>
-      setValue(field, value),
+    (
+      field: "id" | "name" | "address" | "phone",
+      newValue: string | number | undefined
+    ) => setValue(field, newValue),
     [setValue]
   );
 
-  const fetchData = useCallback(async () => {
-    const fetchedClient = await getEntity<Client>({
-      user,
-      resource: "clients",
-      id: parseInt(id ?? "0"),
-    });
-
-    if (!fetchedClient) backToClients();
-
-    setValueCallback("name", fetchedClient.name);
-    setValueCallback("phone", fetchedClient.phone);
-    setValueCallback("address", fetchedClient.address);
-  }, [backToClients, id, setValueCallback, user]);
-
   useEffect(() => {
-    setIsLoadingCallback(true);
-    fetchData();
-    setIsLoadingCallback(false);
-  }, [fetchData, setIsLoadingCallback]);
+    const { data } = clientQuery;
+    if (data && data.phone) {
+      const { name, phone, address } = data;
+      setValueCallback("name", name);
+      setValueCallback("phone", formatPhoneNumber(phone));
+      setValueCallback("address", address);
+    }
+  }, [clientQuery, setValueCallback]);
 
   const onSubmit = async (data: ClientFormData) => {
     let toastMessage: string = "";
 
     try {
-      setIsLoadingCallback(true);
       data.phone = cleanPhoneNumber(data.phone as string);
       await updateEntity<ClientFormData>({
         user: user as User,
@@ -81,7 +76,6 @@ const ClientEdit = () => {
         (err as Error).message
       }`;
     } finally {
-      setIsLoadingCallback(false);
       showToast(toastMessage);
     }
   };
@@ -120,7 +114,7 @@ const ClientEdit = () => {
           control={control}
         />
 
-        <CustomSubmitButton formId="clientEditForm" isLoading={isLoading} />
+        <CustomSubmitButton formId="clientEditForm" />
       </Box>
     </Box>
   );

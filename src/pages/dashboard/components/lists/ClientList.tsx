@@ -14,7 +14,7 @@ import { Add as AddIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { formatPhoneNumber } from "../../../../utils/string";
 import { User } from "firebase/auth";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
@@ -22,34 +22,20 @@ import { DialogContext } from "../../../../providers/dialog/DialogProvider";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { deleteEntity } from "../../../../services/deleteEntity";
 import { Client } from "../../../../types/models";
-import { LoadingContext } from "../../../../providers/loading/LoadingProvider";
 import { getEntity } from "../../../../services/getEntity";
+import { useQuery } from "@tanstack/react-query";
 
 const ClientList = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const { openDialog } = useContext(DialogContext);
   const { showToast } = useContext(ToastContext);
-  const [clients, setClients] = useState<Client[]>([]);
-  const [shouldFetch, setShouldFetch] = useState(true);
-  const { setIsLoadingCallback } = useContext(LoadingContext);
 
-  const fetchData = useCallback(async () => {
-    if (!shouldFetch) return;
-    const fetchedClients = await getEntity<Client[]>({
-      user,
-      resource: "clients",
-    });
-
-    setIsLoadingCallback(true);
-    setClients(fetchedClients);
-    setShouldFetch(false);
-    setIsLoadingCallback(false);
-  }, [setIsLoadingCallback, shouldFetch, user]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  const clientsQuery = useQuery({
+    enabled: !!user,
+    queryKey: ["clients"],
+    queryFn: () => getEntity<Client[]>({ user, resource: "clients" }),
+  });
 
   const handleDelete = (client?: Client) => {
     if (client)
@@ -60,7 +46,7 @@ const ClientList = () => {
         action: async () => {
           await deleteEntity(user as User, "clients", client.id as number);
           showToast(`O cliente ${client.name} foi deletado com sucesso.`);
-          setShouldFetch(true);
+          clientsQuery.refetch();
         },
       });
   };
@@ -81,7 +67,7 @@ const ClientList = () => {
         Novo Cliente
       </Button>
 
-      {clients && clients.length > 0 ? (
+      {clientsQuery.data && clientsQuery.data.length > 0 ? (
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} size="small">
             <TableHead sx={{ bgcolor: "#1a1a1a" }}>
@@ -101,7 +87,7 @@ const ClientList = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {clients?.map((client) => (
+              {clientsQuery.data?.map((client) => (
                 <TableRow
                   key={client.id}
                   sx={{

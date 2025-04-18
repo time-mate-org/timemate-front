@@ -1,9 +1,9 @@
 import { Box, Typography } from "@mui/material";
 import { joiResolver } from "@hookform/resolvers/joi";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
-import { closestTo, format, setMinutes } from "date-fns";
+import { closestTo, format, set } from "date-fns";
 import { User } from "firebase/auth";
 
 import { appointmentSchema } from "../../../../validation/appointment";
@@ -14,18 +14,13 @@ import { CustomSubmitButton } from "../fields/CustomButton";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { Client, Professional, Service } from "../../../../types/models";
-import { LoadingContext } from "../../../../providers/loading/LoadingProvider";
 import { getEntity } from "../../../../services/getEntity";
 import { createEntity } from "../../../../services/createEntity";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const AppointmentNew = () => {
   const { user } = useContext(AuthContext);
-  const [clients, setClients] = useState<Client[]>([]);
-  const [services, setServices] = useState<Service[]>([]);
-  const [professionals, setProfessionals] = useState<Professional[]>([]);
-  const {
-    state: { professionalId, timeSlot },
-  } = useLocation();
+  const { state } = useLocation();
   const { showToast } = useContext(ToastContext);
   const now = new Date();
   const {
@@ -35,45 +30,65 @@ const AppointmentNew = () => {
   } = useForm<AppointmentFormData>({
     defaultValues: {
       client_id: "",
-      professional_id: professionalId ?? "",
+      professional_id: state?.professionalId ?? "",
       service_id: "",
       start_time:
-        timeSlot?.toISOString() ??
+        state?.timeSlot?.toISOString() ??
         (
           closestTo(now, [
-            setMinutes(now, 0),
-            setMinutes(now, 15),
-            setMinutes(now, 30),
-            setMinutes(now, 45),
+            set(now, { minutes: 0, seconds: 0, milliseconds: 0 }),
+            set(now, { minutes: 15, seconds: 0, milliseconds: 0 }),
+            set(now, { minutes: 30, seconds: 0, milliseconds: 0 }),
+            set(now, { minutes: 45, seconds: 0, milliseconds: 0 }),
           ]) ?? now
         ).toISOString(),
     },
     resolver: joiResolver(appointmentSchema),
   });
   const navigate = useNavigate();
-  const { isLoading, setIsLoadingCallback } = useContext(LoadingContext);
+
+  const professionalsQuery = useQuery({
+    enabled: !!user,
+    queryKey: ["professionals"],
+    queryFn: () =>
+      getEntity<Professional[]>({ user, resource: "professionals" }),
+  });
+  const clientsQuery = useQuery({
+    enabled: !!user,
+    queryKey: ["clients"],
+    queryFn: () => getEntity<Client[]>({ user, resource: "clients" }),
+  });
+  const servicesQuery = useQuery({
+    enabled: !!user,
+    queryKey: ["services"],
+    queryFn: () => getEntity<Service[]>({ user, resource: "services" }),
+  });
+  const newAppointmentMutation = useMutation({
+    mutationKey: [""],
+    mutationFn: (data: AppointmentFormData) =>
+      createEntity<AppointmentFormData>(user as User, "appointments", data),
+  });
 
   const onSubmit = async (data: AppointmentFormData) => {
-    console.log("🚀 ~ onSubmit ~ data:", data);
     let toastMessage: string = "";
-    const client = clients.find(
+    const client = clientsQuery.data?.find(
       (client) => client.id === data.client_id
-    ) as Client;
-    const service = services?.find(
+    );
+    const service = servicesQuery.data?.find(
       (service: Service) => service.id === data.service_id
-    ) as Service;
-    const professional = professionals?.find(
+    );
+    const professional = professionalsQuery.data?.find(
       (professional) => professional.id === data.professional_id
-    ) as Professional;
+    );
 
     try {
-      await createEntity<AppointmentFormData>(
-        user as User,
-        "appointments",
-        data
-      );
-      toastMessage = `${client.name} agendou um ${service.name} com ${
-        professional.name
+      data.start_time = set(data.start_time, {
+        seconds: 0,
+        milliseconds: 0,
+      }).toISOString();
+      newAppointmentMutation.mutate(data);
+      toastMessage = `${client?.name} agendou um ${service?.name} com ${
+        professional?.name
       } as ${format(data.start_time, "HH:mm")} do dia ${format(
         data.start_time,
         "dd/MM"
@@ -87,30 +102,6 @@ const AppointmentNew = () => {
       showToast(toastMessage);
     }
   };
-
-  const fetchData = useCallback(async () => {
-    const fetchedClients = await getEntity<Client[]>({
-      user,
-      resource: "clients",
-    });
-    const fetchedProfessionals = await getEntity<Professional[]>({
-      user,
-      resource: "professionals",
-    });
-    const fetchedServices = await getEntity<Service[]>({
-      user,
-      resource: "services",
-    });
-    setClients(fetchedClients);
-    setProfessionals(fetchedProfessionals);
-    setServices(fetchedServices);
-  }, [user]);
-
-  useEffect(() => {
-    setIsLoadingCallback(true);
-    fetchData();
-    setIsLoadingCallback(false);
-  }, [fetchData, setIsLoadingCallback]);
 
   return (
     <Box sx={{ p: 3 }}>
@@ -130,7 +121,7 @@ const AppointmentNew = () => {
           controlName="service_id"
           label="Serviço"
           errors={errors}
-          options={services ?? []}
+          options={servicesQuery.data ?? []}
         />
 
         <CustomSelectField
@@ -138,7 +129,7 @@ const AppointmentNew = () => {
           controlName="client_id"
           label="Cliente"
           errors={errors}
-          options={clients ?? []}
+          options={clientsQuery.data ?? []}
         />
 
         <CustomSelectField
@@ -146,14 +137,10 @@ const AppointmentNew = () => {
           controlName="professional_id"
           label="Profissional"
           errors={errors}
-          options={professionals ?? []}
+          options={professionalsQuery.data ?? []}
         />
 
-        <CustomSubmitButton
-          formId="appointmentCreateForm"
-          label="salvar"
-          isLoading={isLoading}
-        />
+        <CustomSubmitButton formId="appointmentCreateForm" label="salvar" />
       </Box>
     </Box>
   );

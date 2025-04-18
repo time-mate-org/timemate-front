@@ -12,18 +12,26 @@ import { updateEntity } from "../../../../services/updateEntity";
 import { ServiceFormData } from "../../../../types/formData";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
-import { LoadingContext } from "../../../../providers/loading/LoadingProvider";
 import { Service } from "../../../../types/models";
 import { getEntity } from "../../../../services/getEntity";
 import { CustomPriceField } from "../fields/CustomPriceField";
+import { useQuery } from "@tanstack/react-query";
 
 const ServiceEdit = () => {
   const { user } = useContext(AuthContext);
-  const { isLoading, setIsLoadingCallback } = useContext(LoadingContext);
   const navigate = useNavigate();
   const { showToast } = useContext(ToastContext);
   const { id } = useParams<{ id: string }>();
-
+  const serviceQuery = useQuery({
+    enabled: !!user,
+    queryKey: ["services"],
+    queryFn: () =>
+      getEntity<Service>({
+        user,
+        resource: "services",
+        id: parseInt(id ?? "-1"),
+      }),
+  });
   const {
     control,
     handleSubmit,
@@ -33,42 +41,28 @@ const ServiceEdit = () => {
     resolver: joiResolver(serviceSchema),
   });
 
-  const backToServices = useCallback(
-    () => navigate("/dashboard/services"),
-    [navigate]
-  );
-
   const setValueCallback = useCallback(
-    (field: keyof ServiceFormData, value: string | number | undefined) =>
-      setValue(field, value),
+    (
+      field: "id" | "name" | "estimated_time" | "price",
+      newValue: string | number | undefined
+    ) => setValue(field, newValue),
     [setValue]
   );
 
-  const fetchData = useCallback(async () => {
-    const fetchedService = await getEntity<Service>({
-      user,
-      resource: "services",
-      id: parseInt(id ?? "0"),
-    });
-
-    if (!fetchedService) backToServices();
-
-    setValueCallback("name", fetchedService.name);
-    setValueCallback("estimated_time", fetchedService.estimated_time);
-    setValueCallback("price", fetchedService.price);
-  }, [backToServices, id, setValueCallback, user]);
-
   useEffect(() => {
-    setIsLoadingCallback(true);
-    fetchData();
-    setIsLoadingCallback(false);
-  }, [fetchData, setIsLoadingCallback]);
+    const { data } = serviceQuery;
+    if (data && data.price) {
+      const { name, estimated_time, price } = data;
+      setValueCallback("name", name);
+      setValueCallback("estimated_time", estimated_time);
+      setValueCallback("price", price);
+    }
+  }, [serviceQuery, setValueCallback]);
 
   const onSubmit = async (data: ServiceFormData) => {
     let toastMessage: string = "";
 
     try {
-      setIsLoadingCallback(true);
       await updateEntity<ServiceFormData>({
         user: user as User,
         resource: "services",
@@ -82,7 +76,6 @@ const ServiceEdit = () => {
         (err as Error).message
       }`;
     } finally {
-      setIsLoadingCallback(false);
       showToast(toastMessage);
     }
   };
@@ -120,7 +113,7 @@ const ServiceEdit = () => {
           name="price"
         />
 
-        <CustomSubmitButton formId="serviceEditForm" isLoading={isLoading} />
+        <CustomSubmitButton formId="serviceEditForm" />
       </Box>
     </Box>
   );

@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -31,7 +31,6 @@ const ServiceNew = () => {
     resolver: joiResolver(serviceSchema),
   });
   const navigate = useNavigate();
-  const [isLoading] = useState(false);
 
   const onSubmit = async (data: ServiceFormData) => {
     let toastMessage: string = "";
@@ -79,7 +78,7 @@ const ServiceNew = () => {
           errors={errors}
         />
 
-        <CustomSubmitButton formId="serviceCreateForm" isLoading={isLoading} />
+        <CustomSubmitButton formId="serviceCreateForm" />
       </Box>
     </Box>
   );

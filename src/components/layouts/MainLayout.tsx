@@ -1,13 +1,17 @@
 import { Box } from "@mui/material";
-import { useContext } from "react";
-import { LoadingContext } from "../../providers/loading/LoadingProvider";
+import { useIsFetching } from "@tanstack/react-query";
 import LoadingComponent from "../loading/Loading";
+import { useEffect, useState } from "react";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
-  const { isLoading } = useContext(LoadingContext);
-  return isLoading ? (
-    <LoadingComponent />
-  ) : (
+  const [isLoading, setIsLoading] = useState(false);
+  const fetchingQueries: number = useIsFetching();
+
+  useEffect(() => {
+    setIsLoading(fetchingQueries > 0);
+  }, [fetchingQueries]);
+
+  return (
     <Box
       sx={{
         minHeight: "100vh",
@@ -19,6 +23,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         bgcolor: "black",
       }}
     >
+      {isLoading && <LoadingComponent />}
       {children}
     </Box>
   );

@@ -7,7 +7,6 @@ import { contactFormSchema } from "../../../validation/contact";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { useForm } from "react-hook-form";
 import { useContext } from "react";
-import { LoadingContext } from "../../../providers/loading/LoadingProvider";
 import { sendEmail } from "../../../services/sendEmail";
 import { AuthContext } from "../../../providers/auth/AuthProvider";
 import { toTitle } from "../../../utils/string";
@@ -17,7 +16,6 @@ import { CustomTextField } from "../../dashboard/components/fields/CustomTextFie
 export const HomeContact = () => {
   const { user } = useContext(AuthContext);
   const handleRedirect = (url: string) => window.open(url);
-  const { setIsLoadingCallback } = useContext(LoadingContext);
   const { showToast } = useContext(ToastContext);
   const {
     control,
@@ -31,8 +29,6 @@ export const HomeContact = () => {
     let toastMessage: string = "";
 
     try {
-      setIsLoadingCallback(true);
-
       const { name, email, message } = data;
       const content = `\
       <h2 style="color: ${LIGHTBLUE}; padding: 30px 0; text-align: center;">
@@ -61,7 +57,6 @@ export const HomeContact = () => {
         (err as Error).message
       }`;
     } finally {
-      setIsLoadingCallback(false);
       showToast(toastMessage);
     }
   };

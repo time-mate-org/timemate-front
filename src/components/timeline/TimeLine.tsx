@@ -1,6 +1,4 @@
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import {
-  Grid2,
   Paper,
   Table,
   TableBody,
@@ -8,69 +6,30 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Tooltip,
-  Typography,
 } from "@mui/material";
-import { format, isToday } from "date-fns";
-import { CustomTableCell, CustomTableRow } from "./style";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import {
-  getNextTimeSlot,
-  getCurrentTimeSlot,
-  getTimeSlots,
-  isCurrentTimeSlot,
-  isBusy,
-  getCellAppointment,
-  simplifyName,
-} from "./utils";
+import { format } from "date-fns";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { getNextTimeSlot, getCurrentTimeSlot, getTimeSlots } from "./utils";
 import { TimelineHeader } from "./components/TimelineHeader";
 import { toTitle } from "../../utils/string";
 import { getNewServiceColors } from "./colors";
-import { useNavigate } from "react-router-dom";
 import { Appointment, Professional, Service } from "../../types/models";
-import { AuthContext } from "../../providers/auth/AuthProvider";
-import { getEntity } from "../../services/getEntity";
-import { toUTCDate } from "../../utils/date";
-import { LoadingContext } from "../../providers/loading/LoadingProvider";
+import { TimelineTableRow } from "./components/TimelineTableRow";
 
-export const AppointmentTimeline = () => {
-  const { user } = useContext(AuthContext);
-  const { setIsLoadingCallback } = useContext(LoadingContext);
+type AppointmentTimelineProps = {
+  services: Service[];
+  appointments: Appointment[];
+  professionals: Professional[];
+};
+
+export const AppointmentTimeline = ({
+  services,
+  appointments,
+  professionals,
+}: AppointmentTimelineProps) => {
   const [currentTimeSlot, setCurrentTimeSlot] = useState<Date | null>();
-  const navigate = useNavigate();
   const [colors, setColors] = useState<{ [key: number]: string }>({});
   const timerRef = useRef<NodeJS.Timeout>(undefined);
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [services, setServices] = useState<Service[]>([]);
-  const [professionals, setProfessionals] = useState<Professional[]>([]);
-
-  const fetchData = useCallback(async () => {
-    const fetchedProfessionals = await getEntity<Professional[]>({
-      user,
-      resource: "professionals",
-    });
-    const fetchedServices = await getEntity<Service[]>({
-      user,
-      resource: "services",
-    });
-    const fetchedAppointments = await getEntity<Appointment[]>({
-      user,
-      resource: "appointments",
-    });
-    setProfessionals(fetchedProfessionals);
-    setServices(fetchedServices);
-    setAppointments(
-      fetchedAppointments.filter((appointment) =>
-        isToday(toUTCDate(appointment.start_time))
-      )
-    );
-  }, [user]);
-
-  useEffect(() => {
-    setIsLoadingCallback(true);
-    fetchData();
-    setIsLoadingCallback(false);
-  }, [fetchData, setIsLoadingCallback]);
 
   const setColorsCallback = useCallback(
     () => setColors(getNewServiceColors(services)),
@@ -125,85 +84,14 @@ export const AppointmentTimeline = () => {
         </TableHead>
         <TableBody>
           {getTimeSlots().map((rowTimeSlot, index) => (
-            <CustomTableRow
+            <TimelineTableRow
               key={`${format(rowTimeSlot, "HH:mm")}-${index}`}
-              isCurrentTimeSlot={isCurrentTimeSlot(
-                rowTimeSlot,
-                currentTimeSlot as Date
-              )}
-            >
-              <CustomTableCell
-                component="th"
-                scope="row"
-                isCurrentTimeSlot={isCurrentTimeSlot(
-                  rowTimeSlot,
-                  currentTimeSlot as Date
-                )}
-                isDateCell
-              >
-                <Grid2 container spacing={2}>
-                  <Grid2 size={8}>{format(rowTimeSlot, "HH:mm")}</Grid2>
-                  <Grid2 size={4}>
-                    {isCurrentTimeSlot(
-                      rowTimeSlot,
-                      currentTimeSlot as Date
-                    ) && <ArrowForwardIosIcon sx={{ fontSize: 15 }} />}
-                  </Grid2>
-                </Grid2>
-              </CustomTableCell>
-              {professionals?.map((professional, index) => {
-                const isBusyCell = isBusy({
-                  professional,
-                  currentTime: rowTimeSlot,
-                  appointments,
-                });
-                const cellAppointment = getCellAppointment(
-                  professional,
-                  rowTimeSlot,
-                  appointments
-                );
-                const cellTime = format(rowTimeSlot as Date, "HH:mm");
-                const tooltipText = isBusyCell
-                  ? `${cellAppointment?.professional.name} x ${cellAppointment?.client.name} | ${cellAppointment?.service.name} | ${cellTime}`
-                  : `Clique para marcar as ${cellTime}.`;
-
-                return (
-                  <CustomTableCell
-                    key={`${professional.name}-${index}`}
-                    align="center"
-                    isBusy={isBusyCell}
-                    professionalColor={
-                      colors[cellAppointment?.service.id ?? -1]
-                    }
-                    onClick={() =>
-                      isBusyCell
-                        ? navigate(
-                            `/dashboard/appointment/edit/${cellAppointment?.id}`,
-                            { state: {} }
-                          )
-                        : navigate("/dashboard/appointment/new", {
-                            state: {
-                              professionalId: professional.id,
-                              timeSlot: rowTimeSlot,
-                            },
-                          })
-                    }
-                    isCurrentTimeSlot={isCurrentTimeSlot(
-                      rowTimeSlot,
-                      currentTimeSlot as Date
-                    )}
-                  >
-                    <Tooltip title={tooltipText}>
-                      <Typography m={0} p={0} fontSize={13}>
-                        {cellAppointment
-                          ? toTitle(simplifyName(cellAppointment.client.name))
-                          : ""}
-                      </Typography>
-                    </Tooltip>
-                  </CustomTableCell>
-                );
-              })}
-            </CustomTableRow>
+              appointments={appointments}
+              colors={colors}
+              currentTimeSlot={currentTimeSlot}
+              professionals={professionals}
+              rowTimeSlot={rowTimeSlot}
+            />
           ))}
         </TableBody>
       </Table>

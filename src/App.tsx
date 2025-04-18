@@ -19,7 +19,6 @@ import AppointmentNew from "./pages/dashboard/components/create/AppointmentNew";
 import AuthLayout from "./components/layouts/AuthLayout";
 import NotFound from "./pages/notFound/NotFound";
 import { AuthProvider } from "./providers/auth/AuthProvider";
-import { LoadingProvider } from "./providers/loading/LoadingProvider";
 import { ToastProvider } from "./providers/toast/ToastProvider";
 import ServiceEdit from "./pages/dashboard/components/edit/ServiceEdit";
 import ProfessionalEdit from "./pages/dashboard/components/edit/ProfessionalEdit";
@@ -29,6 +28,9 @@ import AppointmentEdit from "./pages/dashboard/components/edit/AppointmentEdit";
 import { DialogProvider } from "./providers/dialog/DialogProvider";
 import Dashboard from "./pages/dashboard/Dashboard";
 import { Home } from "./pages/home/Home";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const DashboardRoutes = () => (
   <Routes>
@@ -54,7 +56,7 @@ function App() {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
       <ThemeProvider theme={mainTheme}>
-        <LoadingProvider>
+        <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <ToastProvider>
               <MainLayout>
@@ -81,7 +83,7 @@ function App() {
               </MainLayout>
             </ToastProvider>
           </AuthProvider>
-        </LoadingProvider>
+        </QueryClientProvider>
       </ThemeProvider>
     </LocalizationProvider>
   );

@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import CircleIcon from "@mui/icons-material/Circle";
 import { toTitle } from "../../../utils/string";
 import { Grid2 } from "@mui/material";
@@ -11,8 +11,8 @@ import {
 } from "../style";
 import { Service } from "../../../types/models";
 import { AuthContext } from "../../../providers/auth/AuthProvider";
-import { LoadingContext } from "../../../providers/loading/LoadingProvider";
 import { getEntity } from "../../../services/getEntity";
+import { useQuery } from "@tanstack/react-query";
 
 export const TimelineHeader = ({
   colors,
@@ -20,24 +20,12 @@ export const TimelineHeader = ({
   colors: { [key: number]: string };
 }) => {
   const { user } = useContext(AuthContext);
-  const { setIsLoadingCallback } = useContext(LoadingContext);
-  const [services, setServices] = useState<Service[]>([]);
-  const fetchData = useCallback(async () => {
-    const fetchedServices = await getEntity<Service[]>({
-      user,
-      resource: "services",
-    });
-    setServices(fetchedServices);
-  }, [user]);
 
-  useEffect(() => {
-    const doFetch = async() => {
-    setIsLoadingCallback(true);
-    await fetchData();
-    setIsLoadingCallback(false);}
-
-    doFetch();
-  }, [fetchData, setIsLoadingCallback]);
+  const servicesQuery = useQuery({
+    enabled: !!user,
+    queryKey: ["services"],
+    queryFn: () => getEntity<Service[]>({ user, resource: "services" }),
+  });
 
   return (
     <TimelineContainer
@@ -50,7 +38,7 @@ export const TimelineHeader = ({
       <HeaderGrid>
         <HeaderTypography>SERVIÇOS</HeaderTypography>
       </HeaderGrid>
-      {services?.map((service) => (
+      {servicesQuery.data?.map((service) => (
         <ServiceGrid
           key={`service-color-${service.id}`}
           size={{ xs: 12, sm: 4, md: 3 }}

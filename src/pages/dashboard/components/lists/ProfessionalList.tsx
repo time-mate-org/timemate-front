@@ -14,7 +14,7 @@ import { Add as AddIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { formatPhoneNumber, toTitle } from "../../../../utils/string";
 import { User } from "firebase/auth";
 import { deleteEntity } from "../../../../services/deleteEntity";
@@ -22,34 +22,21 @@ import { Professional } from "../../../../types/models";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { DialogContext } from "../../../../providers/dialog/DialogProvider";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
-import { LoadingContext } from "../../../../providers/loading/LoadingProvider";
 import { getEntity } from "../../../../services/getEntity";
+import { useQuery } from "@tanstack/react-query";
 
 const ProfessionalList = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const { openDialog } = useContext(DialogContext);
   const { showToast } = useContext(ToastContext);
-  const [professionals, setProfessionals] = useState<Professional[]>([]);
-  const [shouldFetch, setShouldFetch] = useState(true);
-  const { setIsLoadingCallback } = useContext(LoadingContext);
 
-  const fetchData = useCallback(async () => {
-    if (!shouldFetch) return;
-    const fetchedProfessionals = await getEntity<Professional[]>({
-      user,
-      resource: "professionals",
-    });
-
-    setIsLoadingCallback(true);
-    setProfessionals(fetchedProfessionals);
-    setShouldFetch(false);
-    setIsLoadingCallback(false);
-  }, [setIsLoadingCallback, shouldFetch, user]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  const professionalsQuery = useQuery({
+    enabled: !!user,
+    queryKey: ["professionals"],
+    queryFn: () =>
+      getEntity<Professional[]>({ user, resource: "professionals" }),
+  });
 
   const handleDelete = (professional?: Professional) => {
     if (professional)
@@ -66,7 +53,7 @@ const ProfessionalList = () => {
           showToast(
             `O profissional ${professional.name} foi deletado com sucesso.`
           );
-          setShouldFetch(true);
+          professionalsQuery.refetch();
         },
       });
   };
@@ -87,7 +74,7 @@ const ProfessionalList = () => {
         Novo Profissional
       </Button>
 
-      {professionals && professionals.length > 0 ? (
+      {professionalsQuery.data && professionalsQuery.data.length > 0 ? (
         <TableContainer component={Paper}>
           <Table>
             <TableHead sx={{ bgcolor: "#1a1a1a" }}>
@@ -107,7 +94,7 @@ const ProfessionalList = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {professionals?.map((profissional) => (
+              {professionalsQuery.data?.map((profissional) => (
                 <TableRow
                   key={profissional.id}
                   sx={{

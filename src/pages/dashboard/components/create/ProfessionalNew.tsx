@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -30,7 +30,6 @@ const ProfessionalNew = () => {
     resolver: joiResolver(professionalSchema),
   });
   const navigate = useNavigate();
-  const [isLoading] = useState(false);
 
   const onSubmit = async (data: Professional) => {
     let toastMessage: string = "";
@@ -86,7 +85,6 @@ const ProfessionalNew = () => {
 
         <CustomSubmitButton
           formId="professionalCreateForm"
-          isLoading={isLoading}
         />
       </Box>
     </Box>

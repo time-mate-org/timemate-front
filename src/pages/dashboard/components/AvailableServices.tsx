@@ -1,32 +1,19 @@
 import { Typography, Grid2 } from "@mui/material";
 import { AvailableServicesBox, ServiceBox } from "../styled";
-import { useCallback, useContext, useEffect, useState } from "react";
-import {
-  Service,
-} from "../../../types/models";
+import { useContext } from "react";
+import { Service } from "../../../types/models";
 import { getEntity } from "../../../services/getEntity";
 import { AuthContext } from "../../../providers/auth/AuthProvider";
-import { LoadingContext } from "../../../providers/loading/LoadingProvider";
+import { useQuery } from "@tanstack/react-query";
 
 export const AvailableServices = () => {
   const { user } = useContext(AuthContext);
-  const { setIsLoadingCallback } = useContext(LoadingContext);
-  const [services, setServices] = useState<Service[]>([]);
 
-  const fetchData = useCallback(async () => {
-    const fetchedServices = await getEntity<Service[]>({
-      user,
-      resource: "services",
-    });
-
-    setServices(fetchedServices);
-  }, [user]);
-
-  useEffect(() => {
-    setIsLoadingCallback(true);
-    fetchData();
-    setIsLoadingCallback(false);
-  }, [fetchData, setIsLoadingCallback]);
+  const servicesQuery = useQuery({
+    enabled: !!user,
+    queryKey: ["services"],
+    queryFn: () => getEntity<Service[]>({ user, resource: "services" }),
+  });
 
   return (
     <AvailableServicesBox>
@@ -34,7 +21,7 @@ export const AvailableServices = () => {
         Serviços Disponíveis
       </Typography>
       <Grid2 container spacing={2}>
-        {services?.map((service) => (
+        {servicesQuery.data?.map((service) => (
           <Grid2 size={{ xs: 12, sm: 6, md: 4 }} key={service.id}>
             <ServiceBox>
               <Typography variant="subtitle1" sx={{ color: "#e2e8f0" }}>

@@ -19,46 +19,43 @@ import { format, isToday } from "date-fns";
 import { AppointmentTimeline } from "../../../../components/timeline/TimeLine";
 import { toTitle } from "../../../../utils/string";
 import { StyledTableCell } from "../../styled";
-import { useCallback, useContext, useEffect, useState } from "react";
-import { Appointment } from "../../../../types/models";
+import { useContext } from "react";
+import { Appointment, Professional, Service } from "../../../../types/models";
 import { User } from "firebase/auth";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { DialogContext } from "../../../../providers/dialog/DialogProvider";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { deleteEntity } from "../../../../services/deleteEntity";
 import { getEntity } from "../../../../services/getEntity";
-import { LoadingContext } from "../../../../providers/loading/LoadingProvider";
 import { toUTCDate } from "../../../../utils/date";
+import { useQuery } from "@tanstack/react-query";
 
 const AppointmentList = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const { openDialog } = useContext(DialogContext);
   const { showToast } = useContext(ToastContext);
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [shouldFetch, setShouldFetch] = useState(true);
-  const { setIsLoadingCallback } = useContext(LoadingContext);
 
-  const fetchData = useCallback(async () => {
-    if (!shouldFetch) return;
-    const fetchedAppointments = await getEntity<Appointment[]>({
-      user,
-      resource: "appointments",
-    });
+  const appointmentsQuery = useQuery({
+    enabled: !!user,
+    queryKey: ["appointments"],
+    queryFn: () => getEntity<Appointment[]>({ user, resource: "appointments" }),
+  });
+  const professionalsQuery = useQuery({
+    enabled: !!user,
+    queryKey: ["professionals"],
+    queryFn: () =>
+      getEntity<Professional[]>({ user, resource: "professionals" }),
+  });
+  const servicesQuery = useQuery({
+    enabled: !!user,
+    queryKey: ["services"],
+    queryFn: () => getEntity<Service[]>({ user, resource: "services" }),
+  });
 
-    setIsLoadingCallback(true);
-    setAppointments(
-      fetchedAppointments.filter((appointment) =>
-        isToday(toUTCDate(appointment.start_time) as Date)
-      )
-    );
-    setShouldFetch(false);
-    setIsLoadingCallback(false);
-  }, [setIsLoadingCallback, shouldFetch, user]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  const todayAppointments = appointmentsQuery.data?.filter((appointment) =>
+    isToday(appointment.start_time)
+  );
 
   const handleDelete = (appointment?: Appointment) => {
     if (appointment)
@@ -75,7 +72,7 @@ const AppointmentList = () => {
           showToast(
             `O agendamento #${appointment.id} foi deletado com sucesso.`
           );
-          setShouldFetch(true);
+          appointmentsQuery.refetch();
         },
       });
   };
@@ -99,7 +96,7 @@ const AppointmentList = () => {
       <Typography align="center" color="#00ff9d" py={1} fontSize={25}>
         Hoje
       </Typography>
-      {appointments && appointments.length > 0 ? (
+      {todayAppointments && todayAppointments.length > 0 ? (
         <TableContainer component={Paper}>
           <Table>
             <TableHead sx={{ bgcolor: "#1a1a1a" }}>
@@ -125,7 +122,7 @@ const AppointmentList = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {appointments?.map((appointment) => (
+              {todayAppointments.map((appointment) => (
                 <TableRow
                   key={appointment.id}
                   sx={{
@@ -181,7 +178,11 @@ const AppointmentList = () => {
       <Typography align="center" color="#00ff9d" py={1} fontSize={25}>
         TIMELINE
       </Typography>
-      <AppointmentTimeline />
+      <AppointmentTimeline
+        professionals={professionalsQuery.data ?? []}
+        services={servicesQuery.data ?? []}
+        appointments={appointmentsQuery.data ?? []}
+      />
     </Box>
   );
 };
