@@ -23,7 +23,7 @@ import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { DialogContext } from "../../../../providers/dialog/DialogProvider";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { getEntity } from "../../../../services/getEntity";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const ProfessionalList = () => {
   const navigate = useNavigate();
@@ -37,6 +37,10 @@ const ProfessionalList = () => {
     queryFn: () =>
       getEntity<Professional[]>({ user, resource: "professionals" }),
   });
+  const deleteProfessionalMutation = useMutation({
+    mutationKey: ["professionalDelete"],
+    mutationFn: (id: number) => deleteEntity(user as User, "professionals", id),
+  });
 
   const handleDelete = (professional?: Professional) => {
     if (professional)
@@ -44,12 +48,8 @@ const ProfessionalList = () => {
         title: `Tem certeza que deseja excluir o/a ${professional.name}?`,
         description: `A exclusão desse profissional é irreversível.`,
         buttonLabel: "Tenho certeza",
-        action: async () => {
-          await deleteEntity(
-            user as User,
-            "professionals",
-            professional.id as number
-          );
+        action: () => {
+          deleteProfessionalMutation.mutate(professional.id as number); // corrigir async aqui e nos outros
           showToast(
             `O profissional ${professional.name} foi deletado com sucesso.`
           );

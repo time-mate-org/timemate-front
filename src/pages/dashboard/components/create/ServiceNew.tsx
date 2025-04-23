@@ -14,6 +14,7 @@ import { ServiceFormData } from "../../../../types/formData";
 import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { CustomPriceField } from "../fields/CustomPriceField";
+import { useMutation } from "@tanstack/react-query";
 
 const ServiceNew = () => {
   const { user } = useContext(AuthContext);
@@ -31,11 +32,16 @@ const ServiceNew = () => {
     resolver: joiResolver(serviceSchema),
   });
   const navigate = useNavigate();
+  const newServiceMutation = useMutation({
+    mutationKey: ["serviceCreate"],
+    mutationFn: (data: ServiceFormData) =>
+      createEntity<ServiceFormData>(user as User, "services", data),
+  });
 
   const onSubmit = async (data: ServiceFormData) => {
     let toastMessage: string = "";
     try {
-      await createEntity<ServiceFormData>(user as User, "services", data);
+      newServiceMutation.mutate(data);
       toastMessage = `Agora ${data.name} é mais um serviço que oferecemos.`;
       navigate("/dashboard/services");
     } catch (err) {

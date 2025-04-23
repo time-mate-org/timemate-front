@@ -64,7 +64,7 @@ const AppointmentNew = () => {
     queryFn: () => getEntity<Service[]>({ user, resource: "services" }),
   });
   const newAppointmentMutation = useMutation({
-    mutationKey: [""],
+    mutationKey: ["appointmentCreate"],
     mutationFn: (data: AppointmentFormData) =>
       createEntity<AppointmentFormData>(user as User, "appointments", data),
   });

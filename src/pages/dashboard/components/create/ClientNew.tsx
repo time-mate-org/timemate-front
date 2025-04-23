@@ -13,6 +13,7 @@ import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { ClientFormData } from "../../../../types/formData";
 import { cleanPhoneNumber } from "../../../../utils/string";
 import { createEntity } from "../../../../services/createEntity";
+import { useMutation } from "@tanstack/react-query";
 
 const ClientNew = () => {
   const {
@@ -30,12 +31,17 @@ const ClientNew = () => {
   const { showToast } = useContext(ToastContext);
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const newClientMutation = useMutation({
+    mutationKey: ["clientCreate"],
+    mutationFn: (data: ClientFormData) =>
+      createEntity<ClientFormData>(user as User, "clients", data),
+  });
 
   const onSubmit = async (data: ClientFormData) => {
     let toastMessage: string = "";
     data.phone = cleanPhoneNumber(data.phone);
     try {
-      await createEntity<ClientFormData>(user as User, "clients", data);
+      newClientMutation.mutate(data);
       toastMessage = `O cliente ${data.name} foi criado com sucesso.`;
       navigate("/dashboard/clients");
     } catch (err) {
@@ -81,7 +87,7 @@ const ClientNew = () => {
           control={control}
         />
 
-        <CustomSubmitButton formId="clientCreateForm"/>
+        <CustomSubmitButton formId="clientCreateForm" />
       </Box>
     </Box>
   );

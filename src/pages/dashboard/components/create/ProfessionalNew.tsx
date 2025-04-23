@@ -13,6 +13,7 @@ import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { User } from "firebase/auth";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { cleanPhoneNumber } from "../../../../utils/string";
+import { useMutation } from "@tanstack/react-query";
 
 const ProfessionalNew = () => {
   const { user } = useContext(AuthContext);
@@ -30,20 +31,23 @@ const ProfessionalNew = () => {
     resolver: joiResolver(professionalSchema),
   });
   const navigate = useNavigate();
+  const newProfessionalMutation = useMutation({
+    mutationKey: ["professionalCreate"],
+    mutationFn: (data: ProfessionalFormData) =>
+      createEntity<ProfessionalFormData>(user as User, "professionals", data),
+  });
 
   const onSubmit = async (data: Professional) => {
     let toastMessage: string = "";
     try {
-      data.phone = cleanPhoneNumber(data.phone)
-      await createEntity<ProfessionalFormData>(
-        user as User,
-        "professionals",
-        data
-      );
+      data.phone = cleanPhoneNumber(data.phone);
+      newProfessionalMutation.mutate(data);
       toastMessage = `${data.name} é o novo ${data.title}.`;
       navigate("/dashboard/professionals");
     } catch (err) {
-      toastMessage = `Erro na criação do profissional: ${(err as Error).message}`;
+      toastMessage = `Erro na criação do profissional: ${
+        (err as Error).message
+      }`;
     } finally {
       showToast(toastMessage);
     }
@@ -83,9 +87,7 @@ const ProfessionalNew = () => {
           control={control}
         />
 
-        <CustomSubmitButton
-          formId="professionalCreateForm"
-        />
+        <CustomSubmitButton formId="professionalCreateForm" />
       </Box>
     </Box>
   );

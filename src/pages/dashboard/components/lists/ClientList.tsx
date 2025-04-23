@@ -23,7 +23,7 @@ import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { deleteEntity } from "../../../../services/deleteEntity";
 import { Client } from "../../../../types/models";
 import { getEntity } from "../../../../services/getEntity";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const ClientList = () => {
   const navigate = useNavigate();
@@ -36,6 +36,10 @@ const ClientList = () => {
     queryKey: ["clients"],
     queryFn: () => getEntity<Client[]>({ user, resource: "clients" }),
   });
+  const deleteClientMutation = useMutation({
+    mutationKey: ["clientDelete"],
+    mutationFn: (id: number) => deleteEntity(user as User, "clients", id),
+  });
 
   const handleDelete = (client?: Client) => {
     if (client)
@@ -43,8 +47,8 @@ const ClientList = () => {
         title: `Tem certeza que deseja excluir o/a ${client.name}?`,
         description: `A exclusão desse cliente é irreversível.`,
         buttonLabel: "Tenho certeza",
-        action: async () => {
-          await deleteEntity(user as User, "clients", client.id as number);
+        action: () => {
+          deleteClientMutation.mutate(client.id as number);
           showToast(`O cliente ${client.name} foi deletado com sucesso.`);
           clientsQuery.refetch();
         },

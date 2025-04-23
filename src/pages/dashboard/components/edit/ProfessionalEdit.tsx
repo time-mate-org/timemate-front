@@ -14,7 +14,7 @@ import { cleanPhoneNumber, formatPhoneNumber } from "../../../../utils/string";
 import { professionalSchema } from "../../../../validation/professional";
 import { Professional } from "../../../../types/models";
 import { getEntity } from "../../../../services/getEntity";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const ProfessionalEdit = () => {
   const { user } = useContext(AuthContext);
@@ -48,6 +48,17 @@ const ProfessionalEdit = () => {
     [setValue]
   );
 
+  const updateProfessionalMutation = useMutation({
+    mutationFn: (data: ProfessionalFormData) =>
+      updateEntity<ProfessionalFormData>({
+        user: user as User,
+        resource: "professionals",
+        entityId: parseInt(id ?? "0"),
+        payload: data,
+      }),
+    mutationKey: ["professionalUpdate"],
+  });
+
   useEffect(() => {
     const { data } = professionalQuery;
     if (data && data.phone) {
@@ -63,12 +74,7 @@ const ProfessionalEdit = () => {
 
     try {
       data.phone = cleanPhoneNumber(data.phone as string);
-      await updateEntity<ProfessionalFormData>({
-        user: user as User,
-        resource: "professionals",
-        entityId: parseInt(id as string),
-        payload: data,
-      });
+      updateProfessionalMutation.mutate(data);
       toastMessage = `Profissional ${data.name} atualizado com sucesso.`;
       navigate("/dashboard/professionals");
     } catch (err) {

@@ -12,7 +12,7 @@ type OpenDialogParamType = {
   title: string;
   description: string;
   buttonLabel: string;
-  action: () => Promise<void>;
+  action: () => void;
 };
 
 type DialogContextType = {
@@ -39,7 +39,7 @@ const DialogProvider = ({ children }: { children: ReactNode }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [buttonLabel, setButtonLabel] = useState("Confirmar");
-  const [action, setAction] = useState<() => Promise<void>>(() =>
+  const [action, setAction] = useState<() => void>(() =>
     Promise.resolve(undefined)
   );
   const handleClose = () => {

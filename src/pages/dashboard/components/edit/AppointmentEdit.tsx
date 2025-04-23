@@ -19,7 +19,7 @@ import {
   Service,
 } from "../../../../types/models";
 import { getEntity } from "../../../../services/getEntity";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const AppointmentEdit = () => {
   const { user } = useContext(AuthContext);
@@ -85,16 +85,22 @@ const AppointmentEdit = () => {
     }
   }, [appointmentQuery, setValueCallback]);
 
-  const onSubmit = async (data: AppointmentFormData) => {
-    let toastMessage: string = "";
-
-    try {
-      await updateEntity<AppointmentFormData>({
+  const updateAppointmentMutation = useMutation({
+    mutationFn: (data: AppointmentFormData) =>
+      updateEntity<AppointmentFormData>({
         user: user as User,
         resource: "appointments",
         entityId: parseInt(id ?? "0"),
         payload: data,
-      });
+      }),
+    mutationKey: ["appointmentUpdate"],
+  });
+
+  const onSubmit = async (data: AppointmentFormData) => {
+    let toastMessage: string = "";
+
+    try {
+      updateAppointmentMutation.mutate(data);
       toastMessage = `Agendamento atualizado com sucesso.`;
       navigate("/dashboard/appointments");
     } catch (err) {

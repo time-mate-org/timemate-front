@@ -14,7 +14,7 @@ import { cleanPhoneNumber, formatPhoneNumber } from "../../../../utils/string";
 import { clientSchema } from "../../../../validation/client";
 import { getEntity } from "../../../../services/getEntity";
 import { Client } from "../../../../types/models";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const ClientEdit = () => {
   const { user } = useContext(AuthContext);
@@ -48,6 +48,17 @@ const ClientEdit = () => {
     [setValue]
   );
 
+  const updateClientMutation = useMutation({
+    mutationFn: (data: ClientFormData) =>
+      updateEntity<ClientFormData>({
+        user: user as User,
+        resource: "clients",
+        entityId: parseInt(id ?? "0"),
+        payload: data,
+      }),
+    mutationKey: ["clientUpdate"],
+  });
+
   useEffect(() => {
     const { data } = clientQuery;
     if (data && data.phone) {
@@ -63,12 +74,7 @@ const ClientEdit = () => {
 
     try {
       data.phone = cleanPhoneNumber(data.phone as string);
-      await updateEntity<ClientFormData>({
-        user: user as User,
-        resource: "clients",
-        entityId: parseInt(id as string),
-        payload: data,
-      });
+      updateClientMutation.mutate(data);
       toastMessage = `Cliente ${data.name} atualizado com sucesso.`;
       navigate("/dashboard/clients");
     } catch (err) {

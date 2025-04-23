@@ -23,7 +23,7 @@ import { deleteEntity } from "../../../../services/deleteEntity";
 import { Service } from "../../../../types/models";
 import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { getEntity } from "../../../../services/getEntity";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const ServiceList = () => {
   const navigate = useNavigate();
@@ -36,6 +36,13 @@ const ServiceList = () => {
     queryKey: ["services"],
     queryFn: () => getEntity<Service[]>({ user, resource: "services" }),
   });
+  const deleteServiceMutation = useMutation({
+    mutationKey: ["serviceDelete"],
+    mutationFn: async (id: number) => {
+      deleteEntity(user as User, "services", id);
+      await servicesQuery.refetch();
+    }
+  });
 
   const handleDelete = (service?: Service) => {
     if (service)
@@ -43,10 +50,9 @@ const ServiceList = () => {
         title: `Tem certeza que deseja excluir o/a ${service.name}?`,
         description: `A exclusão desse serviço é irreversível.`,
         buttonLabel: "Tenho certeza",
-        action: async () => {
-          await deleteEntity(user as User, "services", service.id as number);
+        action: () => {
+          deleteServiceMutation.mutate(service.id as number);
           showToast(`O serviço ${service.name} foi deletado com sucesso.`);
-          servicesQuery.refetch();
         },
       });
   };

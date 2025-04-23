@@ -15,7 +15,7 @@ import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { Service } from "../../../../types/models";
 import { getEntity } from "../../../../services/getEntity";
 import { CustomPriceField } from "../fields/CustomPriceField";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const ServiceEdit = () => {
   const { user } = useContext(AuthContext);
@@ -49,6 +49,17 @@ const ServiceEdit = () => {
     [setValue]
   );
 
+  const updateServiceMutation = useMutation({
+    mutationFn: (data: ServiceFormData) =>
+      updateEntity<ServiceFormData>({
+        user: user as User,
+        resource: "services",
+        entityId: parseInt(id ?? "0"),
+        payload: data,
+      }),
+    mutationKey: ["serviceUpdate"],
+  });
+
   useEffect(() => {
     const { data } = serviceQuery;
     if (data && data.price) {
@@ -63,12 +74,7 @@ const ServiceEdit = () => {
     let toastMessage: string = "";
 
     try {
-      await updateEntity<ServiceFormData>({
-        user: user as User,
-        resource: "services",
-        entityId: parseInt(id as string),
-        payload: data,
-      });
+      updateServiceMutation.mutate(data);
       toastMessage = `Serviço ${data.name} atualizado com sucesso.`;
       navigate("/dashboard/services");
     } catch (err) {

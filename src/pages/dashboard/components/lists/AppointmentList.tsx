@@ -28,7 +28,7 @@ import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { deleteEntity } from "../../../../services/deleteEntity";
 import { getEntity } from "../../../../services/getEntity";
 import { toUTCDate } from "../../../../utils/date";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const AppointmentList = () => {
   const navigate = useNavigate();
@@ -52,6 +52,11 @@ const AppointmentList = () => {
     queryKey: ["services"],
     queryFn: () => getEntity<Service[]>({ user, resource: "services" }),
   });
+  const deleteAppointmentMutation = useMutation({
+    mutationKey: ["appointmentDelete"],
+    mutationFn: (id: number) =>
+      deleteEntity(user as User, "appointments", id),
+  });
 
   const todayAppointments = appointmentsQuery.data?.filter((appointment) =>
     isToday(appointment.start_time)
@@ -63,12 +68,8 @@ const AppointmentList = () => {
         title: `Tem certeza que deseja excluir o agendamento?`,
         description: `A exclusão desse agendamento é irreversível.`,
         buttonLabel: "Tenho certeza",
-        action: async () => {
-          await deleteEntity(
-            user as User,
-            "appointments",
-            appointment.id as number
-          );
+        action: () => {
+          deleteAppointmentMutation.mutate(appointment.id as number);
           showToast(
             `O agendamento #${appointment.id} foi deletado com sucesso.`
           );
