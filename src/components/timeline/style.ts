@@ -92,16 +92,3 @@ export const HeaderTypography = styled(Typography)(() => ({
   fontWeight: "bold",
 }));
 
-// Cartão individual de serviço com layout vertical
-export const ServiceGrid = styled(Grid2)(() => ({
-  display: "flex",
-  justifyContent: "space-around",
-  alignItems: "center",
-}));
-
-export const ServiceCard = styled(Grid2)(() => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: "4px",
-}));

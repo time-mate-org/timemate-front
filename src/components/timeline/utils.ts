@@ -24,9 +24,9 @@ const isCurrentTimeSlot = (timeSlot: Date, currentTimeSlot: Date) =>
   isSameDay(timeSlot, currentTimeSlot as Date) &&
   isSameMonth(timeSlot, currentTimeSlot as Date);
 
-const getTimeSlots = (): Date[] => {
+const getTimeSlots = (date: Date = new Date()): Date[] => {
   const timeSlots: Date[] = [];
-  let currentTime = setHours(setMinutes(new Date(), 0), START_OF_BUSINESS_HOUR);
+  let currentTime = setHours(setMinutes(date, 0), START_OF_BUSINESS_HOUR);
   while (getHours(currentTime) < END_OF_BUSINESS) {
     timeSlots.push(currentTime);
     currentTime = addMinutes(currentTime, 15);

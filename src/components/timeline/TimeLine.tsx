@@ -29,6 +29,7 @@ export const AppointmentTimeline = ({
 }: AppointmentTimelineProps) => {
   const [currentTimeSlot, setCurrentTimeSlot] = useState<Date | null>();
   const [colors, setColors] = useState<{ [key: number]: string }>({});
+  const [date, setDate] = useState(new Date());
   const timerRef = useRef<NodeJS.Timeout>(undefined);
 
   const setColorsCallback = useCallback(
@@ -65,7 +66,7 @@ export const AppointmentTimeline = ({
       component={Paper}
       sx={{ border: "1px solid fff", maxHeight: "80vh" }}
     >
-      <TimelineHeader colors={colors} />
+      <TimelineHeader colors={colors} date={date} setDate={setDate}/>
       <Table
         stickyHeader
         sx={{ minWidth: 650, border: "1px solid fff" }}
@@ -83,7 +84,7 @@ export const AppointmentTimeline = ({
           </TableRow>
         </TableHead>
         <TableBody>
-          {getTimeSlots().map((rowTimeSlot, index) => (
+          {getTimeSlots(date).map((rowTimeSlot, index) => (
             <TimelineTableRow
               key={`${format(rowTimeSlot, "HH:mm")}-${index}`}
               appointments={appointments}
