@@ -10,12 +10,13 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../../hooks";
 import { OutletContextType } from "../../components/types/OutletContext";
 import { useOutletContext } from "react-router-dom";
+import { useEffect } from "react";
 
 const Dashboard = () => {
   const { user } = useAuth();
   const { setSectionName } = useOutletContext<OutletContextType>();
 
-  setSectionName("VISÃO GERAL");
+  useEffect(() => setSectionName("VISÃO GERAL"));
 
   const appointmentsQuery = useQuery({
     enabled: !!user,

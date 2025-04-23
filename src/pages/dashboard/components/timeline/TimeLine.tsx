@@ -31,7 +31,8 @@ export const AppointmentTimeline = () => {
   const timerRef = useRef<NodeJS.Timeout>(undefined);
   const { setSectionName } = useOutletContext<OutletContextType>();
 
-  setSectionName("TIMELINE");
+  
+  useEffect(() => setSectionName("TIMELINE"));
   
   const professionalsQuery = useQuery({
     enabled: !!user,

@@ -22,16 +22,17 @@ import { getEntity } from "../../../../services/getEntity";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuth, useDialog, useToast } from "../../../../hooks";
 import { OutletContextType } from "../../../../components/types/OutletContext";
+import { useEffect } from "react";
 
 const ClientList = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { openDialog } = useDialog();
   const { showToast } = useToast();
-    const { setSectionName } = useOutletContext<OutletContextType>();
-  
-    setSectionName("CLIENTES");
+  const { setSectionName } = useOutletContext<OutletContextType>();
 
+  useEffect(() => setSectionName("CLIENTES"));
+  
   const clientsQuery = useQuery({
     enabled: !!user,
     queryKey: ["clients"],
@@ -58,8 +59,6 @@ const ClientList = () => {
 
   return (
     <Box sx={{ position: "relative", p: 3 }}>
-
-
       <Button
         variant="contained"
         startIcon={<AddIcon />}

@@ -22,6 +22,7 @@ import { getEntity } from "../../../../services/getEntity";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuth, useDialog, useToast } from "../../../../hooks";
 import { OutletContextType } from "../../../../components/types/OutletContext";
+import { useEffect } from "react";
 
 const ServiceList = () => {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ const ServiceList = () => {
   const { showToast } = useToast();
   const { setSectionName } = useOutletContext<OutletContextType>();
 
-  setSectionName("SERVIÇOS");
+  useEffect(() => setSectionName("SERVIÇOS"));
 
   const servicesQuery = useQuery({
     enabled: !!user,

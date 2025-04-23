@@ -22,15 +22,16 @@ import { Professional } from "../../../../types/models";
 import { getEntity } from "../../../../services/getEntity";
 import { useAuth, useDialog, useToast } from "../../../../hooks";
 import { OutletContextType } from "../../../../components/types/OutletContext";
+import { useEffect } from "react";
 
 const ProfessionalList = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { openDialog } = useDialog();
   const { showToast } = useToast();
-    const { setSectionName } = useOutletContext<OutletContextType>();
+  const { setSectionName } = useOutletContext<OutletContextType>();
 
-    setSectionName("PROFISSIONAIS");
+  useEffect(() => setSectionName("PROFISSIONAIS"));
 
   const professionalsQuery = useQuery({
     enabled: !!user,
