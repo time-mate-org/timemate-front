@@ -40,9 +40,10 @@ const ServiceList = () => {
   });
   const deleteServiceMutation = useMutation({
     mutationKey: ["serviceDelete"],
-    mutationFn: async (id: number) => {
-      deleteEntity(user as User, "services", id);
+    mutationFn: async (service: Service) => {
+      await deleteEntity(user as User, "services", service.id as number);
       await servicesQuery.refetch();
+      showToast(`O serviço ${service.name} foi deletado com sucesso.`);
     },
   });
 
@@ -52,10 +53,7 @@ const ServiceList = () => {
         title: `Tem certeza que deseja excluir o/a ${service.name}?`,
         description: `A exclusão desse serviço é irreversível.`,
         buttonLabel: "Tenho certeza",
-        action: () => {
-          deleteServiceMutation.mutate(service.id as number);
-          showToast(`O serviço ${service.name} foi deletado com sucesso.`);
-        },
+        action: () => deleteServiceMutation.mutate(service),
       });
   };
 

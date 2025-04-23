@@ -49,7 +49,11 @@ const AppointmentList = () => {
   });
   const deleteAppointmentMutation = useMutation({
     mutationKey: ["appointmentDelete"],
-    mutationFn: (id: number) => deleteEntity(user as User, "appointments", id),
+    mutationFn: async (id: number) => {
+      await deleteEntity(user as User, "appointments", id);
+      await appointmentsQuery.refetch();
+      showToast(`O agendamento #${id} foi deletado com sucesso.`);
+    },
   });
 
   const handleDelete = (appointment?: Appointment) => {
@@ -58,28 +62,18 @@ const AppointmentList = () => {
         title: `Tem certeza que deseja excluir o agendamento?`,
         description: `A exclusão desse agendamento é irreversível.`,
         buttonLabel: "Tenho certeza",
-        action: () => {
-          deleteAppointmentMutation.mutate(appointment.id as number);
-          showToast(
-            `O agendamento #${appointment.id} foi deletado com sucesso.`
-          );
-          appointmentsQuery.refetch();
-        },
+        action: () =>
+          deleteAppointmentMutation.mutate(appointment.id as number),
       });
   };
 
   useEffect(() => {
     const appointments =
-      appointmentsQuery.data?.filter((appointment) => {
+      appointmentsQuery.data?.filter((appointment: Appointment) => {
         const dayIsSame = isSameDay(date, appointment.start_time);
-        console.log(
-          "🚀 ~ appointmentsQuery.data?.filter ~ dayIsSame:",
-          dayIsSame
-        );
         return dayIsSame;
       }) ?? [];
     setAppointmentsByDate(appointments);
-    console.log("🚀 ~ useEffect ~ appointments:", appointments);
   }, [appointmentsQuery.data, date]);
 
   return (

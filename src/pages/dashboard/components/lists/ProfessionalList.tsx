@@ -41,7 +41,17 @@ const ProfessionalList = () => {
   });
   const deleteProfessionalMutation = useMutation({
     mutationKey: ["professionalDelete"],
-    mutationFn: (id: number) => deleteEntity(user as User, "professionals", id),
+    mutationFn: async (professional: Professional) => {
+      await deleteEntity(
+        user as User,
+        "professionals",
+        professional.id as number
+      );
+      await professionalsQuery.refetch();
+      showToast(
+        `O profissional ${professional.name} foi deletado com sucesso.`
+      );
+    },
   });
 
   const handleDelete = (professional?: Professional) => {
@@ -50,13 +60,7 @@ const ProfessionalList = () => {
         title: `Tem certeza que deseja excluir o/a ${professional.name}?`,
         description: `A exclusão desse profissional é irreversível.`,
         buttonLabel: "Tenho certeza",
-        action: () => {
-          deleteProfessionalMutation.mutate(professional.id as number); // corrigir async aqui e nos outros
-          showToast(
-            `O profissional ${professional.name} foi deletado com sucesso.`
-          );
-          professionalsQuery.refetch();
-        },
+        action: () => deleteProfessionalMutation.mutate(professional),
       });
   };
 

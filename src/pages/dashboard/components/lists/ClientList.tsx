@@ -32,7 +32,7 @@ const ClientList = () => {
   const { setSectionName } = useOutletContext<OutletContextType>();
 
   useEffect(() => setSectionName("CLIENTES"));
-  
+
   const clientsQuery = useQuery({
     enabled: !!user,
     queryKey: ["clients"],
@@ -40,7 +40,11 @@ const ClientList = () => {
   });
   const deleteClientMutation = useMutation({
     mutationKey: ["clientDelete"],
-    mutationFn: (id: number) => deleteEntity(user as User, "clients", id),
+    mutationFn: async (client: Client) => {
+      await deleteEntity(user as User, "clients", client.id as number);
+      await clientsQuery.refetch();
+      showToast(`O cliente ${client.name} foi deletado com sucesso.`);
+    },
   });
 
   const handleDelete = (client?: Client) => {
@@ -49,11 +53,7 @@ const ClientList = () => {
         title: `Tem certeza que deseja excluir o/a ${client.name}?`,
         description: `A exclusão desse cliente é irreversível.`,
         buttonLabel: "Tenho certeza",
-        action: () => {
-          deleteClientMutation.mutate(client.id as number);
-          showToast(`O cliente ${client.name} foi deletado com sucesso.`);
-          clientsQuery.refetch();
-        },
+        action: () => deleteClientMutation.mutate(client),
       });
   };
 
