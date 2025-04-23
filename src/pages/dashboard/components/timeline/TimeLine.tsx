@@ -20,6 +20,8 @@ import { TimelineTableRow } from "./components/TimelineTableRow";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../../../../hooks";
 import { getEntity } from "../../../../services/getEntity";
+import { useOutletContext } from "react-router-dom";
+import { OutletContextType } from "../../../../components/types/OutletContext";
 
 export const AppointmentTimeline = () => {
   const { user } = useAuth();
@@ -27,6 +29,10 @@ export const AppointmentTimeline = () => {
   const [colors, setColors] = useState<{ [key: number]: string }>({});
   const [date, setDate] = useState(new Date());
   const timerRef = useRef<NodeJS.Timeout>(undefined);
+  const { setSectionName } = useOutletContext<OutletContextType>();
+
+  setSectionName("TIMELINE");
+  
   const professionalsQuery = useQuery({
     enabled: !!user,
     queryKey: ["professionals"],

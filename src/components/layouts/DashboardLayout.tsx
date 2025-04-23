@@ -2,12 +2,14 @@ import {
   Box,
   Container,
   Divider,
+  Grid2,
   List,
   ListItemIcon,
   ListItemText,
+  Typography,
 } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
-import { useNavigate, Outlet, useLocation } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import { menuItems } from "../../pages/dashboard/components/menuItems";
 import {
@@ -17,12 +19,12 @@ import {
 } from "../../pages/dashboard/styled";
 import { Navbar } from "../Navbar";
 import { useAuth } from "../../hooks";
+import { useState } from "react";
 
 const DashboardLayout = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-  const isDashboard = location.pathname === "/dashboard";
+  const [sectionName, setSectionName] = useState("DASHBOARD");
 
   return (
     <>
@@ -33,7 +35,7 @@ const DashboardLayout = () => {
           bgcolor: "black",
           backgroundAttachment: "fixed",
         }}
-      ></Box>
+      />
       <Container sx={{ display: "flex" }}>
         <DashboardDrawer variant="permanent" sx={{}}>
           <Box sx={{ overflow: "auto", mt: 10 }}>
@@ -59,13 +61,37 @@ const DashboardLayout = () => {
         </DashboardDrawer>
 
         <OutletContainer maxWidth="xl">
-          {!isDashboard && (
-            <ArrowBack
-              onClick={() => navigate(-1)}
-              sx={{ color: "#f1f1f1", cursor: "pointer", pl: 2, pb: 0 }}
-            />
-          )}
-          <Outlet />
+          <Grid2 container>
+            <Grid2 size={1}>
+              <ArrowBack
+                onClick={() => navigate(-1)}
+                sx={{
+                  color: "#f1f1f1",
+                  cursor: "pointer",
+                  pl: 2,
+                  pb: 0,
+                  pt: 2,
+                }}
+              />
+            </Grid2>
+            <Grid2 size={11}>
+              <Typography
+                textAlign="center"
+                color="#f1f1f1"
+                fontWeight={800}
+                fontSize={30}
+                letterSpacing={5}
+                pt={1}
+                pr={10}
+                pb={4}
+              >
+                {sectionName}
+              </Typography>
+            </Grid2>
+            <Grid2 size={12}>
+              <Outlet context={{ setSectionName }} />
+            </Grid2>
+          </Grid2>
         </OutletContainer>
       </Container>
     </>

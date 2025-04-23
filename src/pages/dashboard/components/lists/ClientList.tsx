@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { formatPhoneNumber } from "../../../../utils/string";
@@ -21,12 +21,16 @@ import { Client } from "../../../../types/models";
 import { getEntity } from "../../../../services/getEntity";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuth, useDialog, useToast } from "../../../../hooks";
+import { OutletContextType } from "../../../../components/types/OutletContext";
 
 const ClientList = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { openDialog } = useDialog();
   const { showToast } = useToast();
+    const { setSectionName } = useOutletContext<OutletContextType>();
+  
+    setSectionName("CLIENTES");
 
   const clientsQuery = useQuery({
     enabled: !!user,
@@ -54,6 +58,8 @@ const ClientList = () => {
 
   return (
     <Box sx={{ position: "relative", p: 3 }}>
+
+
       <Button
         variant="contained"
         startIcon={<AddIcon />}

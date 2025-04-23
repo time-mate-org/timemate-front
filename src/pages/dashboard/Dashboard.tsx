@@ -8,9 +8,15 @@ import { MetricCard } from "./components/MetricCard";
 import { getEntity } from "../../services/getEntity";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../../hooks";
+import { OutletContextType } from "../../components/types/OutletContext";
+import { useOutletContext } from "react-router-dom";
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const { setSectionName } = useOutletContext<OutletContextType>();
+
+  setSectionName("VISÃO GERAL");
+
   const appointmentsQuery = useQuery({
     enabled: !!user,
     queryKey: ["appointments"],
@@ -41,11 +47,6 @@ const Dashboard = () => {
 
   return (
     <Grid2 container spacing={5} justifyContent="center" alignItems="center">
-      <Grid2 size={{ xs: 12 }}>
-        <Typography variant="h4" gutterBottom sx={{ color: "#e2e8f0", mb: 4 }}>
-          Painel de Controle
-        </Typography>
-      </Grid2>
       <Grid2 size={{ xs: 12, sm: 12, md: 6, xl: 4 }}>
         <MetricCard
           title="Hoje"

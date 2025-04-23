@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { formatPhoneNumber, toTitle } from "../../../../utils/string";
@@ -21,12 +21,16 @@ import { deleteEntity } from "../../../../services/deleteEntity";
 import { Professional } from "../../../../types/models";
 import { getEntity } from "../../../../services/getEntity";
 import { useAuth, useDialog, useToast } from "../../../../hooks";
+import { OutletContextType } from "../../../../components/types/OutletContext";
 
 const ProfessionalList = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { openDialog } = useDialog();
   const { showToast } = useToast();
+    const { setSectionName } = useOutletContext<OutletContextType>();
+
+    setSectionName("PROFISSIONAIS");
 
   const professionalsQuery = useQuery({
     enabled: !!user,
