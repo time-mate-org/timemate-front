@@ -1,17 +1,16 @@
 import { Box, Grid2, Typography } from "@mui/material";
 import { format, addDays, isToday, isTomorrow } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { useContext } from "react";
 import { Appointment, Client, Professional, Service } from "../../types/models";
 import { ServiceBox } from "./styled";
 import { toTitle } from "../../utils/string";
 import { MetricCard } from "./components/MetricCard";
 import { getEntity } from "../../services/getEntity";
-import { AuthContext } from "../../providers/auth/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "../../hooks";
 
 const Dashboard = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const appointmentsQuery = useQuery({
     enabled: !!user,
     queryKey: ["appointments"],

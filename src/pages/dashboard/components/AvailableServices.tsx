@@ -1,13 +1,12 @@
 import { Typography, Grid2 } from "@mui/material";
 import { AvailableServicesBox, ServiceBox } from "../styled";
-import { useContext } from "react";
 import { Service } from "../../../types/models";
 import { getEntity } from "../../../services/getEntity";
-import { AuthContext } from "../../../providers/auth/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "../../../hooks";
 
 export const AvailableServices = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
 
   const servicesQuery = useQuery({
     enabled: !!user,

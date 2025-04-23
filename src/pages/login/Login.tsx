@@ -1,14 +1,14 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Box, TextField, Typography, Link, Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { LoginBox, LoginButton } from "./style";
-import { AuthContext } from "../../providers/auth/AuthProvider";
 import { ResponsiveTypography } from "../home/style";
 import { LIGHTBLUE } from "../home/components/utils";
+import { useAuth } from "../../hooks";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { user, setUser, login } = useContext(AuthContext);
+  const { user, setUser, login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");

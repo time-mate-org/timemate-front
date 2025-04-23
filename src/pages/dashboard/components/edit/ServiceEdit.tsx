@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -10,17 +10,16 @@ import { CustomSubmitButton } from "../fields/CustomButton";
 import { User } from "firebase/auth";
 import { updateEntity } from "../../../../services/updateEntity";
 import { ServiceFormData } from "../../../../types/formData";
-import { AuthContext } from "../../../../providers/auth/AuthProvider";
-import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { Service } from "../../../../types/models";
 import { getEntity } from "../../../../services/getEntity";
 import { CustomPriceField } from "../fields/CustomPriceField";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useAuth, useToast } from "../../../../hooks";
 
 const ServiceEdit = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const { showToast } = useContext(ToastContext);
+  const { showToast } = useToast();
   const { id } = useParams<{ id: string }>();
   const serviceQuery = useQuery({
     enabled: !!user,

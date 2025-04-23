@@ -19,22 +19,19 @@ import { format, isToday } from "date-fns";
 import { AppointmentTimeline } from "../../../../components/timeline/TimeLine";
 import { toTitle } from "../../../../utils/string";
 import { StyledTableCell } from "../../styled";
-import { useContext } from "react";
 import { Appointment, Professional, Service } from "../../../../types/models";
 import { User } from "firebase/auth";
-import { AuthContext } from "../../../../providers/auth/AuthProvider";
-import { DialogContext } from "../../../../providers/dialog/DialogProvider";
-import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { deleteEntity } from "../../../../services/deleteEntity";
 import { getEntity } from "../../../../services/getEntity";
 import { toUTCDate } from "../../../../utils/date";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useAuth, useDialog, useToast } from "../../../../hooks";
 
 const AppointmentList = () => {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
-  const { openDialog } = useContext(DialogContext);
-  const { showToast } = useContext(ToastContext);
+  const { user } = useAuth();
+  const { openDialog } = useDialog();
+  const { showToast } = useToast();
 
   const appointmentsQuery = useQuery({
     enabled: !!user,
@@ -54,8 +51,7 @@ const AppointmentList = () => {
   });
   const deleteAppointmentMutation = useMutation({
     mutationKey: ["appointmentDelete"],
-    mutationFn: (id: number) =>
-      deleteEntity(user as User, "appointments", id),
+    mutationFn: (id: number) => deleteEntity(user as User, "appointments", id),
   });
 
   const todayAppointments = appointmentsQuery.data?.filter((appointment) =>

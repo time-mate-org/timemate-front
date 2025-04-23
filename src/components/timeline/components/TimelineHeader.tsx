@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import CircleIcon from "@mui/icons-material/Circle";
 import { toTitle } from "../../../utils/string";
 import { Grid2 } from "@mui/material";
@@ -10,16 +9,16 @@ import {
   ServiceCard,
 } from "../style";
 import { Service } from "../../../types/models";
-import { AuthContext } from "../../../providers/auth/AuthProvider";
 import { getEntity } from "../../../services/getEntity";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "../../../hooks";
 
 export const TimelineHeader = ({
   colors,
 }: {
   colors: { [key: number]: string };
 }) => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
 
   const servicesQuery = useQuery({
     enabled: !!user,

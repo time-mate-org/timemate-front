@@ -14,22 +14,19 @@ import { Add as AddIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
-import { useContext } from "react";
 import { toEstimatedTimeDisplay, toTitle } from "../../../../utils/string";
-import { DialogContext } from "../../../../providers/dialog/DialogProvider";
-import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { User } from "firebase/auth";
 import { deleteEntity } from "../../../../services/deleteEntity";
 import { Service } from "../../../../types/models";
-import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { getEntity } from "../../../../services/getEntity";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useAuth, useDialog, useToast } from "../../../../hooks";
 
 const ServiceList = () => {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
-  const { openDialog } = useContext(DialogContext);
-  const { showToast } = useContext(ToastContext);
+  const { user } = useAuth();
+  const { openDialog } = useDialog();
+  const { showToast } = useToast();
 
   const servicesQuery = useQuery({
     enabled: !!user,
@@ -41,7 +38,7 @@ const ServiceList = () => {
     mutationFn: async (id: number) => {
       deleteEntity(user as User, "services", id);
       await servicesQuery.refetch();
-    }
+    },
   });
 
   const handleDelete = (service?: Service) => {

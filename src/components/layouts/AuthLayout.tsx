@@ -1,11 +1,11 @@
 import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useCallback, useContext, useEffect } from "react";
-import { AuthContext } from "../../providers/auth/AuthProvider";
+import { useCallback, useEffect } from "react";
+import { useAuth } from "../../hooks";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
-  const { user, isUserFetching } = useContext(AuthContext);
+  const { user, isUserFetching } = useAuth();
 
   // Cria uma função estável com useCallback
   const redirectToLogin = useCallback(() => {

@@ -1,6 +1,5 @@
 import { Box, Typography } from "@mui/material";
 import { joiResolver } from "@hookform/resolvers/joi";
-import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { closestTo, format, set } from "date-fns";
@@ -11,17 +10,16 @@ import { AppointmentFormData } from "../../../../types/formData";
 import { CustomDateField } from "../fields/CustomDateField";
 import { CustomSelectField } from "../fields/CustomSelectField";
 import { CustomSubmitButton } from "../fields/CustomButton";
-import { AuthContext } from "../../../../providers/auth/AuthProvider";
-import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { Client, Professional, Service } from "../../../../types/models";
 import { getEntity } from "../../../../services/getEntity";
 import { createEntity } from "../../../../services/createEntity";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useAuth, useToast } from "../../../../hooks";
 
 const AppointmentNew = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const { state } = useLocation();
-  const { showToast } = useContext(ToastContext);
+  const { showToast } = useToast();
   const now = new Date();
   const {
     control,

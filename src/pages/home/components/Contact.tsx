@@ -6,17 +6,15 @@ import { ContactFormData } from "../../../types/formData";
 import { contactFormSchema } from "../../../validation/contact";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { useForm } from "react-hook-form";
-import { useContext } from "react";
 import { sendEmail } from "../../../services/sendEmail";
-import { AuthContext } from "../../../providers/auth/AuthProvider";
 import { toTitle } from "../../../utils/string";
-import { ToastContext } from "../../../providers/toast/ToastProvider";
 import { CustomTextField } from "../../dashboard/components/fields/CustomTextField";
+import { useAuth, useToast } from "../../../hooks";
 
 export const HomeContact = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const handleRedirect = (url: string) => window.open(url);
-  const { showToast } = useContext(ToastContext);
+  const { showToast } = useToast();
   const {
     control,
     handleSubmit,

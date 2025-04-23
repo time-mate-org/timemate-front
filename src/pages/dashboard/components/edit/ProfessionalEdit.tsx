@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -8,18 +8,17 @@ import { CustomSubmitButton } from "../fields/CustomButton";
 import { User } from "firebase/auth";
 import { updateEntity } from "../../../../services/updateEntity";
 import { ProfessionalFormData } from "../../../../types/formData";
-import { AuthContext } from "../../../../providers/auth/AuthProvider";
-import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { cleanPhoneNumber, formatPhoneNumber } from "../../../../utils/string";
 import { professionalSchema } from "../../../../validation/professional";
 import { Professional } from "../../../../types/models";
 import { getEntity } from "../../../../services/getEntity";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useAuth, useToast } from "../../../../hooks";
 
 const ProfessionalEdit = () => {
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const { showToast } = useContext(ToastContext);
+  const { showToast } = useToast();
   const { id } = useParams<{ id: string }>();
   const professionalQuery = useQuery({
     enabled: !!user,

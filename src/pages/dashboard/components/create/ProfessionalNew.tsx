@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -9,15 +8,14 @@ import { CustomTextField } from "../fields/CustomTextField";
 import { CustomSubmitButton } from "../fields/CustomButton";
 import { createEntity } from "../../../../services/createEntity";
 import { ProfessionalFormData } from "../../../../types/formData";
-import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { User } from "firebase/auth";
-import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { cleanPhoneNumber } from "../../../../utils/string";
 import { useMutation } from "@tanstack/react-query";
+import { useAuth, useToast } from "../../../../hooks";
 
 const ProfessionalNew = () => {
-  const { user } = useContext(AuthContext);
-  const { showToast } = useContext(ToastContext);
+  const { user } = useAuth();
+  const { showToast } = useToast();
   const {
     control,
     handleSubmit,

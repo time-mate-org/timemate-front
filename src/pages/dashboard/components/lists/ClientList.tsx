@@ -14,22 +14,19 @@ import { Add as AddIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
-import { useContext } from "react";
 import { formatPhoneNumber } from "../../../../utils/string";
 import { User } from "firebase/auth";
-import { AuthContext } from "../../../../providers/auth/AuthProvider";
-import { DialogContext } from "../../../../providers/dialog/DialogProvider";
-import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { deleteEntity } from "../../../../services/deleteEntity";
 import { Client } from "../../../../types/models";
 import { getEntity } from "../../../../services/getEntity";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useAuth, useDialog, useToast } from "../../../../hooks";
 
 const ClientList = () => {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
-  const { openDialog } = useContext(DialogContext);
-  const { showToast } = useContext(ToastContext);
+  const { user } = useAuth();
+  const { openDialog } = useDialog();
+  const { showToast } = useToast();
 
   const clientsQuery = useQuery({
     enabled: !!user,

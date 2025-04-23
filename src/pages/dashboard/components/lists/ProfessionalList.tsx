@@ -11,25 +11,22 @@ import {
   Typography,
 } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
-import { useContext } from "react";
 import { formatPhoneNumber, toTitle } from "../../../../utils/string";
 import { User } from "firebase/auth";
 import { deleteEntity } from "../../../../services/deleteEntity";
 import { Professional } from "../../../../types/models";
-import { AuthContext } from "../../../../providers/auth/AuthProvider";
-import { DialogContext } from "../../../../providers/dialog/DialogProvider";
-import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { getEntity } from "../../../../services/getEntity";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useAuth, useDialog, useToast } from "../../../../hooks";
 
 const ProfessionalList = () => {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
-  const { openDialog } = useContext(DialogContext);
-  const { showToast } = useContext(ToastContext);
+  const { user } = useAuth();
+  const { openDialog } = useDialog();
+  const { showToast } = useToast();
 
   const professionalsQuery = useQuery({
     enabled: !!user,

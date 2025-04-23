@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -11,14 +10,13 @@ import { CustomSubmitButton } from "../fields/CustomButton";
 import { User } from "firebase/auth";
 import { createEntity } from "../../../../services/createEntity";
 import { ServiceFormData } from "../../../../types/formData";
-import { AuthContext } from "../../../../providers/auth/AuthProvider";
-import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { CustomPriceField } from "../fields/CustomPriceField";
 import { useMutation } from "@tanstack/react-query";
+import { useAuth, useToast } from "../../../../hooks";
 
 const ServiceNew = () => {
-  const { user } = useContext(AuthContext);
-  const { showToast } = useContext(ToastContext);
+  const { user } = useAuth();
+  const { showToast } = useToast();
   const {
     control,
     handleSubmit,

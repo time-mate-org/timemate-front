@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -8,17 +8,16 @@ import { CustomSubmitButton } from "../fields/CustomButton";
 import { User } from "firebase/auth";
 import { updateEntity } from "../../../../services/updateEntity";
 import { ClientFormData } from "../../../../types/formData";
-import { AuthContext } from "../../../../providers/auth/AuthProvider";
-import { ToastContext } from "../../../../providers/toast/ToastProvider";
 import { cleanPhoneNumber, formatPhoneNumber } from "../../../../utils/string";
 import { clientSchema } from "../../../../validation/client";
 import { getEntity } from "../../../../services/getEntity";
 import { Client } from "../../../../types/models";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useAuth, useToast } from "../../../../hooks";
 
 const ClientEdit = () => {
-  const { user } = useContext(AuthContext);
-  const { showToast } = useContext(ToastContext);
+  const { user } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const clientQuery = useQuery({

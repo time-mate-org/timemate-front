@@ -9,7 +9,6 @@ import {
 import { ArrowBack } from "@mui/icons-material";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-import { useContext } from "react";
 import { menuItems } from "../../pages/dashboard/components/menuItems";
 import {
   DashboardDrawer,
@@ -17,10 +16,10 @@ import {
   OutletContainer,
 } from "../../pages/dashboard/styled";
 import { Navbar } from "../Navbar";
-import { AuthContext } from "../../providers/auth/AuthProvider";
+import { useAuth } from "../../hooks";
 
 const DashboardLayout = () => {
-  const { logout } = useContext(AuthContext);
+  const { logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const isDashboard = location.pathname === "/dashboard";

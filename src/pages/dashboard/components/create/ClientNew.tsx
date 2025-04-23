@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { clientSchema } from "../../../../validation/client";
@@ -8,12 +7,11 @@ import { Client } from "../../../../types/models";
 import { CustomTextField } from "../fields/CustomTextField";
 import { CustomSubmitButton } from "../fields/CustomButton";
 import { User } from "firebase/auth";
-import { ToastContext } from "../../../../providers/toast/ToastProvider";
-import { AuthContext } from "../../../../providers/auth/AuthProvider";
 import { ClientFormData } from "../../../../types/formData";
 import { cleanPhoneNumber } from "../../../../utils/string";
 import { createEntity } from "../../../../services/createEntity";
 import { useMutation } from "@tanstack/react-query";
+import { useAuth, useToast } from "../../../../hooks";
 
 const ClientNew = () => {
   const {
@@ -28,8 +26,8 @@ const ClientNew = () => {
     },
     resolver: joiResolver(clientSchema),
   });
-  const { showToast } = useContext(ToastContext);
-  const { user } = useContext(AuthContext);
+  const { showToast } = useToast();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const newClientMutation = useMutation({
     mutationKey: ["clientCreate"],
