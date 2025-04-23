@@ -1,4 +1,4 @@
-import { Service } from "../../types/models";
+import { Service } from "../../../../types/models";
 
 type RGBType = {
   r: number;

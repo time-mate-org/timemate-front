@@ -12,8 +12,8 @@ import {
   setHours,
   setMinutes,
 } from "date-fns";
-import { Appointment, Professional } from "../../types/models";
-import { toUTCDate } from "../../utils/date";
+import { Appointment, Professional } from "../../../../types/models";
+import { toUTCDate } from "../../../../utils/date";
 
 const START_OF_BUSINESS_HOUR = 9;
 const END_OF_BUSINESS = 20;

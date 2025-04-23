@@ -76,6 +76,8 @@ export const CustomTableRow = styled(TableRow, {
 
 // Container principal com visual dark e borda sutil
 export const TimelineContainer = styled(Grid2)(({ theme }) => ({
+  borderTopLeftRadius: "15px",
+  borderTopRightRadius: "15px",
   border: "1px solid #444",
   backgroundColor: "#1e1e2f",
   padding: theme.spacing(2),

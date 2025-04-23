@@ -8,18 +8,16 @@ import {
   TableHead,
   TableRow,
   Button,
-  Divider,
   Typography,
 } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom"; // Imports necessários
+import { useNavigate } from "react-router-dom";
 import { IconButton } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { format, isToday } from "date-fns";
-import { AppointmentTimeline } from "../../../../components/timeline/TimeLine";
 import { toTitle } from "../../../../utils/string";
 import { StyledTableCell } from "../../styled";
-import { Appointment, Professional, Service } from "../../../../types/models";
+import { Appointment } from "../../../../types/models";
 import { User } from "firebase/auth";
 import { deleteEntity } from "../../../../services/deleteEntity";
 import { getEntity } from "../../../../services/getEntity";
@@ -37,17 +35,6 @@ const AppointmentList = () => {
     enabled: !!user,
     queryKey: ["appointments"],
     queryFn: () => getEntity<Appointment[]>({ user, resource: "appointments" }),
-  });
-  const professionalsQuery = useQuery({
-    enabled: !!user,
-    queryKey: ["professionals"],
-    queryFn: () =>
-      getEntity<Professional[]>({ user, resource: "professionals" }),
-  });
-  const servicesQuery = useQuery({
-    enabled: !!user,
-    queryKey: ["services"],
-    queryFn: () => getEntity<Service[]>({ user, resource: "services" }),
   });
   const deleteAppointmentMutation = useMutation({
     mutationKey: ["appointmentDelete"],
@@ -169,17 +156,6 @@ const AppointmentList = () => {
           Ainda não há agendamentos hoje.
         </Typography>
       )}
-
-      <Divider sx={{ mb: 10 }} />
-
-      <Typography align="center" color="#00ff9d" py={1} fontSize={25}>
-        TIMELINE
-      </Typography>
-      <AppointmentTimeline
-        professionals={professionalsQuery.data ?? []}
-        services={servicesQuery.data ?? []}
-        appointments={appointmentsQuery.data ?? []}
-      />
     </Box>
   );
 };

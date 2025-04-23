@@ -1,13 +1,13 @@
 import CircleIcon from "@mui/icons-material/Circle";
-import { toTitle } from "../../../utils/string";
+import { toTitle } from "../../../../../utils/string";
 import { Grid2 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useQuery } from "@tanstack/react-query";
 import { Dispatch, SetStateAction } from "react";
 import { TimelineContainer, HeaderTypography } from "../style";
-import { Service } from "../../../types/models";
-import { getEntity } from "../../../services/getEntity";
-import { useAuth } from "../../../hooks";
+import { Service } from "../../../../../types/models";
+import { getEntity } from "../../../../../services/getEntity";
+import { useAuth } from "../../../../../hooks";
 
 export const TimelineHeader = ({
   colors,

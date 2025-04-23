@@ -2,7 +2,7 @@ import { Grid2 } from "@mui/material";
 import { format } from "date-fns";
 import { CustomTableRow, CustomTableCell } from "../style";
 import { isCurrentTimeSlot } from "../utils";
-import { Appointment, Professional } from "../../../types/models";
+import { Appointment, Professional } from "../../../../../types/models";
 import { ArrowForwardIos } from "@mui/icons-material";
 import { TimelineTableCell } from "./TimelineTableCell";
 

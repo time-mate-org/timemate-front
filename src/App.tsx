@@ -29,6 +29,7 @@ import { DialogProvider } from "./providers/dialog/DialogProvider";
 import Dashboard from "./pages/dashboard/Dashboard";
 import { Home } from "./pages/home/Home";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AppointmentTimeline } from "./pages/dashboard/components/timeline/TimeLine";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const DashboardRoutes = () => (
       <Route path="appointments/*" element={<AppointmentList />} />
       <Route path="appointment/new" element={<AppointmentNew />} />
       <Route path="appointment/edit/:id" element={<AppointmentEdit />} />
+      <Route path="timeline" element={<AppointmentTimeline/>}/>
     </Route>
   </Routes>
 );

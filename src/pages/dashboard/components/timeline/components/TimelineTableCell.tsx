@@ -1,6 +1,6 @@
 import { Tooltip, Typography } from "@mui/material";
 import { format } from "date-fns";
-import { toTitle } from "../../../utils/string";
+import { toTitle } from "../../../../../utils/string";
 import { CustomTableCell } from "../style";
 import {
   isBusy,
@@ -8,7 +8,7 @@ import {
   isCurrentTimeSlot,
   simplifyName,
 } from "../utils";
-import { Appointment, Professional } from "../../../types/models";
+import { Appointment, Professional } from "../../../../../types/models";
 import { useNavigate } from "react-router-dom";
 
 type TimelineTableCellProps = {
