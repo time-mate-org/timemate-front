@@ -1,16 +1,19 @@
 import { Box } from "@mui/material";
 import { useIsFetching, useIsMutating } from "@tanstack/react-query";
 import LoadingComponent from "../loading/Loading";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../providers/auth/AuthProvider";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
+  const { isUserFetching } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const fetchingQueries: number = useIsFetching();
   const mutations: number = useIsMutating();
 
   useEffect(() => {
-    setIsLoading(fetchingQueries > 0 && mutations > 0);
-  }, [fetchingQueries, mutations]);
+    const shouldFetch = fetchingQueries > 0 || mutations > 0 || isUserFetching;
+    setIsLoading(shouldFetch);
+  }, [fetchingQueries, isUserFetching, mutations]);
 
   return (
     <Box

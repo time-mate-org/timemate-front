@@ -3,13 +3,12 @@ import { Box, TextField, Typography, Link, Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { LoginBox, LoginButton } from "./style";
 import { AuthContext } from "../../providers/auth/AuthProvider";
-import { login } from "../../services/firebase";
 import { ResponsiveTypography } from "../home/style";
 import { LIGHTBLUE } from "../home/components/utils";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { user, setUser } = useContext(AuthContext);
+  const { user, setUser, login } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");

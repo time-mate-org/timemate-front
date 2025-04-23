@@ -5,7 +5,7 @@ import { AuthContext } from "../../providers/auth/AuthProvider";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
+  const { user, isUserFetching } = useContext(AuthContext);
 
   // Cria uma função estável com useCallback
   const redirectToLogin = useCallback(() => {
@@ -15,8 +15,8 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   }, [navigate]);
 
   useEffect(() => {
-    if (!user) redirectToLogin();
-  }, [user, redirectToLogin]);
+    if (!user && !isUserFetching) redirectToLogin();
+  }, [user, redirectToLogin, isUserFetching]);
 
   return (
     <Box
