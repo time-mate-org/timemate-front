@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import "./loading.css";
 import { ResponsiveTypography } from "../../pages/home/style";
+import { LIGHTBLACK } from "../../pages/home/components/utils";
 
 const LoadingComponent = () => {
   return (
@@ -8,7 +9,7 @@ const LoadingComponent = () => {
       sx={{
         position: "fixed",
         inset: 0,
-        bgcolor: "#0f0f0f",
+        bgcolor: LIGHTBLACK,
         zIndex: 9999,
         display: "flex",
         alignItems: "center",

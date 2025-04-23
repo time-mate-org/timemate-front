@@ -1,4 +1,3 @@
-
 export type AppointmentFormData = {
   id?: number;
   client_id: number | "";
@@ -6,7 +5,6 @@ export type AppointmentFormData = {
   service_id: number | "";
   start_time: string;
 };
-
 
 export type ClientFormData = {
   id?: number;
@@ -32,4 +30,5 @@ export type ContactFormData = {
   name: string;
   email: string;
   message: string;
-}
+  content?: string;
+};

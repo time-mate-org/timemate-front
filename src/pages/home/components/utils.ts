@@ -21,3 +21,4 @@ export const services = [
 
   export const BLUE = "#0e2a34";
   export const LIGHTBLUE = "#3e5ac6";
+  export const LIGHTBLACK = "#0f0f0f"

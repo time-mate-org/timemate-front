@@ -1,7 +1,7 @@
 import { Container, Typography, Box, Button, Grid2 } from "@mui/material";
 import { Instagram, Facebook } from "@mui/icons-material";
 import { ResponsiveTypography } from "../style";
-import { LIGHTBLUE } from "./utils";
+import { LIGHTBLACK, LIGHTBLUE } from "./utils";
 import { ContactFormData } from "../../../types/formData";
 import { contactFormSchema } from "../../../validation/contact";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -10,6 +10,7 @@ import { sendEmail } from "../../../services/sendEmail";
 import { toTitle } from "../../../utils/string";
 import { CustomTextField } from "../../dashboard/components/fields/CustomTextField";
 import { useAuth, useToast } from "../../../hooks";
+import { useMutation } from "@tanstack/react-query";
 
 export const HomeContact = () => {
   const { user } = useAuth();
@@ -19,8 +20,23 @@ export const HomeContact = () => {
     control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<ContactFormData>({
     resolver: joiResolver(contactFormSchema),
+  });
+  const sendEmailMutation = useMutation({
+    mutationKey: ["email"],
+    mutationFn: ({ name, email, content }: ContactFormData) =>
+      sendEmail(user, {
+        category: "contato",
+        content: content as string,
+        subject: "Alguém entrou em contato pelo formulário",
+        origin: {
+          name: "Bar Beer Baltazar",
+          email: "baltazar.timemate@ennes.dev",
+        },
+        to: { name, email },
+      }),
   });
 
   const onSubmit = async (data: ContactFormData) => {
@@ -29,26 +45,23 @@ export const HomeContact = () => {
     try {
       const { name, email, message } = data;
       const content = `\
-      <h2 style="color: ${LIGHTBLUE}; padding: 30px 0; text-align: center;">
+      <h2 style="color: ${LIGHTBLACK}; padding: 30px 0; text-align: center;">
         ${toTitle(
           name
         )} entrou em contato por uma página sua: <strong>Bar Beer Baltazar</strong>.
       </h1>
 
-      <p style="text-align: left;font-size: 15px;">Email: <strong>${email}</strong></p>
-      <p style="text-align: left;font-size: 15px;"> ${name} disse: <strong>${message}</strong></p>`;
+      <p style="text-align: left;font-size: 15px; color: ${LIGHTBLUE};">
+        Email: <strong style="color: ${LIGHTBLACK};">${email}</strong>
+      </p>
+      <p style="text-align: left;font-size: 15px; color: ${LIGHTBLUE};"> ${name} disse: 
+        <strong style="color: ${LIGHTBLACK};">${message}</strong>
+      </p>`;
 
-      await sendEmail(user, {
-        category: "contato",
-        content,
-        subject: "Alguém entrou em contato pelo formulário",
-        subtitle: "Bar Beer Baltazar",
-        origin: {
-          name: "Bar Beer Baltazar",
-          email: "baltazar.timemate@ennes.dev",
-        },
-        to: { name, email },
-      });
+      data.content = content;
+      sendEmailMutation.mutate(data);
+      reset();
+
       toastMessage = `Seu email foi enviado para nós e retornaremos em breve.`;
     } catch (err) {
       toastMessage = `Erro na atualização do agtendamento: ${
