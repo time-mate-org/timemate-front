@@ -1,4 +1,5 @@
 import { Button, styled, Typography } from "@mui/material";
+import { LIGHTBLACK, LIGHTBLUE } from "./components/utils";
 
 // Define os tamanhos para cada variante, ordenados por breakpoints
 const variantSizes = {
@@ -41,12 +42,15 @@ const ResponsiveTypography = styled(Typography, {
 });
 
 const CustomNavItem = styled(Button)(() => ({
-  color: "#1f1f1f",
-  fontSize: 18,
-  fontWeight: 600,
+  color: LIGHTBLACK,
+  fontSize: 15,
+  fontWeight: 700,
+  letterSpacing: 1.4,
+  marginLeft: 6,
+  marginRight: 6,
   "&:hover": {
-    color: "#a1a1f1",
-    backgroundColor: "transparent"
+    color: LIGHTBLUE,
+    backgroundColor: "transparent",
   },
 }));
 

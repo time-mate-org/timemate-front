@@ -7,7 +7,7 @@ export const HomeGallery = () => {
   const images = [1, 2, 3, 4, 5, 6, 7, 8];
 
   return (
-    <Box id="galeria" sx={{ py: 4, bgcolor: BLUE, width: 1 }}>
+    <Box id="galeriadefotos" sx={{ py: 4, bgcolor: BLUE, width: 1 }}>
       <Container>
         <Typography
           py={5}
@@ -27,7 +27,7 @@ export const HomeGallery = () => {
                   component="img"
                   src={`/images/galeria/${img}.jpg`}
                   alt={`Galeria ${img}`}
-                  sx={{ width: "100%" ,minHeight: '100%' }}
+                  sx={{ width: "100%", minHeight: "100%" }}
                 />
                 <Box
                   sx={{

@@ -9,7 +9,6 @@ export const HomeHero = () => {
         position: "relative",
         textAlign: "center",
         color: "white",
-        pt: 7,
       }}
     >
       <Box
@@ -29,7 +28,10 @@ export const HomeHero = () => {
         <ResponsiveTypography initialVariant="h1">
           BALTAZAR
         </ResponsiveTypography>
-        <ResponsiveTypography initialVariant="h5" sx={{fontWeight: 300, letterSpacing: 7}}>
+        <ResponsiveTypography
+          initialVariant="h5"
+          sx={{ fontWeight: 300, letterSpacing: 7 }}
+        >
           CORTES DE CABELO MASCULINO
         </ResponsiveTypography>
       </Box>
