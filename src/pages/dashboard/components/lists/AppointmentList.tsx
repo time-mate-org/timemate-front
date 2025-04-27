@@ -84,7 +84,7 @@ const AppointmentList = () => {
     >
       <Grid2 container spacing={2}>
         <Grid2
-          size={6}
+          size={{ xs: 12, md: 6 }}
           direction="row"
           display="flex"
           alignItems="center"
@@ -105,7 +105,7 @@ const AppointmentList = () => {
           </Button>
         </Grid2>
         <Grid2
-          size={6}
+          size={{ xs: 12, md: 6 }}
           direction="row"
           display="flex"
           alignItems="center"

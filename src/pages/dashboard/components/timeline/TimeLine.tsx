@@ -31,9 +31,6 @@ export const AppointmentTimeline = () => {
   const timerRef = useRef<NodeJS.Timeout>(undefined);
   const { setSectionName } = useOutletContext<OutletContextType>();
 
-  
-  useEffect(() => setSectionName("TIMELINE"));
-  
   const professionalsQuery = useQuery({
     enabled: !!user,
     queryKey: ["professionals"],
@@ -49,6 +46,10 @@ export const AppointmentTimeline = () => {
     enabled: !!user,
     queryKey: ["appointments"],
     queryFn: () => getEntity<Appointment[]>({ user, resource: "appointments" }),
+  });
+
+  useEffect(() => {
+    setSectionName("TIMELINE");
   });
 
   const setColorsCallback = useCallback(
@@ -90,7 +91,7 @@ export const AppointmentTimeline = () => {
   return (
     <Box
       sx={{
-        p: 3,
+        p: {xs: 0, sm: 3},
         width: "100%",
         alignItems: "center",
         justifyContent: "center",
@@ -98,13 +99,18 @@ export const AppointmentTimeline = () => {
       }}
     >
       {!shouldShowTimeline ? (
-        <Typography color="white" p={3} fontSize={20} textAlign='center'>
+        <Typography color="white" p={3} fontSize={20} textAlign="center">
           São necessários ao menos um serviço e um profissonal para exibir a
           Timeline.
         </Typography>
       ) : (
-        <Box>
-          <TimelineHeader colors={colors} date={date} setDate={setDate} />
+        <Box width='100%'>
+          <TimelineHeader
+            colors={colors}
+            date={date}
+            setDate={setDate}
+            appointments={appointmentsQuery.data ?? []}
+          />
           <TableContainer
             component={Paper}
             sx={{
@@ -116,7 +122,7 @@ export const AppointmentTimeline = () => {
           >
             <Table
               stickyHeader
-              sx={{ minWidth: 650, border: "1px solid fff" }}
+              sx={{ minWidth: 300, border: "1px solid fff" }}
               size="small"
               aria-label="appointments"
             >

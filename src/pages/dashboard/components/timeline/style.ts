@@ -93,4 +93,3 @@ export const HeaderTypography = styled(Typography)(() => ({
   color: "#e0e0e0",
   fontWeight: "bold",
 }));
-

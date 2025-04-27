@@ -87,7 +87,7 @@ export const DashboardLayout = () => {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
+          p: {xs:0, sm: 1, md: 3},
           width: { sm: `calc(100% - ${drawerWidth}px)` },
         }}
       >

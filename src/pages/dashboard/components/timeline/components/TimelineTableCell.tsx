@@ -40,7 +40,7 @@ export const TimelineTableCell = ({
   const cellTime = format(rowTimeSlot as Date, "HH:mm");
   const tooltipText = isBusyCell
     ? `${cellAppointment?.professional?.name} x ${cellAppointment?.client?.name} | ${cellAppointment?.service?.name} | ${cellTime}`
-    : `Clique para marcar as ${cellTime}.`;
+    : `Clique para marcar as ${cellTime} com ${professional.name}`;
 
   return (
     <CustomTableCell
@@ -66,10 +66,15 @@ export const TimelineTableCell = ({
       )}
     >
       <Tooltip title={tooltipText}>
-        <Typography m={0} p={0} fontSize={13}>
+        <Typography
+          m={0}
+          p={0}
+          fontSize={13}
+          color={isBusyCell ? "#f1f1f1" : "transparent"}
+        >
           {cellAppointment
             ? toTitle(simplifyName(cellAppointment.client.name))
-            : ""}
+            : "___________"}
         </Typography>
       </Tooltip>
     </CustomTableCell>
