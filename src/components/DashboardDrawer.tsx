@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { menuItems } from "../pages/dashboard/components/menuItems";
 import { useAuth } from "../hooks";
+import { useNavigate } from "react-router-dom";
 
 export const DashboardDrawer = ({
   handleDrawerItemClick,
@@ -18,6 +19,8 @@ export const DashboardDrawer = ({
   handleDrawerItemClick: (path: string) => void;
 }) => {
   const { logout } = useAuth();
+  const navigate = useNavigate();
+
   return (
     <div>
       <Toolbar>
@@ -25,7 +28,8 @@ export const DashboardDrawer = ({
           component="img"
           src="/images/logo.png"
           alt="BALTAZAR"
-          sx={{ height: 50, margin: "auto" }}
+          sx={{ height: 50, margin: "auto", "&:hover": { cursor: "pointer" } }}
+          onClick={() => navigate("/")}
         />
       </Toolbar>
       <Divider />
@@ -35,7 +39,7 @@ export const DashboardDrawer = ({
             key={text}
             disablePadding
             onClick={() => handleDrawerItemClick(path)}
-            sx={{py: 1}}
+            sx={{ py: 1 }}
           >
             <ListItemButton>
               <ListItemIcon>{icon}</ListItemIcon>

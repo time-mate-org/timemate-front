@@ -17,7 +17,7 @@ export const menuItems = [
     path: "/dashboard/timeline",
   },
   {
-    text: "Atendimentos",
+    text: "Agendamentos",
     icon: <EventNoteOutlinedIcon />,
     path: "/dashboard/appointments",
   },

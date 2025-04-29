@@ -41,7 +41,7 @@ export const ServiceBox = styled(Box)(({ theme: { spacing } }) => ({
   padding: spacing(2),
   borderRadius: 1,
   transition: "transform 0.2s",
-  "&:hover": { transform: "translateY(-2px)" },
+  "&:hover": { transform: "translateY(-2px)", cursor: "pointer" },
 }));
 
 export const CustomDashboardCard = styled(Box)(() => ({
@@ -52,7 +52,7 @@ export const CustomDashboardCard = styled(Box)(() => ({
   boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
   color: "#00ff9d",
   marginBottom: "1rem",
-  "&:hover": { transform: "translateY(-2px)" },
+  "&:hover": { transform: "translateY(-2px)", cursor: "pointer" },
 }));
 
 export const AvailableServicesBox = styled(Box)(({ theme: { spacing } }) => ({

@@ -1,6 +1,6 @@
 import { Box, Button, Typography, Grid2 } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { format, isSameDay, isToday } from "date-fns";
 import { Appointment } from "../../../../types/models";
 import { User } from "firebase/auth";
@@ -24,7 +24,10 @@ const AppointmentList = () => {
   const [appointmentsByDate, setAppointmentsByDate] = useState<Appointment[]>(
     []
   );
-  const [date, setDate] = useState(new Date());
+  const {
+    state,
+  } = useLocation();
+  const [date, setDate] = useState(state?.externalDate ?? new Date());
 
   useEffect(() => setSectionName("AGENDAMENTOS"));
 
@@ -48,7 +51,7 @@ const AppointmentList = () => {
         title: `Tem certeza que deseja excluir o agendamento ${name}?`,
         description: `A exclusão desse agendamento é irreversível.`,
         buttonLabel: "Tenho certeza",
-        action: () => deleteAppointmentMutation.mutate({id, name}),
+        action: () => deleteAppointmentMutation.mutate({ id, name }),
       });
   };
 

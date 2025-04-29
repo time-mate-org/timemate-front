@@ -1,5 +1,11 @@
 import { Box, Grid2, Typography } from "@mui/material";
-import { format, addDays, isToday, isTomorrow } from "date-fns";
+import {
+  format,
+  addDays,
+  isToday,
+  isTomorrow,
+  startOfTomorrow,
+} from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Appointment, Client, Professional, Service } from "../../types/models";
 import { ServiceBox } from "./styled";
@@ -9,12 +15,13 @@ import { getEntity } from "../../services/getEntity";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../../hooks";
 import { OutletContextType } from "../../components/types/OutletContext";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { useEffect } from "react";
 
 const Dashboard = () => {
   const { user } = useAuth();
   const { setSectionName } = useOutletContext<OutletContextType>();
+  const navigate = useNavigate();
 
   useEffect(() => setSectionName("VISÃO GERAL"));
 
@@ -53,6 +60,7 @@ const Dashboard = () => {
           title="Hoje"
           metricNumber={todayAppointments?.length ?? 0}
           metricName="agendamentos"
+          onClick={() => navigate("/dashboard/appointments")}
         />
       </Grid2>
 
@@ -63,6 +71,11 @@ const Dashboard = () => {
           )}
           metricNumber={tomorrowAppointments?.length ?? 0}
           metricName="agendamentos"
+          onClick={() =>
+            navigate("/dashboard/appointments", {
+              state: { externalDate: startOfTomorrow() },
+            })
+          }
         />
       </Grid2>
 
@@ -71,6 +84,7 @@ const Dashboard = () => {
           title="Clientes"
           metricNumber={clientsQuery.data?.length ?? 0}
           metricName="cadastrados"
+          onClick={() => navigate("/dashboard/clients")}
         />
       </Grid2>
 
@@ -79,6 +93,7 @@ const Dashboard = () => {
           title="Profissionais"
           metricNumber={professionalsQuery.data?.length ?? 0}
           metricName="cadastrados"
+          onClick={() => navigate("/dashboard/professionals")}
         />
       </Grid2>
       <Grid2 size={{ xs: 12 }}>
@@ -105,7 +120,7 @@ const Dashboard = () => {
               <Grid2 container spacing={2}>
                 {servicesQuery.data?.map((service) => (
                   <Grid2 size={{ xs: 12, sm: 6, md: 4 }} key={service.id}>
-                    <ServiceBox>
+                    <ServiceBox onClick={() => navigate("/dashboard/services")}>
                       <Typography variant="subtitle1" sx={{ color: "#e2e8f0" }}>
                         {service.name}
                       </Typography>
