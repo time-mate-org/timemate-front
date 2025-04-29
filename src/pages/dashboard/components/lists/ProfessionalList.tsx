@@ -1,21 +1,7 @@
-import {
-  Box,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Button,
-  Typography,
-} from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { IconButton } from "@mui/material";
-import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
-import { formatPhoneNumber, toTitle } from "../../../../utils/string";
 import { User } from "firebase/auth";
 import { deleteEntity } from "../../../../services/deleteEntity";
 import { Professional } from "../../../../types/models";
@@ -23,6 +9,9 @@ import { getEntity } from "../../../../services/getEntity";
 import { useAuth, useDialog, useToast } from "../../../../hooks";
 import { OutletContextType } from "../../../../components/types/OutletContext";
 import { useEffect } from "react";
+import { DefaultDataDisplay } from "../../../../components/DefaultDataDisplay";
+import { professionalToListData } from "../../../../utils/list";
+import { professionalToTableData } from "../../../../utils/table";
 
 const ProfessionalList = () => {
   const navigate = useNavigate();
@@ -41,26 +30,20 @@ const ProfessionalList = () => {
   });
   const deleteProfessionalMutation = useMutation({
     mutationKey: ["professionalDelete"],
-    mutationFn: async (professional: Professional) => {
-      await deleteEntity(
-        user as User,
-        "professionals",
-        professional.id as number
-      );
+    mutationFn: async ({ id, name }: { id: number; name: string }) => {
+      await deleteEntity(user as User, "professionals", id);
       await professionalsQuery.refetch();
-      showToast(
-        `O profissional ${professional.name} foi deletado com sucesso.`
-      );
+      showToast(`O profissional ${name} foi deletado com sucesso.`);
     },
   });
 
-  const handleDelete = (professional?: Professional) => {
-    if (professional)
+  const handleDelete = ({ id, name }: { id: number; name: string }) => {
+    if (id)
       openDialog({
-        title: `Tem certeza que deseja excluir o/a ${professional.name}?`,
+        title: `Tem certeza que deseja excluir o/a ${name}?`,
         description: `A exclusão desse profissional é irreversível.`,
         buttonLabel: "Tenho certeza",
-        action: () => deleteProfessionalMutation.mutate(professional),
+        action: () => deleteProfessionalMutation.mutate({ id, name }),
       });
   };
 
@@ -79,74 +62,14 @@ const ProfessionalList = () => {
       >
         Novo Profissional
       </Button>
-
-      {professionalsQuery.data && professionalsQuery.data.length > 0 ? (
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead sx={{ bgcolor: "#1a1a1a" }}>
-              <TableRow>
-                <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                  Nome
-                </TableCell>
-                <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                  Profissão
-                </TableCell>
-                <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                  Telefone
-                </TableCell>
-                <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                  Operações
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {professionalsQuery.data?.map((profissional) => (
-                <TableRow
-                  key={profissional.id}
-                  sx={{
-                    "&:nth-of-type(odd)": { bgcolor: "#121212" },
-                    "&:hover": { bgcolor: "#1a1a1a" },
-                  }}
-                >
-                  <TableCell>{toTitle(profissional.name)}</TableCell>
-                  <TableCell>{toTitle(profissional.title)}</TableCell>
-                  <TableCell>{formatPhoneNumber(profissional.phone)}</TableCell>
-                  <TableCell>
-                    <Box sx={{ display: "flex", gap: 1 }}>
-                      <IconButton
-                        onClick={() =>
-                          navigate(
-                            `/dashboard/professional/edit/${profissional.id}`
-                          )
-                        }
-                        sx={{ color: "#00ff9d" }}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleDelete(profissional)}
-                        sx={{ color: "#ff4444" }}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      ) : (
-        <Typography align="center" color="#00ff9d" py={1} fontSize={15}>
-          Não há profissionais cadastrados.{" "}
-          <strong
-            style={{ cursor: "pointer" }}
-            onClick={() => navigate("/dashboard/professional/new")}
-          >
-            Cadastre um aqui.
-          </strong>
-        </Typography>
-      )}
+      <DefaultDataDisplay
+        columnNames={["Nome", "Profissão", "Telefone"]}
+        emptyMessage="Não há profissionais cadastrados."
+        handleDelete={(id: number, name: string) => handleDelete({id, name})}
+        handleEdit={(id: number) => navigate(`/dashboard/professional/edit/${id}`)}
+        listItems={professionalToListData(professionalsQuery.data ?? [])}
+        tableItems={professionalToTableData(professionalsQuery.data ?? [])}
+      />
     </Box>
   );
 };

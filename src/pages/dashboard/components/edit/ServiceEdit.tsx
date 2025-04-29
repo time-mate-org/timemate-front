@@ -23,7 +23,7 @@ const ServiceEdit = () => {
   const { id } = useParams<{ id: string }>();
   const serviceQuery = useQuery({
     enabled: !!user,
-    queryKey: ["services"],
+    queryKey: ["service"],
     queryFn: () =>
       getEntity<Service>({
         user,

@@ -22,7 +22,7 @@ const ClientEdit = () => {
   const { id } = useParams<{ id: string }>();
   const clientQuery = useQuery({
     enabled: !!user,
-    queryKey: ["clients"],
+    queryKey: ["client"],
     queryFn: () =>
       getEntity<Client>({
         user,

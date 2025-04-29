@@ -1,33 +1,19 @@
-import {
-  Box,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Button,
-  Typography,
-  Grid2,
-} from "@mui/material";
+import { Box, Button, Typography, Grid2 } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { IconButton } from "@mui/material";
-import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { format, isSameDay, isToday } from "date-fns";
-import { toTitle } from "../../../../utils/string";
-import { StyledTableCell } from "../../styled";
 import { Appointment } from "../../../../types/models";
 import { User } from "firebase/auth";
 import { deleteEntity } from "../../../../services/deleteEntity";
 import { getEntity } from "../../../../services/getEntity";
-import { toUTCDate } from "../../../../utils/date";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuth, useDialog, useToast } from "../../../../hooks";
 import { OutletContextType } from "../../../../components/types/OutletContext";
 import { useEffect, useState } from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { appointmentsToTableData } from "../../../../utils/table";
+import { appointmentsToListData } from "../../../../utils/list";
+import { DefaultDataDisplay } from "../../../../components/DefaultDataDisplay";
 
 const AppointmentList = () => {
   const navigate = useNavigate();
@@ -49,21 +35,20 @@ const AppointmentList = () => {
   });
   const deleteAppointmentMutation = useMutation({
     mutationKey: ["appointmentDelete"],
-    mutationFn: async (id: number) => {
+    mutationFn: async ({ id, name }: { id: number; name: string }) => {
       await deleteEntity(user as User, "appointments", id);
       await appointmentsQuery.refetch();
-      showToast(`O agendamento #${id} foi deletado com sucesso.`);
+      showToast(`O agendamento ${name} foi deletado com sucesso.`);
     },
   });
 
-  const handleDelete = (appointment?: Appointment) => {
-    if (appointment)
+  const handleDelete = ({ id, name }: { id: number; name: string }) => {
+    if (id)
       openDialog({
-        title: `Tem certeza que deseja excluir o agendamento?`,
+        title: `Tem certeza que deseja excluir o agendamento ${name}?`,
         description: `A exclusão desse agendamento é irreversível.`,
         buttonLabel: "Tenho certeza",
-        action: () =>
-          deleteAppointmentMutation.mutate(appointment.id as number),
+        action: () => deleteAppointmentMutation.mutate({id, name}),
       });
   };
 
@@ -123,86 +108,18 @@ const AppointmentList = () => {
           </Typography>
         </Grid2>
         <Grid2 size={12}>
-          {appointmentsByDate && appointmentsByDate.length > 0 ? (
-            <TableContainer component={Paper}>
-              <Table>
-                <TableHead sx={{ bgcolor: "#1a1a1a" }}>
-                  <TableRow>
-                    <TableCell
-                      align="center"
-                      sx={{ color: "#00ff9d", fontWeight: 600 }}
-                    >
-                      Cliente
-                    </TableCell>
-                    <StyledTableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                      Profissional
-                    </StyledTableCell>
-                    <StyledTableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                      Serviço
-                    </StyledTableCell>
-                    <StyledTableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                      Data
-                    </StyledTableCell>
-                    <StyledTableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                      Operações
-                    </StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {appointmentsByDate.map((appointment) => (
-                    <TableRow
-                      key={appointment.id}
-                      sx={{
-                        "&:nth-of-type(odd)": {
-                          bgcolor: "#121212",
-                        },
-                        "&:hover": { bgcolor: "#1a1a1a" },
-                      }}
-                    >
-                      <StyledTableCell>
-                        {toTitle(appointment.professional?.name ?? "-")}
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        {toTitle(appointment.client?.name ?? "-")}
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        {toTitle(appointment.service?.name ?? "-")}
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        {format(
-                          toUTCDate(appointment.start_time) as Date,
-                          "HH:mm"
-                        )}
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        <IconButton
-                          onClick={() =>
-                            navigate(
-                              `/dashboard/appointment/edit/${appointment.id}`
-                            )
-                          }
-                          sx={{ color: "#00ff9d" }}
-                        >
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton
-                          onClick={() => handleDelete(appointment)}
-                          sx={{ color: "#ff4444" }}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </StyledTableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          ) : (
-            <Typography align="center" color="#00ff9d" py={1} fontSize={15}>
-              Ainda não há agendamentos{" "}
-              {isToday(date) ? "hoje" : `para esse dia`}.
-            </Typography>
-          )}
+          <DefaultDataDisplay
+            columnNames={["Cliente", "Profissional", "Serviço", "Horário"]}
+            emptyMessage={`Ainda não há agendamentos ${
+              isToday(date) ? "hoje" : "para esse dia"
+            }.`}
+            handleDelete={(id: number, name) => handleDelete({ id, name })}
+            handleEdit={(id: number) =>
+              navigate(`/dashboard/appointment/edit/${id}`)
+            }
+            listItems={appointmentsToListData(appointmentsByDate)}
+            tableItems={appointmentsToTableData(appointmentsByDate)}
+          />
         </Grid2>
       </Grid2>
     </Box>

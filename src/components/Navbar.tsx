@@ -44,6 +44,22 @@ const Navbar = ({
       >
         BAR BEER BALTAZAR
       </Typography>
+      <Typography
+        variant="h5"
+        noWrap
+        component="a"
+        href="#app-bar-with-responsive-menu2"
+        sx={{
+          display: { xs: "flex", md:'none' },
+          fontFamily: "monospace",
+          fontWeight: 700,
+          letterSpacing: ".3rem",
+          color: "inherit",
+          textDecoration: "none",
+        }}
+      >
+        BALTAZAR
+      </Typography>
     </Toolbar>
   </AppBar>
 );

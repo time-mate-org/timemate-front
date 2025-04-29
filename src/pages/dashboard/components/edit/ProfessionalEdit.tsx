@@ -22,7 +22,7 @@ const ProfessionalEdit = () => {
   const { id } = useParams<{ id: string }>();
   const professionalQuery = useQuery({
     enabled: !!user,
-    queryKey: ["professionals"],
+    queryKey: ["professional"],
     queryFn: () =>
       getEntity<Professional>({
         user,

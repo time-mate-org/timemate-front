@@ -1,20 +1,7 @@
-import {
-  Box,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Button,
-  Typography,
-} from "@mui/material";
+import { useEffect } from "react";
+import { Box, Button } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { IconButton } from "@mui/material";
-import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
-import { formatPhoneNumber } from "../../../../utils/string";
 import { User } from "firebase/auth";
 import { deleteEntity } from "../../../../services/deleteEntity";
 import { Client } from "../../../../types/models";
@@ -22,7 +9,9 @@ import { getEntity } from "../../../../services/getEntity";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuth, useDialog, useToast } from "../../../../hooks";
 import { OutletContextType } from "../../../../components/types/OutletContext";
-import { useEffect } from "react";
+import { clientsToListData } from "../../../../utils/list";
+import { clientsToTableData } from "../../../../utils/table";
+import { DefaultDataDisplay } from "../../../../components/DefaultDataDisplay";
 
 const ClientList = () => {
   const navigate = useNavigate();
@@ -40,20 +29,20 @@ const ClientList = () => {
   });
   const deleteClientMutation = useMutation({
     mutationKey: ["clientDelete"],
-    mutationFn: async (client: Client) => {
-      await deleteEntity(user as User, "clients", client.id as number);
+    mutationFn: async ({ id, name }: { id: number; name: string }) => {
+      await deleteEntity(user as User, "clients", id);
       await clientsQuery.refetch();
-      showToast(`O cliente ${client.name} foi deletado com sucesso.`);
+      showToast(`O cliente ${name} foi deletado com sucesso.`);
     },
   });
 
-  const handleDelete = (client?: Client) => {
-    if (client)
+  const handleDelete = ({ id, name }: { id: number; name: string }) => {
+    if (id)
       openDialog({
-        title: `Tem certeza que deseja excluir o/a ${client.name}?`,
+        title: `Tem certeza que deseja excluir o/a ${name}?`,
         description: `A exclusão desse cliente é irreversível.`,
         buttonLabel: "Tenho certeza",
-        action: () => deleteClientMutation.mutate(client),
+        action: () => deleteClientMutation.mutate({ id, name }),
       });
   };
 
@@ -73,71 +62,14 @@ const ClientList = () => {
         Novo Cliente
       </Button>
 
-      {clientsQuery.data && clientsQuery.data.length > 0 ? (
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} size="small">
-            <TableHead sx={{ bgcolor: "#1a1a1a" }}>
-              <TableRow>
-                <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                  Nome
-                </TableCell>
-                <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                  Endereço
-                </TableCell>
-                <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                  Telefone
-                </TableCell>
-                <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                  Operações
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {clientsQuery.data?.map((client) => (
-                <TableRow
-                  key={client.id}
-                  sx={{
-                    "&:nth-of-type(odd)": { bgcolor: "#121212" },
-                    "&:hover": { bgcolor: "#1a1a1a" },
-                  }}
-                >
-                  <TableCell>{client.name}</TableCell>
-                  <TableCell>{client.address}</TableCell>
-                  <TableCell>{formatPhoneNumber(client.phone)}</TableCell>
-                  <TableCell>
-                    <Box sx={{ display: "flex", gap: 1 }}>
-                      <IconButton
-                        onClick={() =>
-                          navigate(`/dashboard/client/edit/${client.id}`)
-                        }
-                        sx={{ color: "#00ff9d" }}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleDelete(client)}
-                        sx={{ color: "#ff4444" }}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      ) : (
-        <Typography align="center" color="#00ff9d" py={1} fontSize={15}>
-          Não há clientes cadastrados.{" "}
-          <strong
-            style={{ cursor: "pointer" }}
-            onClick={() => navigate("/dashboard/client/new")}
-          >
-            Cadastre um aqui.
-          </strong>
-        </Typography>
-      )}
+      <DefaultDataDisplay
+        columnNames={["Nome", "Endereço", "Telefone"]}
+        emptyMessage="Não há clientes cadastrados."
+        handleDelete={(id: number, name: string) => handleDelete({ id, name })}
+        handleEdit={(id: number) => navigate(`/dashboard/client/edit/${id}`)}
+        listItems={clientsToListData(clientsQuery.data ?? [])}
+        tableItems={clientsToTableData(clientsQuery.data ?? [])}
+      />
     </Box>
   );
 };

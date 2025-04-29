@@ -1,20 +1,6 @@
-import {
-  Box,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Button,
-  Typography,
-} from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { IconButton } from "@mui/material";
-import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
-import { toEstimatedTimeDisplay, toTitle } from "../../../../utils/string";
 import { User } from "firebase/auth";
 import { deleteEntity } from "../../../../services/deleteEntity";
 import { Service } from "../../../../types/models";
@@ -23,6 +9,9 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuth, useDialog, useToast } from "../../../../hooks";
 import { OutletContextType } from "../../../../components/types/OutletContext";
 import { useEffect } from "react";
+import { DefaultDataDisplay } from "../../../../components/DefaultDataDisplay";
+import { serviceToListData } from "../../../../utils/list";
+import { serviceToTableData } from "../../../../utils/table";
 
 const ServiceList = () => {
   const navigate = useNavigate();
@@ -40,20 +29,20 @@ const ServiceList = () => {
   });
   const deleteServiceMutation = useMutation({
     mutationKey: ["serviceDelete"],
-    mutationFn: async (service: Service) => {
-      await deleteEntity(user as User, "services", service.id as number);
+    mutationFn: async ({ id, name }: { id: number; name: string }) => {
+      await deleteEntity(user as User, "services", id);
       await servicesQuery.refetch();
-      showToast(`O serviço ${service.name} foi deletado com sucesso.`);
+      showToast(`O serviço ${name} foi deletado com sucesso.`);
     },
   });
 
-  const handleDelete = (service?: Service) => {
-    if (service)
+  const handleDelete = ({ id, name }: { id: number; name: string }) => {
+    if (id)
       openDialog({
-        title: `Tem certeza que deseja excluir o/a ${service.name}?`,
+        title: `Tem certeza que deseja excluir o/a ${name}?`,
         description: `A exclusão desse serviço é irreversível.`,
         buttonLabel: "Tenho certeza",
-        action: () => deleteServiceMutation.mutate(service),
+        action: () => deleteServiceMutation.mutate({ id, name }),
       });
   };
 
@@ -72,73 +61,15 @@ const ServiceList = () => {
       >
         Novo Serviço
       </Button>
-      {servicesQuery.data && servicesQuery.data.length > 0 ? (
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead sx={{ bgcolor: "#1a1a1a" }}>
-              <TableRow>
-                <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                  Serviço
-                </TableCell>
-                <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                  Duração
-                </TableCell>
-                <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                  Preço
-                </TableCell>
-                <TableCell sx={{ color: "#00ff9d", fontWeight: 600 }}>
-                  Operações
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {servicesQuery.data?.map((service) => (
-                <TableRow
-                  key={service.id}
-                  sx={{
-                    "&:nth-of-type(odd)": { bgcolor: "#121212" },
-                    "&:hover": { bgcolor: "#1a1a1a" },
-                  }}
-                >
-                  <TableCell>{toTitle(service.name)}</TableCell>
-                  <TableCell>
-                    {toEstimatedTimeDisplay(service.estimated_time as number)}
-                  </TableCell>
-                  <TableCell>R$ {service.price.toFixed(2)}</TableCell>
-                  <TableCell>
-                    <Box sx={{ display: "flex", gap: 1 }}>
-                      <IconButton
-                        onClick={() =>
-                          navigate(`/dashboard/service/edit/${service.id}`)
-                        }
-                        sx={{ color: "#00ff9d" }}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleDelete(service)}
-                        sx={{ color: "#ff4444" }}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      ) : (
-        <Typography align="center" color="#00ff9d" py={1} fontSize={15}>
-          Não há serviços cadastrados.{" "}
-          <strong
-            style={{ cursor: "pointer" }}
-            onClick={() => navigate("/dashboard/service/new")}
-          >
-            Cadastre um aqui.
-          </strong>
-        </Typography>
-      )}
+
+      <DefaultDataDisplay
+        columnNames={["Nome", "Endereço", "Telefone"]}
+        emptyMessage="Não há clientes cadastrados."
+        handleDelete={(id: number, name: string) => handleDelete({ id, name })}
+        handleEdit={(id: number) => navigate(`/dashboard/service/edit/${id}`)}
+        listItems={serviceToListData(servicesQuery.data ?? [])}
+        tableItems={serviceToTableData(servicesQuery.data ?? [])}
+      />
     </Box>
   );
 };
