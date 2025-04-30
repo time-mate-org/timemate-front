@@ -7,6 +7,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
+import { Box } from "@mui/material";
 
 type OpenDialogParamType = {
   title: string;
@@ -17,10 +18,12 @@ type OpenDialogParamType = {
 
 type DialogContextType = {
   openDialog: (param: OpenDialogParamType) => void;
+  openImageDialog: (imgSrc: string) => void;
 };
 
 const defaultDialogContext = {
   openDialog: () => undefined,
+  openImageDialog: () => undefined,
 };
 
 const DialogContext = createContext<DialogContextType>(defaultDialogContext);
@@ -39,6 +42,7 @@ const DialogProvider = ({ children }: { children: ReactNode }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [buttonLabel, setButtonLabel] = useState("Confirmar");
+  const [imgPath, setImgPath] = useState("");
   const [action, setAction] = useState<() => void>(() =>
     Promise.resolve(undefined)
   );
@@ -46,6 +50,7 @@ const DialogProvider = ({ children }: { children: ReactNode }) => {
     setTitle("");
     setDescription("");
     setButtonLabel("");
+    setImgPath("")
     setAction(() => Promise.resolve(undefined));
     setOpen(false);
   };
@@ -68,9 +73,14 @@ const DialogProvider = ({ children }: { children: ReactNode }) => {
     setAction(() => action);
     setOpen(true);
   };
+  const openImageDialog = (imgSrc: string) => {
+    setImgPath(imgSrc);
+    setTitle("Galeria")
+    setOpen(true);
+  };
 
   return (
-    <DialogContext.Provider value={{ openDialog }}>
+    <DialogContext.Provider value={{ openDialog, openImageDialog }}>
       {children}
       <Dialog
         open={open}
@@ -79,16 +89,22 @@ const DialogProvider = ({ children }: { children: ReactNode }) => {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{title}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            {description}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Fechar</Button>
-          <Button onClick={handleConfirm}>{buttonLabel}</Button>
-        </DialogActions>
+        {imgPath ? (
+          <Box component="img" src={imgPath} />
+        ) : (
+          <>
+            <DialogTitle>{title}</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-slide-description">
+                {description}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Fechar</Button>
+              <Button onClick={handleConfirm}>{buttonLabel}</Button>
+            </DialogActions>
+          </>
+        )}
       </Dialog>
     </DialogContext.Provider>
   );

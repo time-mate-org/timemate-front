@@ -1,8 +1,10 @@
 import { Container, Typography, Grid2, Box, IconButton } from "@mui/material";
 import { Search } from "@mui/icons-material";
 import { BLUE } from "./utils";
+import { useDialog } from "../../../hooks";
 
 export const HomeGallery = () => {
+  const { openImageDialog } = useDialog();
   // Array de nomes/índices das imagens
   const images = [1, 2, 3, 4, 5, 6, 7, 8];
 
@@ -22,7 +24,10 @@ export const HomeGallery = () => {
         <Grid2 container spacing={2}>
           {images.reverse().map((img, index) => (
             <Grid2 size={{ xs: 12, md: 6 }} p={2} key={index}>
-              <Box sx={{ position: "relative", borderRadius: 2 }}>
+              <Box
+                sx={{ position: "relative", borderRadius: 2 }}
+                onClick={() => openImageDialog(`/images/galeria/${img}.jpg`)}
+              >
                 <Box
                   component="img"
                   src={`/images/galeria/${img}.jpg`}

@@ -3,12 +3,12 @@ import BuildCircleOutlinedIcon from "@mui/icons-material/BuildCircleOutlined";
 import EngineeringOutlinedIcon from "@mui/icons-material/EngineeringOutlined";
 import EventNoteOutlinedIcon from "@mui/icons-material/EventNoteOutlined";
 import TimelineIcon from "@mui/icons-material/Timeline";
-import InfoIcon from "@mui/icons-material/Info";
+import { Home } from "@mui/icons-material";
 
 export const menuItems = [
   {
     text: "Home",
-    icon: <InfoIcon />,
+    icon: <Home />,
     path: "/dashboard",
   },
   {
