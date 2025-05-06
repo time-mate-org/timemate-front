@@ -11,7 +11,10 @@ import { OutletContextType } from "../../../../components/types/OutletContext";
 import { useEffect } from "react";
 import { DefaultDataDisplay } from "../../../../components/DefaultDataDisplay";
 import { serviceToListData } from "../../../../utils/list";
-import { serviceToTableData } from "../../../../utils/table";
+import {
+  servicesColumnNames,
+  serviceToTableData,
+} from "../../../../utils/table";
 
 const ServiceList = () => {
   const navigate = useNavigate();
@@ -63,7 +66,7 @@ const ServiceList = () => {
       </Button>
 
       <DefaultDataDisplay
-        columnNames={["Nome", "Endereço", "Telefone"]}
+        columnNames={servicesColumnNames}
         emptyMessage="Não há clientes cadastrados."
         handleDelete={(id: number, name: string) => handleDelete({ id, name })}
         handleEdit={(id: number) => navigate(`/dashboard/service/edit/${id}`)}

@@ -23,12 +23,12 @@ export type DefaultTableParam = {
 
 export type DefaultTableItem = {
   id: number;
-  name: string;
+  name?: string;
   phone?: string;
   address?: string;
   title?: string;
-  price?: number;
-  estimated_time?: number;
+  price?: string;
+  estimated_time?: string;
   service?: string;
   professional?: string;
   client?: string;
@@ -98,7 +98,7 @@ export const DefaultTable = ({
                 </IconButton>
                 <IconButton
                   key={`cell-${item.id}-delete`}
-                  onClick={() => handleDelete(item.id, item.name)}
+                  onClick={() => handleDelete(item.id, item.name ?? "")}
                   sx={{ color: "#ff9595" }}
                 >
                   <Delete />

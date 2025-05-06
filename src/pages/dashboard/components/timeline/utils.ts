@@ -9,6 +9,7 @@ import {
   isSameHour,
   isSameMinute,
   isSameMonth,
+  set,
   setHours,
   setMinutes,
 } from "date-fns";
@@ -37,9 +38,19 @@ const getTimeSlots = (date: Date = new Date()): Date[] => {
 // Função para calcular o índice do bloco de 15 minutos com base no tempo atual
 const getCurrentTimeSlot = (date: Date) => {
   const dates: Date[] = [0, 15, 30, 45]
-    .map((minute) => setMinutes(clone(date), minute))
-    .filter((optionDate) => optionDate <= date);
-  return closestTo(date, dates) as Date;
+    .map((minute) =>
+      set(clone(date), { minutes: minute, seconds: 0, milliseconds: 0 })
+    )
+    .filter((optionDate) => optionDate >= date);
+  return closestTo(date, [
+    ...dates,
+    set(clone(date), {
+      hours: getHours(date) + 1,
+      minutes: 0,
+      seconds: 0,
+      milliseconds: 0,
+    }),
+  ]) as Date;
 };
 // Função para calcular o índice do bloco de 15 minutos com base no tempo atual
 const getNextTimeSlot = (date: Date) => {

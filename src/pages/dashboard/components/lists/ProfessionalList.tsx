@@ -11,7 +11,10 @@ import { OutletContextType } from "../../../../components/types/OutletContext";
 import { useEffect } from "react";
 import { DefaultDataDisplay } from "../../../../components/DefaultDataDisplay";
 import { professionalToListData } from "../../../../utils/list";
-import { professionalToTableData } from "../../../../utils/table";
+import {
+  professionalsColumnNames,
+  professionalToTableData,
+} from "../../../../utils/table";
 
 const ProfessionalList = () => {
   const navigate = useNavigate();
@@ -63,10 +66,12 @@ const ProfessionalList = () => {
         Novo Profissional
       </Button>
       <DefaultDataDisplay
-        columnNames={["Nome", "Profissão", "Telefone"]}
+        columnNames={professionalsColumnNames}
         emptyMessage="Não há profissionais cadastrados."
-        handleDelete={(id: number, name: string) => handleDelete({id, name})}
-        handleEdit={(id: number) => navigate(`/dashboard/professional/edit/${id}`)}
+        handleDelete={(id: number, name: string) => handleDelete({ id, name })}
+        handleEdit={(id: number) =>
+          navigate(`/dashboard/professional/edit/${id}`)
+        }
         listItems={professionalToListData(professionalsQuery.data ?? [])}
         tableItems={professionalToTableData(professionalsQuery.data ?? [])}
       />

@@ -8,8 +8,8 @@ export const appointmentsToListData = (
   appointments: Appointment[] = []
 ): DefaultListItem[] =>
   appointments?.map(({ client, service, professional, start_time, id }) => ({
-    primaryText: `${toTitle(client.name)} : ${toTitle(professional.name)}`,
-    secondaryText: `${toTitle(service.name)} às ${format(
+    primaryText: `${toTitle(client?.name)} : ${toTitle(professional?.name)}`,
+    secondaryText: `${toTitle(service?.name)} às ${format(
       toUTCDate(start_time) as Date,
       "HH:mm"
     )}`,

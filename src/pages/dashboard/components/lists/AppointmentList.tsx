@@ -10,10 +10,13 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuth, useDialog, useToast } from "../../../../hooks";
 import { OutletContextType } from "../../../../components/types/OutletContext";
 import { useEffect, useState } from "react";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { appointmentsToTableData } from "../../../../utils/table";
+import {
+  appointmentsColumnNames,
+  appointmentsToTableData,
+} from "../../../../utils/table";
 import { appointmentsToListData } from "../../../../utils/list";
 import { DefaultDataDisplay } from "../../../../components/DefaultDataDisplay";
+import { DateInput } from "../timeline/components/DateInput";
 
 const AppointmentList = () => {
   const navigate = useNavigate();
@@ -24,9 +27,7 @@ const AppointmentList = () => {
   const [appointmentsByDate, setAppointmentsByDate] = useState<Appointment[]>(
     []
   );
-  const {
-    state,
-  } = useLocation();
+  const { state } = useLocation();
   const [date, setDate] = useState(state?.externalDate ?? new Date());
 
   useEffect(() => setSectionName("AGENDAMENTOS"));
@@ -99,10 +100,10 @@ const AppointmentList = () => {
           alignItems="center"
           justifyContent="center"
         >
-          <DatePicker
-            label="Dia"
-            value={date}
-            onChange={(e) => setDate(e ?? new Date())}
+          <DateInput
+            appointments={appointmentsQuery.data ?? []}
+            date={date}
+            setDate={setDate}
           />
         </Grid2>
         <Grid2 size={12}>
@@ -112,7 +113,7 @@ const AppointmentList = () => {
         </Grid2>
         <Grid2 size={12}>
           <DefaultDataDisplay
-            columnNames={["Cliente", "Profissional", "Serviço", "Horário"]}
+            columnNames={appointmentsColumnNames}
             emptyMessage={`Ainda não há agendamentos ${
               isToday(date) ? "hoje" : "para esse dia"
             }.`}

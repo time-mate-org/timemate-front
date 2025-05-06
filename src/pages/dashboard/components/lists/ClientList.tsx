@@ -10,7 +10,10 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuth, useDialog, useToast } from "../../../../hooks";
 import { OutletContextType } from "../../../../components/types/OutletContext";
 import { clientsToListData } from "../../../../utils/list";
-import { clientsToTableData } from "../../../../utils/table";
+import {
+  clientsColumnNames,
+  clientsToTableData,
+} from "../../../../utils/table";
 import { DefaultDataDisplay } from "../../../../components/DefaultDataDisplay";
 
 const ClientList = () => {
@@ -63,7 +66,7 @@ const ClientList = () => {
       </Button>
 
       <DefaultDataDisplay
-        columnNames={["Nome", "Endereço", "Telefone"]}
+        columnNames={clientsColumnNames}
         emptyMessage="Não há clientes cadastrados."
         handleDelete={(id: number, name: string) => handleDelete({ id, name })}
         handleEdit={(id: number) => navigate(`/dashboard/client/edit/${id}`)}
