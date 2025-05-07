@@ -57,7 +57,6 @@ const DialogProvider = ({ children }: { children: ReactNode }) => {
 
   const handleConfirm = async () => {
     if (action) action();
-    console.log("Confirmado");
     handleClose();
   };
 

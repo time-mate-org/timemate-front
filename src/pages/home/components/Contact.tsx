@@ -59,6 +59,7 @@ export const HomeContact = () => {
       </p>`;
 
       data.content = content;
+      data.email = import.meta.env.VITE_EMAIL_RECEIVER
       sendEmailMutation.mutate(data);
       reset();
 
