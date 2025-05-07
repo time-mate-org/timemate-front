@@ -9,11 +9,10 @@ import { useForm } from "react-hook-form";
 import { sendEmail } from "../../../services/sendEmail";
 import { toTitle } from "../../../utils/string";
 import { CustomTextField } from "../../dashboard/components/fields/CustomTextField";
-import { useAuth, useToast } from "../../../hooks";
+import { useToast } from "../../../hooks";
 import { useMutation } from "@tanstack/react-query";
 
 export const HomeContact = () => {
-  const { user } = useAuth();
   const handleRedirect = (url: string) => window.open(url);
   const { showToast } = useToast();
   const {
@@ -27,7 +26,7 @@ export const HomeContact = () => {
   const sendEmailMutation = useMutation({
     mutationKey: ["email"],
     mutationFn: ({ name, email, content }: ContactFormData) =>
-      sendEmail(user, {
+      sendEmail({
         category: "contato",
         content: content as string,
         subject: "Alguém entrou em contato pelo formulário",
@@ -59,7 +58,7 @@ export const HomeContact = () => {
       </p>`;
 
       data.content = content;
-      data.email = import.meta.env.VITE_EMAIL_RECEIVER
+      data.email = import.meta.env.VITE_EMAIL_RECEIVER;
       sendEmailMutation.mutate(data);
       reset();
 
