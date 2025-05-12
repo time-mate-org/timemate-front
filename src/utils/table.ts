@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import { DefaultTableItem } from "../components/DefaultTable";
 import { Appointment, Client, Professional, Service } from "../types/models";
 import { formatPhoneNumber, toTitle } from "./string";
+import { toUTCDate } from "./date";
 
 export const appointmentsToTableData = (
   appointments: Appointment[] = []
@@ -11,7 +12,7 @@ export const appointmentsToTableData = (
     client: toTitle(client?.name),
     professional: toTitle(professional?.name),
     service: toTitle(service?.name),
-    start_time: format(new Date(start_time), "HH:mm"),
+    start_time: format(toUTCDate(start_time), "HH:mm"),
   }));
 
 export const appointmentsColumnNames = [

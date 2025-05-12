@@ -19,6 +19,7 @@ import {
 import { getEntity } from "../../../../services/getEntity";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuth, useToast } from "../../../../hooks";
+import { toUTCDate } from "../../../../utils/date";
 
 const AppointmentEdit = () => {
   const { user } = useAuth();
@@ -80,7 +81,7 @@ const AppointmentEdit = () => {
       setValueCallback("client_id", client.id);
       setValueCallback("service_id", service.id);
       setValueCallback("professional_id", professional.id);
-      setValueCallback("start_time", start_time);
+      setValueCallback("start_time", toUTCDate(start_time).toISOString());
     }
   }, [appointmentQuery, setValueCallback]);
 
