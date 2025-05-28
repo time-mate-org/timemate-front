@@ -1,4 +1,4 @@
-import { Tooltip, Typography } from "@mui/material";
+import { Tooltip, Typography, useTheme } from "@mui/material";
 import { format } from "date-fns";
 import { toTitle } from "../../../../../utils/string";
 import { CustomTableCell } from "../style";
@@ -16,7 +16,7 @@ type TimelineTableCellProps = {
   rowTimeSlot: Date;
   currentTimeSlot?: Date | null;
   appointments: Appointment[];
-  colors: { [key: number]: string };
+  colors: { [key: number]: string }; // These are service colors
 };
 
 export const TimelineTableCell = ({
@@ -27,6 +27,7 @@ export const TimelineTableCell = ({
   colors,
 }: TimelineTableCellProps) => {
   const navigate = useNavigate();
+  const theme = useTheme();
   const isBusyCell = isBusy({
     professional,
     currentTime: rowTimeSlot,
@@ -38,16 +39,17 @@ export const TimelineTableCell = ({
     appointments
   );
   const cellTime = format(rowTimeSlot as Date, "HH:mm");
+  const professionalName = professional.name.split(" ")[0]; // Get first name for brevity in tooltip
   const tooltipText = isBusyCell
-    ? `${cellAppointment?.professional?.name} x ${cellAppointment?.client?.name} | ${cellAppointment?.service?.name} | ${cellTime}`
-    : `Clique para marcar as ${cellTime} com ${professional.name}`;
+    ? `${toTitle(cellAppointment?.service?.name ?? "")} com ${toTitle(professionalName)} (Cliente: ${toTitle(cellAppointment?.client?.name ?? "")}) às ${cellTime}`
+    : `Agendar com ${toTitle(professionalName)} às ${cellTime}`;
 
   return (
     <CustomTableCell
       key={`${professional.name}-${format(rowTimeSlot as Date, "HH:mm")}`}
       align="center"
       isBusy={isBusyCell}
-      professionalColor={colors[cellAppointment?.service.id ?? -1]}
+      serviceColor={colors[cellAppointment?.service.id ?? -1]} // Updated prop name
       onClick={() =>
         isBusyCell
           ? navigate(`/dashboard/appointment/edit/${cellAppointment?.id}`, {
@@ -65,16 +67,26 @@ export const TimelineTableCell = ({
         currentTimeSlot as Date
       )}
     >
-      <Tooltip title={tooltipText}>
+      <Tooltip title={tooltipText} placement="top">
         <Typography
-          m={0}
-          p={0}
-          fontSize={13}
-          color={isBusyCell ? "#f1f1f1" : "transparent"}
+          variant="caption" // Using variant="caption" for potentially smaller, secondary text
+          display="block" // Ensures Typography takes full width for centering if needed
+          sx={{
+            // Color is now primarily driven by CustomTableCell styles
+            // For busy cells, CustomTableCell sets contrast text.
+            // For available cells, CustomTableCell sets theme.palette.text.disabled, changing on hover.
+            fontWeight: isBusyCell ? theme.typography.fontWeightMedium : theme.typography.fontWeightRegular,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            minHeight: "1.2em", // Ensure similar height for empty/filled text
+          }}
         >
-          {cellAppointment
+          {isBusyCell && cellAppointment
             ? toTitle(simplifyName(cellAppointment.client.name))
-            : "___________"}
+            : isBusyCell // Handles case where cell is busy but somehow no appointment (should not happen)
+            ? "Ocupado"
+            : "Disponível"} 
         </Typography>
       </Tooltip>
     </CustomTableCell>

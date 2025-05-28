@@ -1,95 +1,106 @@
-import { Grid2, styled, TableCell, TableRow, Typography } from "@mui/material";
-import { invertColor } from "./utils";
+import { styled, TableCell, TableRow, Typography, Grid, alpha } from "@mui/material"; // Changed Grid2 to Grid
+import { invertColor } from "./utils"; // Keep if used, otherwise remove
 
 export const CustomTableCell = styled(TableCell, {
   shouldForwardProp: (prop) =>
     prop !== "isBusy" &&
     prop !== "isCurrentTimeSlot" &&
     prop !== "isDateCell" &&
-    prop !== "professionalColor",
+    prop !== "serviceColor", // Renamed professionalColor to serviceColor for clarity
 })<{
   isBusy?: boolean;
   isCurrentTimeSlot?: boolean;
   isDateCell?: boolean;
-  professionalColor?: string;
-}>(
-  ({
-    isBusy,
-    isDateCell,
-    isCurrentTimeSlot,
-    professionalColor = "#f44336", // vermelho moderno
-  }) => {
-    let backgroundColor: string;
-    let opacity: number = 0;
+  serviceColor?: string; 
+}>(({ theme, isBusy, isDateCell, isCurrentTimeSlot, serviceColor }) => {
+  const baseStyles = {
+    padding: theme.spacing(1, 1.5),
+    textAlign: "center",
+    fontSize: theme.typography.body2.fontSize,
+    borderBottom: `1px solid ${theme.palette.divider}`, // Apply bottom border to all cells for consistency
+    cursor: "default", // Default cursor
+  };
 
-    // Se a célula representa uma data, usa fundo mais escuro e negrito
-    if (isDateCell) {
-      backgroundColor = "#1e1e2f";
-      opacity = 1;
-    } else if (isBusy) {
-      backgroundColor = professionalColor;
-      opacity = isCurrentTimeSlot ? 1 : 0.9;
-    } else {
-      backgroundColor = "#2c2c3a";
-      opacity = 0.9;
-    }
-
+  if (isDateCell) {
     return {
-      opacity,
-      backgroundColor,
-      textAlign: "center",
-      color: isCurrentTimeSlot ? invertColor(backgroundColor) : "#e0e0e0",
-      padding: "3px 3px",
-      border: "none",
-      fontSize: 12,
-      fontWeight: isDateCell ? "bold" : "normal",
-      transition: "box-shadow 0.3s ease, background-color 0.3s ease",
-      "&:hover": {
-        cursor: "pointer",
-      },
-      borderBottom: isCurrentTimeSlot ? "1px dotted yellow" : "none",
-      borderTop: isCurrentTimeSlot ? "1px dotted yellow" : "none",
+      ...baseStyles,
+      fontWeight: theme.typography.fontWeightMedium,
+      color: theme.palette.text.secondary,
+      backgroundColor: theme.palette.background.paper,
+      position: "relative", // For potential absolute positioned elements inside like the arrow
+      ...(isCurrentTimeSlot && {
+        // Highlight for current time slot in the time column
+        borderLeft: `3px solid ${theme.palette.primary.main}`,
+        color: theme.palette.primary.main, // Make text color primary for current time
+        fontWeight: theme.typography.fontWeightBold,
+      }),
     };
   }
-);
 
-export const CustomTableRow = styled(TableRow, {
-  shouldForwardProp: (prop) => prop !== "isCurrentTimeSlot",
-})<{ isCurrentTimeSlot: boolean }>(({ isCurrentTimeSlot }) => ({
-  backgroundColor: "#1faf1f",
-  borderBottom: "none",
-  // Efeito hover para modernidade e melhor usabilidade
+  if (isBusy) {
+    const busyBackgroundColor = serviceColor || theme.palette.action.disabledBackground;
+    return {
+      ...baseStyles,
+      backgroundColor: alpha(busyBackgroundColor, 0.3), // Made service color less intense
+      color: theme.palette.getContrastText(alpha(busyBackgroundColor, 0.3)),
+      cursor: "pointer",
+      "&:hover": {
+        backgroundColor: alpha(busyBackgroundColor, 0.5),
+      },
+      ...(isCurrentTimeSlot && {
+        borderTop: `1px dashed ${theme.palette.primary.main}`,
+        borderBottom: `1px dashed ${theme.palette.primary.main}`,
+        color: theme.palette.primary.main, // Indicate current time slot subtly
+      }),
+    };
+  }
+
+  // Available slot
+  return {
+    ...baseStyles,
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.disabled, // Default text for available slot (e.g., for "Agendar")
+    cursor: "pointer",
+    "&:hover": {
+      backgroundColor: theme.palette.action.hover,
+      color: theme.palette.text.primary,
+    },
+    ...(isCurrentTimeSlot && {
+      borderTop: `1px dashed ${theme.palette.primary.main}`,
+      borderBottom: `1px dashed ${theme.palette.primary.main}`,
+      backgroundColor: alpha(theme.palette.primary.main, 0.1), // Subtle background for current available slot
+    }),
+  };
+});
+
+export const CustomTableRow = styled(TableRow)(({ theme }) => ({
+  backgroundColor: "transparent", // Rows are transparent, cell colors define appearance
+  borderBottom: `1px solid ${theme.palette.divider}`, // Default border for rows, might be overridden by cell
+  transition: "background-color 0.2s ease-in-out",
   "&:hover": {
-    backgroundColor: "#1fff1f",
-    borderBottom: "2px dotted #fff",
+    backgroundColor: alpha(theme.palette.action.hover, 0.5), // Subtle hover for the entire row
   },
-  // Se for o slot de tempo atual, adiciona um destaque lateral
-  ...(isCurrentTimeSlot && {
-    borderLeft: "4px solid rgba(255, 235, 59, 0.58)",
-    borderBottom: "1px dotted rgba(255,255,255, 0.5)",
-    borderTop: "1px dotted rgba(255,255,255, 0.5)",
-    marginLeft: "4px",
-    paddingLeft: "4px",
-    backgroundColor: "#3a5",
-  }),
+  "&:last-child td, &:last-child th": {
+    borderBottom: 0, // Remove border for the last row's cells
+  },
 }));
 
 // Container principal com visual dark e borda sutil
-export const TimelineContainer = styled(Grid2)(({ theme }) => ({
-  borderTopLeftRadius: "15px",
-  borderTopRightRadius: "15px",
-  border: "1px solid #444",
-  backgroundColor: "#1e1e2f",
+export const TimelineContainer = styled(Grid)(({ theme }) => ({ // Changed Grid2 to Grid
+  borderRadius: theme.shape.borderRadius, // Use theme's border radius
+  border: `1px solid ${theme.palette.divider}`, // Use theme's divider color
+  backgroundColor: theme.palette.background.default, // Use theme's default background
   padding: theme.spacing(2),
+  marginTop: theme.spacing(2), // Add some margin from TimelineHeader
 }));
 
-// Cabeçalho de "SERVIÇOS"
-export const HeaderGrid = styled(Grid2)(() => ({
+// Cabeçalho de "SERVIÇOS" - This seems to be for a different header, not TableHead
+export const HeaderGrid = styled(Grid)(() => ({ // Changed Grid2 to Grid
   width: "100%",
 }));
 
-export const HeaderTypography = styled(Typography)(() => ({
+export const HeaderTypography = styled(Typography)(({theme}) => ({ // Added theme
   textAlign: "center",
-  color: "#e0e0e0",
+  color: theme.palette.text.primary, // Use theme's primary text color
   fontWeight: "bold",
 }));

@@ -8,6 +8,7 @@ import {
   TableHead,
   TableRow,
   Typography,
+  useTheme, // Import useTheme
 } from "@mui/material";
 import { format } from "date-fns";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -25,6 +26,7 @@ import { OutletContextType } from "../../../../components/types/OutletContext";
 
 export const AppointmentTimeline = () => {
   const { user } = useAuth();
+  const theme = useTheme(); // Initialize theme
   const [currentTimeSlot, setCurrentTimeSlot] = useState<Date | null>();
   const [colors, setColors] = useState<{ [key: number]: string }>({});
   const [date, setDate] = useState(new Date());
@@ -91,21 +93,22 @@ export const AppointmentTimeline = () => {
   return (
     <Box
       sx={{
-        p: {xs: 0, sm: 3},
+        p: { xs: 0, sm: 3 },
         width: "100%",
         alignItems: "center",
         justifyContent: "center",
         display: "flex",
+        flexDirection: "column", // Ensure header and table are stacked vertically
       }}
     >
       {!shouldShowTimeline ? (
-        <Typography color="white" p={3} fontSize={20} textAlign="center">
+        <Typography color="text.primary" p={3} fontSize={20} textAlign="center">
           São necessários ao menos um serviço e um profissonal para exibir a
           Timeline.
         </Typography>
       ) : (
-        <Box width='100%'>
-          <TimelineHeader
+        <Box width="100%">
+          <TimelineHeader // This component might need its own styling review for consistency
             colors={colors}
             date={date}
             setDate={setDate}
@@ -114,29 +117,62 @@ export const AppointmentTimeline = () => {
           <TableContainer
             component={Paper}
             sx={{
-              border: "1px solid fff",
-              maxHeight: "80vh",
-              borderBottomLeftRadius: "10px",
-              borderBottomRightRadius: "10px",
+              border: `1px solid ${theme.palette.divider}`,
+              maxHeight: "calc(100vh - 200px)", // Adjusted maxHeight to account for header and padding
+              borderRadius: theme.shape.borderRadius,
+              backgroundColor: theme.palette.background.default,
+              mt: 2, // Margin top to separate from TimelineHeader
             }}
           >
             <Table
               stickyHeader
-              sx={{ minWidth: 300, border: "1px solid fff" }}
-              size="small"
-              aria-label="appointments"
+              sx={{
+                minWidth: 300,
+                // Removed direct border from Table, rely on TableContainer and cell borders
+              }}
+              size="small" // Keep size small for density, padding is handled in CustomTableCell
+              aria-label="appointments timeline"
             >
-              <TableHead>
+              <TableHead
+                sx={{
+                  backgroundColor: theme.palette.background.paper,
+                  borderBottom: `2px solid ${theme.palette.divider}`,
+                }}
+              >
                 <TableRow>
-                  <TableCell>Horário</TableCell>
-                  {professionalsQuery.data?.map(({ name }) => (
-                    <TableCell align="center" key={`${name}-head`}>
+                  <TableCell
+                    sx={{
+                      color: theme.palette.text.primary,
+                      fontWeight: theme.typography.fontWeightBold,
+                      padding: theme.spacing(1, 1.5),
+                      textAlign: "left",
+                      borderBottom: 'none', // Handled by TableHead border
+                    }}
+                  >
+                    Horário
+                  </TableCell>
+                  {professionalsQuery.data?.map(({ name, id }) => (
+                    <TableCell
+                      align="center"
+                      key={`${name}-head-${id}`}
+                      sx={{
+                        color: theme.palette.text.primary,
+                        fontWeight: theme.typography.fontWeightBold,
+                        padding: theme.spacing(1, 1.5),
+                        borderBottom: 'none', // Handled by TableHead border
+                      }}
+                    >
                       {toTitle(name)}
                     </TableCell>
                   ))}
                 </TableRow>
               </TableHead>
-              <TableBody>
+              <TableBody
+                sx={{
+                  // Ensure body background allows row/cell styles to show
+                  backgroundColor: theme.palette.background.paper,
+                }}
+              >
                 {getTimeSlots(date).map((rowTimeSlot, index) => (
                   <TimelineTableRow
                     key={`${format(rowTimeSlot, "HH:mm")}-${index}`}

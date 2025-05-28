@@ -37,7 +37,55 @@ export const DateInput = ({
           setDate(e as Date);
           setSelectedMonth(e as Date);
         }}
-        sx={{ display: { xs: "flex", md: "none" } }}
+        sx={{
+          display: { xs: "flex", md: "none" },
+          "& .MuiInputBase-root": {
+            color: "text.primary",
+          },
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": {
+              borderColor: "text.secondary",
+            },
+            "&:hover fieldset": {
+              borderColor: "primary.main",
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: "primary.main",
+            },
+          },
+          "& .MuiSvgIcon-root": {
+            color: "text.secondary",
+          },
+        }}
+        slotProps={{
+          popper: {
+            sx: {
+              "& .MuiPaper-root": {
+                backgroundColor: "background.paper",
+                color: "text.primary",
+              },
+              "& .MuiPickersDay-root": {
+                color: "text.primary",
+                "&.Mui-selected": {
+                  backgroundColor: "primary.main",
+                  color: "primary.contrastText",
+                  "&:hover": {
+                    backgroundColor: "primary.dark",
+                  },
+                },
+              },
+              "& .MuiPickersDay-dayOutsideMonth": {
+                color: "text.secondary",
+              },
+              "& .MuiPickersArrowSwitcher-button": {
+                color: "text.secondary",
+              },
+              "& .MuiDayCalendar-weekDayLabel": {
+                color: "text.secondary",
+              },
+            },
+          },
+        }}
       />
       <DateCalendar
         value={date}
@@ -51,7 +99,34 @@ export const DateInput = ({
             />
           ),
         }}
-        sx={{ color: "#f1f1f1", display: { xs: "none", md: "flex" } }}
+        sx={{
+          color: "text.primary",
+          display: { xs: "none", md: "flex" },
+          backgroundColor: "background.paper",
+          borderRadius: 1,
+          "& .MuiPickersDay-root": {
+            color: "text.primary",
+            "&.Mui-selected": {
+              backgroundColor: "primary.main",
+              color: "primary.contrastText",
+              "&:hover": {
+                backgroundColor: "primary.dark",
+              },
+              "&:focus": {
+                backgroundColor: "primary.main",
+              }
+            },
+          },
+          "& .MuiPickersDay-dayOutsideMonth": {
+            color: "text.secondary",
+          },
+          "& .MuiPickersArrowSwitcher-button": {
+            color: "text.secondary",
+          },
+          "& .MuiDayCalendar-weekDayLabel": {
+            color: "text.secondary",
+          },
+        }}
       />
     </>
   );
