@@ -1,4 +1,4 @@
-import { Typography, Grid2 } from "@mui/material";
+import { Typography, Grid } from "@mui/material";
 import { AvailableServicesBox, ServiceBox } from "../styled";
 import { Service } from "../../../types/models";
 import { getEntity } from "../../../services/getEntity";
@@ -19,9 +19,9 @@ export const AvailableServices = () => {
       <Typography variant="h5" sx={{ color: "#e2e8f0", mb: 2 }}>
         Serviços Disponíveis
       </Typography>
-      <Grid2 container spacing={2}>
+      <Grid container spacing={2}>
         {servicesQuery.data?.map((service) => (
-          <Grid2 size={{ xs: 12, sm: 6, md: 4 }} key={service.id}>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }} key={service.id}>
             <ServiceBox>
               <Typography variant="subtitle1" sx={{ color: "#e2e8f0" }}>
                 {service.name}
@@ -33,9 +33,9 @@ export const AvailableServices = () => {
                 R$ {service.price.toFixed(2)}
               </Typography>
             </ServiceBox>
-          </Grid2>
+          </Grid>
         ))}
-      </Grid2>
+      </Grid>
     </AvailableServicesBox>
   );
 };

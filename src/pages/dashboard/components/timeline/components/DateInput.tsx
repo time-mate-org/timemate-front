@@ -1,9 +1,10 @@
 import { DatePicker, DateCalendar } from "@mui/x-date-pickers";
 import { CalendarDay } from "./CalendarDay";
 import { useState } from "react";
-import { isSameMonth } from "date-fns";
+import { isSameMonth, toDate } from "date-fns";
 import { uniq } from "ramda";
 import { Appointment } from "../../../../../types/models";
+import { PickerValue } from "@mui/x-date-pickers/internals";
 
 export const DateInput = ({
   date,
@@ -41,7 +42,9 @@ export const DateInput = ({
       />
       <DateCalendar
         value={date}
-        onChange={(e: Date) => setDate(e)}
+        onChange={(e: PickerValue) =>
+          e ? setDate(toDate(e.toISOString())) : undefined
+        }
         onMonthChange={(e) => setSelectedMonth(e)}
         slots={{
           day: (props) => (
@@ -51,7 +54,38 @@ export const DateInput = ({
             />
           ),
         }}
+<<<<<<< Updated upstream
         sx={{ color: "#f1f1f1", display: { xs: "none", md: "flex" } }}
+=======
+        sx={{
+          color: "text.primary",
+          display: { xs: "none", md: "flex" },
+          backgroundColor: "background.paper",
+          borderRadius: 1,
+          "& .MuiPickersDay-root": {
+            color: "text.primary",
+            "&.Mui-selected": {
+              backgroundColor: "primary.main",
+              color: "primary.contrastText",
+              "&:hover": {
+                backgroundColor: "primary.dark",
+              },
+              "&:focus": {
+                backgroundColor: "primary.main",
+              },
+            },
+          },
+          "& .MuiPickersDay-dayOutsideMonth": {
+            color: "text.secondary",
+          },
+          "& .MuiPickersArrowSwitcher-button": {
+            color: "text.secondary",
+          },
+          "& .MuiDayCalendar-weekDayLabel": {
+            color: "text.secondary",
+          },
+        }}
+>>>>>>> Stashed changes
       />
     </>
   );

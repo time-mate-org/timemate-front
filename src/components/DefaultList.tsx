@@ -1,7 +1,7 @@
 import { ArrowForward, Delete, Edit, Person3 } from "@mui/icons-material";
 import {
   Divider,
-  Grid2,
+  Grid,
   IconButton,
   List,
   ListItem,
@@ -52,7 +52,7 @@ export const DefaultList = ({
             "&:hover": { cursor: "pointer" },
           }}
         >
-          <Grid2
+          <Grid
             container
             sx={{
               width: "100%",
@@ -61,35 +61,35 @@ export const DefaultList = ({
               alignItems: "center",
             }}
           >
-            <Grid2 size={2} textAlign="center">
+            <Grid size={2} textAlign="center">
               <Person3 sx={{ padding: 1, color: "#d1d1d1" }} />
-            </Grid2>
-            <Grid2 size={7}>
+            </Grid>
+            <Grid size={7}>
               <ListItemText
                 sx={{ color: "#00ff9d" }}
                 primary={toTitle(primaryText)}
                 secondary={toTitle(secondaryText)}
               />
-            </Grid2>
-            <Grid2 size={3} container>
-              <Grid2 size={6}>
+            </Grid>
+            <Grid size={3} container>
+              <Grid size={6}>
                 <IconButton
                   onClick={() => handleEdit(id)}
                   sx={{ color: "#d1d1d1" }}
                 >
                   <Edit />
                 </IconButton>
-              </Grid2>
-              <Grid2 size={6}>
+              </Grid>
+              <Grid size={6}>
                 <IconButton
                   onClick={() => handleDelete(id, name)}
                   sx={{ color: "#ff9595" }}
                 >
                   <Delete />
                 </IconButton>
-              </Grid2>
-            </Grid2>
-          </Grid2>
+              </Grid>
+            </Grid>
+          </Grid>
         </ListItem>
       ))}
     </List>

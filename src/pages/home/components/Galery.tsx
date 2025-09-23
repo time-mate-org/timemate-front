@@ -1,4 +1,4 @@
-import { Container, Typography, Grid2, Box, IconButton } from "@mui/material";
+import { Container, Typography, Grid, Box, IconButton } from "@mui/material";
 import { Search } from "@mui/icons-material";
 import { BLUE } from "./utils";
 import { useDialog } from "../../../hooks";
@@ -21,9 +21,9 @@ export const HomeGallery = () => {
         >
           GALERIA DE FOTOS
         </Typography>
-        <Grid2 container spacing={2}>
+        <Grid container spacing={2}>
           {images.reverse().map((img, index) => (
-            <Grid2 size={{ xs: 12, md: 6 }} p={2} key={index}>
+            <Grid size={{ xs: 12, md: 6 }} p={2} key={index}>
               <Box
                 sx={{ position: "relative", borderRadius: 2 }}
                 onClick={() => openImageDialog(`/images/galeria/${img}.jpg`)}
@@ -55,9 +55,9 @@ export const HomeGallery = () => {
                   </IconButton>
                 </Box>
               </Box>
-            </Grid2>
+            </Grid>
           ))}
-        </Grid2>
+        </Grid>
       </Container>
     </Box>
   );

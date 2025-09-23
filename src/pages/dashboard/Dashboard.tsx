@@ -1,4 +1,4 @@
-import { Box, Grid2, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import {
   format,
   addDays,
@@ -54,17 +54,17 @@ const Dashboard = () => {
   );
 
   return (
-    <Grid2 container spacing={5} justifyContent="center" alignItems="center">
-      <Grid2 size={{ xs: 12, sm: 12, md: 6, xl: 4 }}>
+    <Grid container spacing={5} justifyContent="center" alignItems="center">
+      <Grid size={{ xs: 12, sm: 12, md: 6, xl: 4 }}>
         <MetricCard
           title="Hoje"
           metricNumber={todayAppointments?.length ?? 0}
           metricName="agendamentos"
           onClick={() => navigate("/dashboard/appointments")}
         />
-      </Grid2>
+      </Grid>
 
-      <Grid2 size={{ xs: 12, sm: 12, md: 6, xl: 4 }}>
+      <Grid size={{ xs: 12, sm: 12, md: 6, xl: 4 }}>
         <MetricCard
           title={toTitle(
             format(addDays(new Date(), 1), "EEEE", { locale: ptBR })
@@ -77,34 +77,29 @@ const Dashboard = () => {
             })
           }
         />
-      </Grid2>
+      </Grid>
 
-      <Grid2 size={{ xs: 12, sm: 12, md: 6, xl: 4 }}>
+      <Grid size={{ xs: 12, sm: 12, md: 6, xl: 4 }}>
         <MetricCard
           title="Clientes"
           metricNumber={clientsQuery.data?.length ?? 0}
           metricName="cadastrados"
           onClick={() => navigate("/dashboard/clients")}
         />
-      </Grid2>
+      </Grid>
 
-      <Grid2 size={{ xs: 12, sm: 12, md: 6, xl: 4 }}>
+      <Grid size={{ xs: 12, sm: 12, md: 6, xl: 4 }}>
         <MetricCard
           title="Profissionais"
           metricNumber={professionalsQuery.data?.length ?? 0}
           metricName="cadastrados"
           onClick={() => navigate("/dashboard/professionals")}
         />
-      </Grid2>
-      <Grid2 size={{ xs: 12 }}>
-        <Grid2
-          container
-          spacing={5}
-          justifyContent="center"
-          alignItems="center"
-        >
+      </Grid>
+      <Grid size={{ xs: 12 }}>
+        <Grid container spacing={5} justifyContent="center" alignItems="center">
           {/* Serviços */}
-          <Grid2 size={{ xs: 12 }}>
+          <Grid size={{ xs: 12 }}>
             <Box
               sx={{
                 background: "#1e293b",
@@ -117,9 +112,9 @@ const Dashboard = () => {
               <Typography variant="h5" sx={{ color: "#e2e8f0", mb: 2 }}>
                 Serviços Disponíveis
               </Typography>
-              <Grid2 container spacing={2}>
+              <Grid container spacing={2}>
                 {servicesQuery.data?.map((service) => (
-                  <Grid2 size={{ xs: 12, sm: 6, md: 4 }} key={service.id}>
+                  <Grid size={{ xs: 12, sm: 6, md: 4 }} key={service.id}>
                     <ServiceBox onClick={() => navigate("/dashboard/services")}>
                       <Typography variant="subtitle1" sx={{ color: "#e2e8f0" }}>
                         {service.name}
@@ -131,14 +126,14 @@ const Dashboard = () => {
                         R$ {service.price.toFixed(2)}
                       </Typography>
                     </ServiceBox>
-                  </Grid2>
+                  </Grid>
                 ))}
-              </Grid2>
+              </Grid>
             </Box>
-          </Grid2>
-        </Grid2>
-      </Grid2>
-    </Grid2>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 };
 

@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 import { Grid2 } from "@mui/material";
+=======
+import { Grid } from "@mui/material"; // Changed Grid to Grid
+>>>>>>> Stashed changes
 import { format } from "date-fns";
 import { CustomTableRow, CustomTableCell } from "../style";
 import { isCurrentTimeSlot } from "../utils";
@@ -21,9 +25,7 @@ export const TimelineTableRow = ({
   appointments,
   colors,
 }: TimelineTableRowProps) => (
-  <CustomTableRow
-    isCurrentTimeSlot={isCurrentTimeSlot(rowTimeSlot, currentTimeSlot as Date)}
-  >
+  <CustomTableRow>
     <CustomTableCell
       component="th"
       scope="row"
@@ -33,11 +35,37 @@ export const TimelineTableRow = ({
       )}
       isDateCell
     >
+<<<<<<< Updated upstream
       <Grid2 container spacing={2}>
         <Grid2 size={8}>{format(rowTimeSlot, "HH:mm")}</Grid2>
         <Grid2 size={4}>
           {isCurrentTimeSlot(rowTimeSlot, currentTimeSlot as Date) && (
             <ArrowForwardIos sx={{ fontSize: 15 }} />
+=======
+      <Grid
+        container
+        alignItems="center"
+        justifyContent="center"
+        spacing={0.5}
+        wrap="nowrap"
+      >
+        <Grid size={{ xs: 8 }} textAlign="center">
+          {format(rowTimeSlot, "HH:mm")}
+        </Grid>
+        <Grid
+          size={{ xs: 4 }}
+          textAlign="right"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+          }}
+        >
+          {isCurrentTimeSlot(rowTimeSlot, currentTimeSlot as Date) && (
+            <ArrowForwardIos
+              sx={{ fontSize: "0.8rem", color: "primary.main" }}
+            /> // Adjusted size and color
+>>>>>>> Stashed changes
           )}
         </Grid2>
       </Grid2>

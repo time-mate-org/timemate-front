@@ -1,10 +1,4 @@
-import {
-  Container,
-  Typography,
-  Paper,
-  Box,
-  Grid2,
-} from "@mui/material";
+import { Container, Typography, Paper, Box, Grid } from "@mui/material";
 import { Star } from "@mui/icons-material";
 import { LIGHTBLUE, services } from "./utils";
 import { ResponsiveTypography } from "../style";
@@ -19,13 +13,13 @@ export const HomeServices = () => {
         gutterBottom
         py={5}
         letterSpacing={2}
-        sx={{fontWeight: 800}}
+        sx={{ fontWeight: 800 }}
       >
         SERVIÇOS
       </ResponsiveTypography>
-      <Grid2 container spacing={4}>
+      <Grid container spacing={4}>
         {services.map((service, index) => (
-          <Grid2 size={{ xs: 12, sm: 4 }} key={index}>
+          <Grid size={{ xs: 12, sm: 4 }} key={index}>
             <Paper
               elevation={2}
               sx={{
@@ -49,7 +43,7 @@ export const HomeServices = () => {
                 />
                 <Box
                   sx={{
-                    cursor: 'pointer',
+                    cursor: "pointer",
                     position: "absolute",
                     borderRadius: 100,
                     top: 0,
@@ -65,20 +59,20 @@ export const HomeServices = () => {
                     "&:hover": { opacity: 0.8 },
                   }}
                 >
-                  <Grid2
+                  <Grid
                     container
                     sx={{
                       width: "100%",
                       textAlign: "center",
                     }}
                   >
-                    <Grid2 size={12}>
+                    <Grid size={12}>
                       <Star sx={{ fontSize: 100 }} />
-                    </Grid2>
-                    <Grid2 size={12}>
+                    </Grid>
+                    <Grid size={12}>
                       <p>{service.title}</p>
-                    </Grid2>
-                  </Grid2>
+                    </Grid>
+                  </Grid>
                 </Box>
               </Box>
 
@@ -97,9 +91,9 @@ export const HomeServices = () => {
                 </Typography>
               </Box>
             </Paper>
-          </Grid2>
+          </Grid>
         ))}
-      </Grid2>
+      </Grid>
     </Container>
   );
 };

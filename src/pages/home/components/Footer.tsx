@@ -1,16 +1,16 @@
-import { Box, Grid2, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { BLUE } from "./utils";
 
 export const HomeFooter = () => {
   return (
     <Box component="footer" sx={{ bgcolor: BLUE, py: 5 }}>
-      <Grid2 container maxWidth="lg">
-        <Grid2 size={6}>
+      <Grid container maxWidth="lg">
+        <Grid size={6}>
           <Typography variant="body2" color="#f1f1f1" align="center">
             <strong>Baltazar</strong> - 2025, Todos os Direitos Reservados.
           </Typography>
-        </Grid2>
-        <Grid2 size={6}>
+        </Grid>
+        <Grid size={6}>
           <Typography variant="body2" color="#f1f1f1" align="center">
             Por:
             <Box
@@ -23,8 +23,8 @@ export const HomeFooter = () => {
               DRP-12
             </Box>
           </Typography>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </Box>
   );
 };
