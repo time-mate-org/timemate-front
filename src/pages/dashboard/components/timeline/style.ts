@@ -1,4 +1,4 @@
-import { Grid2, styled, TableCell, TableRow, Typography } from "@mui/material";
+import { styled, TableCell, TableRow, Typography, Grid } from "@mui/material"; // Changed Grid to Grid
 import { invertColor } from "./utils";
 
 export const CustomTableCell = styled(TableCell, {
@@ -75,20 +75,22 @@ export const CustomTableRow = styled(TableRow, {
 }));
 
 // Container principal com visual dark e borda sutil
-export const TimelineContainer = styled(Grid2)(({ theme }) => ({
-  borderTopLeftRadius: "15px",
-  borderTopRightRadius: "15px",
-  border: "1px solid #444",
-  backgroundColor: "#1e1e2f",
+export const TimelineContainer = styled(Grid)(({ theme }) => ({
+  // Changed Grid to Grid
+  borderRadius: theme.shape.borderRadius, // Use theme's border radius
+  border: `1px solid ${theme.palette.divider}`, // Use theme's divider color
+  backgroundColor: theme.palette.background.default, // Use theme's default background
   padding: theme.spacing(2),
 }));
 
-// Cabeçalho de "SERVIÇOS"
-export const HeaderGrid = styled(Grid2)(() => ({
+// Cabeçalho de "SERVIÇOS" - This seems to be for a different header, not TableHead
+export const HeaderGrid = styled(Grid)(() => ({
+  // Changed Grid to Grid
   width: "100%",
 }));
 
 export const HeaderTypography = styled(Typography)(() => ({
+  // Added theme
   textAlign: "center",
   color: "#e0e0e0",
   fontWeight: "bold",

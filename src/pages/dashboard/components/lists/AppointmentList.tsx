@@ -1,4 +1,4 @@
-import { Box, Button, Typography, Grid2 } from "@mui/material";
+import { Box, Button, Typography, Grid } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
 import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { format, isSameDay, isToday } from "date-fns";
@@ -71,8 +71,8 @@ const AppointmentList = () => {
         p: 3,
       }}
     >
-      <Grid2 container spacing={2}>
-        <Grid2
+      <Grid container spacing={2}>
+        <Grid
           size={{ xs: 12, md: 6 }}
           direction="row"
           display="flex"
@@ -92,8 +92,8 @@ const AppointmentList = () => {
           >
             Novo Agendamento
           </Button>
-        </Grid2>
-        <Grid2
+        </Grid>
+        <Grid
           size={{ xs: 12, md: 6 }}
           direction="row"
           display="flex"
@@ -105,13 +105,13 @@ const AppointmentList = () => {
             date={date}
             setDate={setDate}
           />
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <Typography align="center" color="#00ff9d" py={1} fontSize={25}>
             {isToday(date) ? "Hoje" : format(date, "dd/MM/yy")}
           </Typography>
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <DefaultDataDisplay
             columnNames={appointmentsColumnNames}
             emptyMessage={`Ainda não há agendamentos ${
@@ -124,8 +124,8 @@ const AppointmentList = () => {
             listItems={appointmentsToListData(appointmentsByDate)}
             tableItems={appointmentsToTableData(appointmentsByDate)}
           />
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </Box>
   );
 };

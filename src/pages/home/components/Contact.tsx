@@ -1,4 +1,4 @@
-import { Container, Typography, Box, Button, Grid2 } from "@mui/material";
+import { Container, Typography, Box, Button, Grid } from "@mui/material";
 import { Instagram, Facebook } from "@mui/icons-material";
 import { ResponsiveTypography } from "../style";
 import { LIGHTBLACK, LIGHTBLUE } from "./utils";
@@ -82,8 +82,8 @@ export const HomeContact = () => {
       >
         FALE CONOSCO
       </ResponsiveTypography>
-      <Grid2 container spacing={4}>
-        <Grid2 size={{ xs: 12, md: 6 }}>
+      <Grid container spacing={4}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Box
             component="form"
             noValidate
@@ -126,15 +126,15 @@ export const HomeContact = () => {
               Enviar
             </Button>
           </Box>
-        </Grid2>
+        </Grid>
 
-        <Grid2 size={{ xs: 12, md: 6 }}>
-          <Grid2 container spacing={1} pt={2}>
-            <Grid2 size={2}>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Grid container spacing={1} pt={2}>
+            <Grid size={2}>
               <Box component="img" src="images/background/post.png" />
-            </Grid2>
-            <Grid2 size={10}>
-              <Grid2
+            </Grid>
+            <Grid size={10}>
+              <Grid
                 container
                 spacing={1}
                 sx={{
@@ -142,7 +142,7 @@ export const HomeContact = () => {
                   mt: 2,
                 }}
               >
-                <Grid2
+                <Grid
                   size={12}
                   display="flex"
                   justifyContent="start"
@@ -168,8 +168,8 @@ export const HomeContact = () => {
                     </Typography>
                     <Typography variant="body1"></Typography>
                   </Box>
-                </Grid2>
-                <Grid2
+                </Grid>
+                <Grid
                   size={12}
                   display="flex"
                   justifyContent="start"
@@ -195,12 +195,12 @@ export const HomeContact = () => {
                       cursor: "pointer",
                     }}
                   />
-                </Grid2>
-              </Grid2>
-            </Grid2>
-          </Grid2>
-        </Grid2>
-      </Grid2>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
     </Container>
   );
 };

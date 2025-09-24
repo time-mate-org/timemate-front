@@ -2,13 +2,13 @@ import { Badge } from "@mui/material";
 import {
   PickersDay,
   PickersDayProps,
-} from "@mui/x-date-pickers/PickersDay/PickersDay";
+} from "@mui/x-date-pickers/PickersDay";
 
 export const CalendarDay = ({
   pickerProps,
   highlightedDays,
 }: {
-  pickerProps: PickersDayProps<Date>;
+  pickerProps: PickersDayProps & { selected?: boolean };
   highlightedDays: number[];
 }) => {
   const { day, outsideCurrentMonth, ...other } = pickerProps;

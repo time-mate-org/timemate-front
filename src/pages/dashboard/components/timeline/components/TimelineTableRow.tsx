@@ -1,4 +1,4 @@
-import { Grid2 } from "@mui/material";
+import { Grid } from "@mui/material"; // Changed Grid to Grid
 import { format } from "date-fns";
 import { CustomTableRow, CustomTableCell } from "../style";
 import { isCurrentTimeSlot } from "../utils";
@@ -33,14 +33,32 @@ export const TimelineTableRow = ({
       )}
       isDateCell
     >
-      <Grid2 container spacing={2}>
-        <Grid2 size={8}>{format(rowTimeSlot, "HH:mm")}</Grid2>
-        <Grid2 size={4}>
+      <Grid
+        container
+        alignItems="center"
+        justifyContent="center"
+        spacing={0.5}
+        wrap="nowrap"
+      >
+        <Grid size={{ xs: 8 }} textAlign="center">
+          {format(rowTimeSlot, "HH:mm")}
+        </Grid>
+        <Grid
+          size={{ xs: 4 }}
+          textAlign="right"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+          }}
+        >
           {isCurrentTimeSlot(rowTimeSlot, currentTimeSlot as Date) && (
-            <ArrowForwardIos sx={{ fontSize: 15 }} />
+            <ArrowForwardIos
+              sx={{ fontSize: "0.8rem", color: "primary.main" }}
+            /> // Adjusted size and color
           )}
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </CustomTableCell>
     {professionals?.map((professional) => (
       <TimelineTableCell

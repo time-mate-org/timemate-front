@@ -4,7 +4,7 @@ import Drawer from "@mui/material/Drawer";
 import Typography from "@mui/material/Typography";
 import { ArrowBack } from "@mui/icons-material";
 import { Outlet, useNavigate } from "react-router-dom";
-import { Grid2 } from "@mui/material";
+import { Grid } from "@mui/material";
 import { OutletContainer } from "../../pages/dashboard/styled";
 import { DashboardDrawer } from "../DashboardDrawer";
 import { Navbar } from "../Navbar";
@@ -87,13 +87,13 @@ export const DashboardLayout = () => {
         component="main"
         sx={{
           flexGrow: 1,
-          p: {xs:0, sm: 1, md: 3},
+          p: { xs: 0, sm: 1, md: 3 },
           width: { sm: `calc(100% - ${drawerWidth}px)` },
         }}
       >
         <OutletContainer>
-          <Grid2 container>
-            <Grid2 size={12}>
+          <Grid container>
+            <Grid size={12}>
               <Typography
                 textAlign="center"
                 color="#f1f1f1"
@@ -120,11 +120,11 @@ export const DashboardLayout = () => {
                 />
                 {sectionName}
               </Typography>
-            </Grid2>
-            <Grid2 size={12}>
+            </Grid>
+            <Grid size={12}>
               <Outlet context={{ setSectionName }} />
-            </Grid2>
-          </Grid2>
+            </Grid>
+          </Grid>
         </OutletContainer>
       </Box>
     </Box>
