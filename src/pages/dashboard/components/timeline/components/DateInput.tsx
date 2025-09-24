@@ -54,9 +54,6 @@ export const DateInput = ({
             />
           ),
         }}
-<<<<<<< Updated upstream
-        sx={{ color: "#f1f1f1", display: { xs: "none", md: "flex" } }}
-=======
         sx={{
           color: "text.primary",
           display: { xs: "none", md: "flex" },
@@ -85,7 +82,6 @@ export const DateInput = ({
             color: "text.secondary",
           },
         }}
->>>>>>> Stashed changes
       />
     </>
   );

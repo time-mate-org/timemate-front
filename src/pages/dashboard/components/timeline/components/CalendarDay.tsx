@@ -8,11 +8,7 @@ export const CalendarDay = ({
   pickerProps,
   highlightedDays,
 }: {
-<<<<<<< Updated upstream
-  pickerProps: PickersDayProps<Date>;
-=======
   pickerProps: PickersDayProps & { selected?: boolean };
->>>>>>> Stashed changes
   highlightedDays: number[];
 }) => {
   const { day, outsideCurrentMonth, ...other } = pickerProps;
