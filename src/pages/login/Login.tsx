@@ -29,10 +29,6 @@ const Login = () => {
       if (user) navigate("/dashboard");
     } catch (e) {
       setError((e as Error).message);
-      console.log(
-        "🚀 ~ handleSubmit ~ (e as Error).message:",
-        (e as Error).message
-      );
     }
   };
 

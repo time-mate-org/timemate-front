@@ -1,8 +1,7 @@
 import { User } from "firebase/auth";
+import { backendEndpoint } from "./utils";
 
-const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
-
-export const deleteEntity = async(
+export const deleteEntity = async (
   user: User,
   resource: string,
   id: number
@@ -15,7 +14,7 @@ export const deleteEntity = async(
       "Content-Type": "application/json",
     },
   });
-  
+
   if (result.status !== 200)
     throw new Error(`erro desconhecido: tente novamente mais tarde.`);
 };

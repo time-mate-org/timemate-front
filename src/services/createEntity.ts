@@ -1,6 +1,5 @@
 import { User } from "firebase/auth";
-
-const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
+import { backendEndpoint } from "./utils";
 
 export const createEntity = async <T extends object>(
   user: User,

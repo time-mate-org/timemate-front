@@ -1,12 +1,5 @@
-import { User } from "firebase/auth";
-
-const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
-
-type GetEntityParamType = {
-  user: User | null;
-  resource: string;
-  id?: number;
-};
+import { backendEndpoint } from "./utils";
+import { GetEntityParamType } from "./types";
 
 export const getEntity = async <T extends object>({
   user,
