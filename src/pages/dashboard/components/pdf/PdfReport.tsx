@@ -12,14 +12,16 @@ import { useAuth, useToast } from "../../../../hooks";
 import { Professional } from "../../../../types/models";
 import { getEntity } from "../../../../services/getEntity";
 import { getPdfReport } from "../../../../services/getPdfReport";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { useState } from "react";
 import LoadingComponent from "../../../../components/loading/Loading";
+import { OutletContextType } from "../../../../components/types/OutletContext";
 
 export const PdfReport = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const { setSectionName } = useOutletContext<OutletContextType>();
   const [isLoading, setIsLoading] = useState(false);
   const today = new Date();
   const {
@@ -34,6 +36,8 @@ export const PdfReport = () => {
     },
     resolver: joiResolver(pdfReportSchema),
   });
+
+  setSectionName("RELATÓRIO");
 
   const professionalsQuery = useQuery({
     enabled: !!user,

@@ -1,10 +1,14 @@
 import { useState, useEffect, useMemo } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useOutletContext } from "react-router-dom";
+import { OutletContextType } from "../../../../components/types/OutletContext";
 
 const PdfPreview = () => {
   const { state } = useLocation();
   const base64PdfString: string | undefined = state?.base64PdfString;
+  const { setSectionName } = useOutletContext<OutletContextType>();
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+
+  setSectionName("RELATÓRIO");
 
   const blob = useMemo(() => {
     if (!base64PdfString) {
@@ -15,7 +19,7 @@ const PdfPreview = () => {
       const encoder = new TextEncoder();
       const bytes = encoder.encode(base64PdfString);
 
-      return new Blob([bytes], { type: "application/pdf" });
+      return new Blob([bytes], { type: "application/pdf" });  
     } catch (error) {
       console.error(
         "Erro ao decodificar a string Base64 ou criar o Blob:",
