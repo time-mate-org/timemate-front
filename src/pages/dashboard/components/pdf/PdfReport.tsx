@@ -13,11 +13,14 @@ import { Professional } from "../../../../types/models";
 import { getEntity } from "../../../../services/getEntity";
 import { getPdfReport } from "../../../../services/getPdfReport";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import LoadingComponent from "../../../../components/loading/Loading";
 
 export const PdfReport = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
   const today = new Date();
   const {
     control,
@@ -41,15 +44,17 @@ export const PdfReport = () => {
 
   const onSubmit = async (data: PdfReportFormData) => {
     if (user) {
+      setIsLoading(true);
       const pdfReportPayload = {
         user,
         ...data,
       };
       const base64PdfString = await getPdfReport(pdfReportPayload);
 
-      if (base64PdfString)
+      if (base64PdfString) {
+        setIsLoading(false);
         navigate("/dashboard/pdf", { state: { base64PdfString } });
-      else showToast("Não há pdf a ser exibido.");
+      } else showToast("Não há pdf a ser exibido.");
     }
   };
 
@@ -91,6 +96,8 @@ export const PdfReport = () => {
 
         <CustomSubmitButton formId="pdfReportGetForm" label="ver pdf" />
       </Box>
+
+      {isLoading && <LoadingComponent />}
     </Box>
   );
 };

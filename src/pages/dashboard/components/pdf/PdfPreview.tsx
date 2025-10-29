@@ -38,9 +38,9 @@ const PdfPreview = () => {
 
   return (
     <div style={{ width: "100%", height: "80vh" }}>
-      {base64PdfString?.length ? (
+      {base64PdfString ? (
         <iframe
-          src={pdfUrl ?? ""}
+          src={pdfUrl ?? "pdf"}
           title="Pré-visualização do PDF"
           width="100%"
           height="100%"
