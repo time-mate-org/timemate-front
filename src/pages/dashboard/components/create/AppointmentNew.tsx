@@ -112,9 +112,13 @@ const AppointmentNew = () => {
         id="appointmentCreateForm"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <CustomDateField control={control} errors={errors} />
+        <CustomDateField<AppointmentFormData>
+          controlName="start_time"
+          control={control}
+          errors={errors}
+        />
 
-        <CustomSelectField
+        <CustomSelectField<AppointmentFormData>
           control={control}
           controlName="service_id"
           label="Serviço"
@@ -122,7 +126,7 @@ const AppointmentNew = () => {
           options={servicesQuery.data ?? []}
         />
 
-        <CustomSelectField
+        <CustomSelectField<AppointmentFormData>
           control={control}
           controlName="client_id"
           label="Cliente"
@@ -130,7 +134,7 @@ const AppointmentNew = () => {
           options={clientsQuery.data ?? []}
         />
 
-        <CustomSelectField
+        <CustomSelectField<AppointmentFormData>
           control={control}
           controlName="professional_id"
           label="Profissional"

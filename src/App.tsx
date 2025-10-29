@@ -30,6 +30,8 @@ import { Home } from "./pages/home/Home";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppointmentTimeline } from "./pages/dashboard/components/timeline/TimeLine";
 import { DashboardLayout } from "./components/layouts/DashboardLayout";
+import { PdfReport } from "./pages/dashboard/components/pdf/PdfReport";
+import PdfPreview from "./pages/dashboard/components/pdf/PdfPreview";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +52,8 @@ const DashboardRoutes = () => (
       <Route path="appointment/new" element={<AppointmentNew />} />
       <Route path="appointment/edit/:id" element={<AppointmentEdit />} />
       <Route path="timeline" element={<AppointmentTimeline />} />
+      <Route path="pdfReport" element={<PdfReport />} />
+      <Route path="pdf" element={<PdfPreview />} />
     </Route>
   </Routes>
 );

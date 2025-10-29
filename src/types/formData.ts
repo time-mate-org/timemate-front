@@ -32,3 +32,9 @@ export type ContactFormData = {
   message: string;
   content?: string;
 };
+
+export type PdfReportFormData = {
+  professional_id: number | "";
+  start_date: string;
+  end_date: string;
+};

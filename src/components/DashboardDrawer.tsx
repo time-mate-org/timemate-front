@@ -1,4 +1,4 @@
-import { Logout } from "@mui/icons-material";
+import { Logout, PictureAsPdf } from "@mui/icons-material";
 import {
   Toolbar,
   Box,
@@ -47,6 +47,22 @@ export const DashboardDrawer = ({
             </ListItemButton>
           </ListItem>
         ))}
+      </List>
+      <Divider />
+      <List>
+        <ListItem
+          key="pdfReport"
+          disablePadding
+          onClick={() => navigate("/dashboard/pdfReport")}
+          sx={{ py: 1 }}
+        >
+          <ListItemButton>
+            <ListItemIcon>
+              <PictureAsPdf />
+            </ListItemIcon>
+            <ListItemText primary={"Relatório"} />
+          </ListItemButton>
+        </ListItem>
       </List>
       <Divider />
       <List>
