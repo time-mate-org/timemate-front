@@ -8,14 +8,17 @@ const Navbar = ({
   drawerWidth,
   handleDrawerToggle,
 }: {
-  drawerWidth: number;
+  drawerWidth: { sm: number; md: number };
   handleDrawerToggle: () => void;
 }) => (
   <AppBar
     position="fixed"
     sx={{
-      width: { sm: `calc(100% - ${drawerWidth}px)` },
-      ml: { sm: `${drawerWidth}px` },
+      width: {
+        sm: `calc(100% - ${drawerWidth.sm}px)`,
+        md: `calc(100% - ${drawerWidth.md}px)`,
+      },
+      ml: { sm: `${drawerWidth.sm}px`, md: `${drawerWidth.md}px` },
     }}
   >
     <Toolbar>

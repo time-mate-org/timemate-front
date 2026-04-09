@@ -10,6 +10,7 @@ import { DashboardDrawer } from "../DashboardDrawer";
 import { Navbar } from "../Navbar";
 
 const drawerWidth = 240;
+const drawerWidthTablet = 72;
 
 export const DashboardLayout = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -41,11 +42,11 @@ export const DashboardLayout = () => {
     <Box sx={{ display: "flex" }}>
       <Navbar
         handleDrawerToggle={handleDrawerToggle}
-        drawerWidth={drawerWidth}
+        drawerWidth={{ sm: drawerWidthTablet, md: drawerWidth }}
       />
       <Box
         component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        sx={{ width: { sm: drawerWidthTablet, md: drawerWidth }, flexShrink: { sm: 0 } }}
         aria-label="mailbox folders"
       >
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
@@ -75,7 +76,7 @@ export const DashboardLayout = () => {
             display: { xs: "none", sm: "block" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
-              width: drawerWidth,
+              width: { sm: drawerWidthTablet, md: drawerWidth },
             },
           }}
           open
@@ -88,7 +89,10 @@ export const DashboardLayout = () => {
         sx={{
           flexGrow: 1,
           p: { xs: 0, sm: 1, md: 3 },
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          width: {
+            sm: `calc(100% - ${drawerWidthTablet}px)`,
+            md: `calc(100% - ${drawerWidth}px)`,
+          },
         }}
       >
         <OutletContainer>
