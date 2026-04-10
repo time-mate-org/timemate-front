@@ -46,7 +46,10 @@ export const DashboardLayout = () => {
       />
       <Box
         component="nav"
-        sx={{ width: { sm: drawerWidthTablet, md: drawerWidth }, flexShrink: { sm: 0 } }}
+        sx={{
+          width: { sm: drawerWidthTablet, md: drawerWidth },
+          flexShrink: { sm: 0 },
+        }}
         aria-label="mailbox folders"
       >
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
@@ -87,17 +90,17 @@ export const DashboardLayout = () => {
       <Box
         component="main"
         sx={{
-          flexGrow: 1,
-          p: { xs: 0, sm: 1, md: 3 },
-          width: {
-            sm: `calc(100% - ${drawerWidthTablet}px)`,
-            md: `calc(100% - ${drawerWidth}px)`,
-          },
+          p: { xs: 0, lg: 2, xl:3 },
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
         <OutletContainer>
           <Grid container>
-            <Grid size={12}>
+            <Grid size={12} sx={{ display: { xs: "none", md: "block" } }}>
               <Typography
                 textAlign="center"
                 color="#f1f1f1"
@@ -125,7 +128,7 @@ export const DashboardLayout = () => {
                 {sectionName}
               </Typography>
             </Grid>
-            <Grid size={12}>
+            <Grid size={12} pt={{ xs: 3, md: 0 }}>
               <Outlet context={{ setSectionName }} />
             </Grid>
           </Grid>

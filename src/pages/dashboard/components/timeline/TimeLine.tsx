@@ -91,7 +91,7 @@ export const AppointmentTimeline = () => {
   return (
     <Box
       sx={{
-        p: {xs: 0, sm: 3},
+        p: {xs: 0, sm: 1, md: 3},
         width: "100%",
         alignItems: "center",
         justifyContent: "center",
