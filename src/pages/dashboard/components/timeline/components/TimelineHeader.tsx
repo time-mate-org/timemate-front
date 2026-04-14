@@ -35,6 +35,7 @@ export const TimelineHeader = ({
       display="flex"
       justifyContent="center"
       alignItems="start"
+      width="100%"
     >
       <Grid size={{ xs: 12, sm: 12, md: 6 }}>
         <DateInput appointments={appointments} date={date} setDate={setDate} />
@@ -51,15 +52,14 @@ export const TimelineHeader = ({
           <HeaderTypography>SERVIÇOS</HeaderTypography>
         </Grid>
         {servicesQuery.data?.map((service) => (
-          <Grid
-            key={`service-color-${service.id}`}
-            size={{ xs: 4, md: 3 }}
-          >
+          <Grid key={`service-color-${service.id}`} size={{ xs: 4, md: 3 }}>
             <Grid size={12}>
-              <CircleIcon sx={{ color: colors[service?.id ?? -1], fontSize: "small" }} />
+              <CircleIcon
+                sx={{ color: colors[service?.id ?? -1], fontSize: "small" }}
+              />
             </Grid>
             <Grid size={12}>
-              <HeaderTypography fontSize={{xs: 10, sm: 12, md: 15}}>
+              <HeaderTypography fontSize={{ xs: 10, sm: 12, md: 15 }}>
                 {toTitle(service.name)}
               </HeaderTypography>
             </Grid>

@@ -19,8 +19,10 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
     <Box
       sx={{
         minHeight: "100vh",
-        minWidth:' 100vw',
+        minWidth: " 100vw",
+        maxWidth: "100vw",
         bgcolor: "background.paper",
+        overflowX: "hidden",
       }}
     >
       {isLoading && <LoadingComponent />}

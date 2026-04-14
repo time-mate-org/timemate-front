@@ -1,70 +1,70 @@
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { IconButton } from "@mui/material";
+import { Grid, IconButton, useMediaQuery, useTheme } from "@mui/material";
 import { Menu } from "@mui/icons-material";
 
-const Navbar = ({
-  drawerWidth,
-  handleDrawerToggle,
-}: {
-  drawerWidth: { sm: number; md: number };
-  handleDrawerToggle: () => void;
-}) => (
-  <AppBar
-    position="fixed"
-    sx={{
-      width: {
-        sm: `calc(100% - ${drawerWidth.sm}px)`,
-        md: `calc(100% - ${drawerWidth.md}px)`,
-      },
-      ml: { sm: `${drawerWidth.sm}px`, md: `${drawerWidth.md}px` },
-    }}
-  >
-    <Toolbar>
-      <IconButton
-        color="inherit"
-        aria-label="open drawer"
-        edge="start"
-        onClick={handleDrawerToggle}
-        sx={{ mr: 2, display: { sm: "none" } }}
-      >
-        <Menu />
-      </IconButton>
-      <Typography
-        variant="h6"
-        noWrap
-        component="a"
-        href="#app-bar-with-responsive-menu"
-        sx={{
-          display: { xs: "none", md: "flex" },
-          fontFamily: "monospace",
-          fontWeight: 700,
-          letterSpacing: ".3rem",
-          color: "inherit",
-          textDecoration: "none",
-        }}
-      >
-        BAR BEER BALTAZAR
-      </Typography>
-      <Typography
-        variant="h5"
-        noWrap
-        component="a"
-        href="#app-bar-with-responsive-menu2"
-        sx={{
-          display: { xs: "flex", md:'none' },
-          fontFamily: "monospace",
-          fontWeight: 700,
-          letterSpacing: ".3rem",
-          color: "inherit",
-          textDecoration: "none",
-        }}
-      >
-        BALTAZAR
-      </Typography>
-    </Toolbar>
-  </AppBar>
-);
+const Navbar = ({ handleDrawerToggle }: { handleDrawerToggle: () => void }) => {
+  const { breakpoints } = useTheme();
+  const isMdDown = useMediaQuery(breakpoints.down("md"));
+
+  return (
+    <AppBar sx={{ width: "100%" }}>
+      <Toolbar sx={{ width: "100%" }} disableGutters>
+        <Grid container alignItems="center" sx={{ width: "100%" }}>
+          {isMdDown ? (
+            <>
+              <Grid size="auto">
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  edge="start"
+                  onClick={handleDrawerToggle}
+                  sx={{ ml: 2, "&:hover": { cursor: "pointer" } }}
+                >
+                  <Menu />
+                </IconButton>
+              </Grid>
+              <Grid display="flex" justifyContent="center" alignItems="center">
+                <Typography
+                  variant="h5"
+                  component="div"
+                  sx={{
+                    fontFamily: "monospace",
+                    fontWeight: 700,
+                    letterSpacing: ".3rem",
+                    color: "inherit",
+                  }}
+                >
+                  BALTAZAR
+                </Typography>
+              </Grid>
+            </>
+          ) : (
+            <Grid
+              display="flex"
+              justifyContent="flex-start"
+              alignItems="center"
+            >
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{
+                  fontFamily: "monospace",
+                  fontWeight: 700,
+                  letterSpacing: ".3rem",
+                  color: "inherit",
+                  ml: 2,
+                }}
+              >
+                BAR BEER BALTAZAR
+              </Typography>
+            </Grid>
+          )}
+        </Grid>
+      </Toolbar>
+    </AppBar>
+  );
+};
 
 export { Navbar };

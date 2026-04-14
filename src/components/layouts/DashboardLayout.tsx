@@ -4,23 +4,22 @@ import Drawer from "@mui/material/Drawer";
 import Typography from "@mui/material/Typography";
 import { ArrowBack } from "@mui/icons-material";
 import { Outlet, useNavigate } from "react-router-dom";
-import { Grid } from "@mui/material";
+import { Grid, useTheme, useMediaQuery } from "@mui/material";
 import { OutletContainer } from "../../pages/dashboard/styled";
 import { DashboardDrawer } from "../DashboardDrawer";
 import { Navbar } from "../Navbar";
 
-const drawerWidth = 240;
-const drawerWidthTablet = 72;
-
 export const DashboardLayout = () => {
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const theme = useTheme();
+  const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [sectionName, setSectionName] = useState("DASHBOARD");
   const navigate = useNavigate();
 
   const handleDrawerClose = () => {
     setIsClosing(true);
-    setMobileOpen(false);
+    setIsDrawerOpen(false);
   };
 
   const handleDrawerTransitionEnd = () => {
@@ -29,7 +28,7 @@ export const DashboardLayout = () => {
 
   const handleDrawerToggle = () => {
     if (!isClosing) {
-      setMobileOpen(!mobileOpen);
+      setIsDrawerOpen(!isDrawerOpen);
     }
   };
 
@@ -39,101 +38,105 @@ export const DashboardLayout = () => {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <Navbar
-        handleDrawerToggle={handleDrawerToggle}
-        drawerWidth={{ sm: drawerWidthTablet, md: drawerWidth }}
-      />
-      <Box
-        component="nav"
-        sx={{
-          width: { sm: drawerWidthTablet, md: drawerWidth },
-          flexShrink: { sm: 0 },
-        }}
-        aria-label="mailbox folders"
+    <Grid
+      container
+      sx={{
+        minHeight: "100vh",
+        minWidth: "100vw",
+        maxWidth: "100vw",
+        height: "100%",
+        bgcolor: "background.paper",
+        overflowX: "hidden",
+      }}
+    >
+      <Grid size={12} sx={{ width: "100%", height: "auto" }}>
+        <Navbar handleDrawerToggle={handleDrawerToggle} />
+      </Grid>
+
+      <Grid size={{ sm: 0, md: 2 }} sx={{ height: "100%" }}>
+        <Box component="nav" aria-label="mailbox folders">
+          {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+          <Drawer
+            variant={isMdUp ? "permanent" : "temporary"}
+            open={isDrawerOpen}
+            onTransitionEnd={handleDrawerTransitionEnd}
+            onClose={handleDrawerClose}
+            ModalProps={{
+              keepMounted: true,
+            }}
+            sx={{
+              "& .MuiDrawer-paper": {
+                boxSizing: "border-box",
+                top: 64,
+                height: "calc(100vh - 64px)",
+                ...(!isMdUp && { width: { xs: "66%", sm: "33%" } }),
+                ...(isMdUp && { position: "relative" }),
+              },
+            }}
+          >
+            <DashboardDrawer handleDrawerItemClick={handleDrawerItemClick} />
+          </Drawer>
+        </Box>
+      </Grid>
+
+      <Grid
+        size={{ sm: 12, md: 10 }}
+        justifyContent="center"
+        alignItems="center"
       >
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-        <Drawer
-          variant="temporary"
-          open={mobileOpen}
-          onTransitionEnd={handleDrawerTransitionEnd}
-          onClose={handleDrawerClose}
+        <Box
+          component="main"
           sx={{
-            display: { xs: "block", sm: "none" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-            },
-          }}
-          slotProps={{
-            root: {
-              keepMounted: true, // Better open performance on mobile.
-            },
+            p: { xs: 0, lg: 2, xl: 3 },
+            zIndex: 5,
           }}
         >
-          <DashboardDrawer handleDrawerItemClick={handleDrawerItemClick} />
-        </Drawer>
-        <Drawer
-          variant="permanent"
-          sx={{
-            display: { xs: "none", sm: "block" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: { sm: drawerWidthTablet, md: drawerWidth },
-            },
-          }}
-          open
-        >
-          <DashboardDrawer handleDrawerItemClick={handleDrawerItemClick} />
-        </Drawer>
-      </Box>
-      <Box
-        component="main"
-        sx={{
-          p: { xs: 0, lg: 2, xl:3 },
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <OutletContainer>
-          <Grid container>
-            <Grid size={12} sx={{ display: { xs: "none", md: "block" } }}>
-              <Typography
-                textAlign="center"
-                color="#f1f1f1"
-                fontWeight={800}
-                fontSize={30}
-                letterSpacing={5}
-                mt={0}
-                pb={4}
+          <OutletContainer>
+            <Grid container>
+              <Grid size={12} sx={{ display: { xs: "none", md: "block" } }}>
+                <Typography
+                  textAlign="center"
+                  color="#f1f1f1"
+                  fontWeight={800}
+                  fontSize={30}
+                  letterSpacing={5}
+                  mt={0}
+                  pb={4}
+                >
+                  <ArrowBack
+                    onClick={() => navigate(-1)}
+                    sx={{
+                      color: "#f1f1f1",
+                      cursor: "pointer",
+                      margin: "auto",
+                      width: "25px",
+                      mt: 2,
+                      float: "left",
+                      display: {
+                        xs: "none",
+                        md: "inline",
+                      },
+                    }}
+                  />
+                  {sectionName}
+                </Typography>
+              </Grid>
+              <Grid
+                size={12}
+                sx={{
+                  pt: { xs: 3, md: 0 },
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "100%",
+                }}
               >
-                <ArrowBack
-                  onClick={() => navigate(-1)}
-                  sx={{
-                    color: "#f1f1f1",
-                    cursor: "pointer",
-                    margin: "auto",
-                    width: "25px",
-                    mt: 2,
-                    float: "left",
-                    display: {
-                      xs: "none",
-                      md: "inline",
-                    },
-                  }}
-                />
-                {sectionName}
-              </Typography>
+                <Outlet context={{ setSectionName }} />
+              </Grid>
             </Grid>
-            <Grid size={12} pt={{ xs: 3, md: 0 }}>
-              <Outlet context={{ setSectionName }} />
-            </Grid>
-          </Grid>
-        </OutletContainer>
-      </Box>
-    </Box>
+          </OutletContainer>
+        </Box>
+      </Grid>
+    </Grid>
   );
 };

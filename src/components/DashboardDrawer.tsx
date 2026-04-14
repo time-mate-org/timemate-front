@@ -1,6 +1,5 @@
 import { Logout, PictureAsPdf } from "@mui/icons-material";
 import {
-  Toolbar,
   Box,
   Divider,
   List,
@@ -22,22 +21,30 @@ export const DashboardDrawer = ({
   const navigate = useNavigate();
 
   return (
-    <div>
-      <Toolbar sx={{ justifyContent: "center" }}>
-        <Box
-          component="img"
-          src="/images/logo.png"
-          alt="BALTAZAR"
-          sx={{
-            height: { xs: 30, sm: 30, md: 50 },
-            width: "auto",
-            margin: "auto",
-            "&:hover": { cursor: "pointer" },
-          }}
-          onClick={() => navigate("/")}
-        />
-      </Toolbar>
+    <Box
+      sx={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <Box
+        component="img"
+        src="/images/logo.png"
+        alt="BALTAZAR"
+        sx={{
+          height: { xs: 30, sm: 30, md: 50 },
+          width: "60%",
+          margin: 2,
+          alignSelf: "center",
+          "&:hover": { cursor: "pointer" },
+        }}
+        onClick={() => navigate("/")}
+      />
+
       <Divider />
+
       <List>
         {menuItems.map(({ text, icon, path }) => (
           <ListItem
@@ -49,15 +56,18 @@ export const DashboardDrawer = ({
             <ListItemButton
               sx={{
                 width: "100%",
-                justifyContent: { xs: "flex-start", sm: "center", md: "flex-start" },
+                justifyContent: {
+                  xs: "flex-start",
+                  sm: "center",
+                  md: "flex-start",
+                },
                 px: 2,
               }}
             >
-              <ListItemIcon sx={{ minWidth: 0, justifyContent: "center" }}>{icon}</ListItemIcon>
-              <ListItemText
-                primary={text}
-                sx={{ display: { xs: "block", sm: "none", md: "block" } }}
-              />
+              <ListItemIcon sx={{ minWidth: 0, justifyContent: "center" }}>
+                {icon}
+              </ListItemIcon>
+              <ListItemText primary={text} sx={{ display: "block", ml: 2 }} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -73,7 +83,11 @@ export const DashboardDrawer = ({
           <ListItemButton
             sx={{
               width: "100%",
-              justifyContent: { xs: "flex-start", sm: "center", md: "flex-start" },
+              justifyContent: {
+                xs: "flex-start",
+                sm: "center",
+                md: "flex-start",
+              },
               px: 2,
             }}
           >
@@ -82,31 +96,32 @@ export const DashboardDrawer = ({
             </ListItemIcon>
             <ListItemText
               primary={"Relatório"}
-              sx={{ display: { xs: "block", sm: "none", md: "block" } }}
+              sx={{ display: "block", ml: 2 }}
             />
           </ListItemButton>
         </ListItem>
       </List>
       <Divider />
       <List>
-        <ListItem key="logout" disablePadding onClick={logout} sx={{ width: "100%" }}>
+        <ListItem
+          key="logout"
+          disablePadding
+          onClick={logout}
+          sx={{ width: "100%" }}
+        >
           <ListItemButton
             sx={{
               width: "100%",
-              justifyContent: { xs: "flex-start", sm: "center", md: "flex-start" },
               px: 2,
             }}
           >
             <ListItemIcon sx={{ minWidth: 0, justifyContent: "center" }}>
               <Logout />
             </ListItemIcon>
-            <ListItemText
-              primary="Logout"
-              sx={{ display: { xs: "block", sm: "none", md: "block" } }}
-            />
+            <ListItemText primary="Logout" sx={{ display: "block", ml: 2 }} />
           </ListItemButton>
         </ListItem>
       </List>
-    </div>
+    </Box>
   );
 };

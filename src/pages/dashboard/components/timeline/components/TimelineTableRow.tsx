@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { format } from "date-fns";
 import { CustomTableRow, CustomTableCell } from "../style";
 import { isCurrentTimeSlot } from "../utils";
@@ -29,37 +29,31 @@ export const TimelineTableRow = ({
       scope="row"
       isCurrentTimeSlot={isCurrentTimeSlot(
         rowTimeSlot,
-        currentTimeSlot as Date
+        currentTimeSlot as Date,
       )}
       isDateCell
-      sx={{ width: "6ch", minWidth: "6ch", maxWidth: "6ch", p: 0, position: 'relative' }}
+      sx={{
+        width: "6ch",
+        minWidth: "6ch",
+        maxWidth: "6ch",
+        p: 0,
+        left: 0,
+        zIndex: 2,
+        position: "sticky",
+        backgroundColor: "background.background",
+      }}
     >
-      <Box
-        sx={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Typography variant="body2">
-          {format(rowTimeSlot, "HH:mm")}
-        </Typography>
-        {isCurrentTimeSlot(rowTimeSlot, currentTimeSlot as Date) && (
-          <ArrowForwardIos
-            sx={{
-              fontSize: "0.8rem",
-              color: "primary.main",
-              position: 'absolute',
-              right: 2,
-            }}
-          />
-        )}
-      </Box>
+      <Typography variant="body2">{format(rowTimeSlot, "HH:mm")}</Typography>
+      {isCurrentTimeSlot(rowTimeSlot, currentTimeSlot as Date) && (
+        <ArrowForwardIos
+          sx={{
+            fontSize: "0.8rem",
+            color: "primary.main",
+            position: "absolute",
+            right: 2,
+          }}
+        />
+      )}
     </CustomTableCell>
     {professionals?.map((professional) => (
       <TimelineTableCell

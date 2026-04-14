@@ -9,7 +9,6 @@ import {
 import { LIGHTBLUE } from "../home/components/utils";
 
 export const OutletContainer = styled(Container)(({ theme: { spacing } }) => ({
-  flexGrow: 1,
   minHeight: "90vh",
   marginTop: spacing(5), // Espaço para evitar sobreposição com a navbar
   paddingTop: spacing(1),

@@ -105,7 +105,15 @@ export const AppointmentTimeline = () => {
           Timeline.
         </Typography>
       ) : (
-        <Box width="100%">
+        <Box
+          sx={{
+            width: "100%",
+            maxWidth: `100%`,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
           <TimelineHeader
             colors={colors}
             date={date}
@@ -121,11 +129,16 @@ export const AppointmentTimeline = () => {
               maxWidth: "100%",
               borderBottomLeftRadius: "10px",
               borderBottomRightRadius: "10px",
+              overflowX: "auto",
             }}
           >
             <Table
               stickyHeader
-              sx={{ maxWidth: "100%", border: "1px solid fff" }}
+              sx={{
+                maxWidth: "100%",
+                border: "1px solid fff",
+                userSelect: "none",
+              }}
               size="small"
               aria-label="appointments"
             >
@@ -133,7 +146,16 @@ export const AppointmentTimeline = () => {
                 <TableRow>
                   <TableCell
                     align="center"
-                    sx={{ minWidth: "6ch", width: "6ch", maxWidth: "6ch", whiteSpace: "nowrap" }}
+                    sx={{
+                      minWidth: "6ch",
+                      width: "6ch",
+                      maxWidth: "6ch",
+                      whiteSpace: "nowrap",
+                      left: 0,
+                      zIndex: 3,
+                      position: "sticky",
+                      backgroundColor: "background.background",
+                    }}
                   >
                     Horário
                   </TableCell>

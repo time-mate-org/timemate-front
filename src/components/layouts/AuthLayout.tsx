@@ -21,8 +21,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <Box
       sx={{
-        minHeight: "100%",
-        minWidth: "100%",
+        overflowX: "hidden",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
