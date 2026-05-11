@@ -53,8 +53,12 @@ export const DashboardLayout = () => {
         <Navbar handleDrawerToggle={handleDrawerToggle} />
       </Grid>
 
-      <Grid size={{ sm: 0, md: 2 }} sx={{ height: "100%" }}>
-        <Box component="nav" aria-label="mailbox folders">
+      <Grid size={{ sm: 0, md: 2 }} justifyContent="center" alignItems="center">
+        <Box
+          component="nav"
+          aria-label="mailbox folders"
+          sx={{ height: "100%" }}
+        >
           {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
           <Drawer
             variant={isMdUp ? "permanent" : "temporary"}
@@ -65,12 +69,14 @@ export const DashboardLayout = () => {
               keepMounted: true,
             }}
             sx={{
+              height: "100%",
               "& .MuiDrawer-paper": {
                 boxSizing: "border-box",
                 top: 64,
-                height: "calc(100vh - 64px)",
+                height: "100%",
                 ...(!isMdUp && { width: { xs: "66%", sm: "33%" } }),
                 ...(isMdUp && { position: "relative" }),
+                zIndex: 1,
               },
             }}
           >
@@ -93,7 +99,7 @@ export const DashboardLayout = () => {
         >
           <OutletContainer>
             <Grid container>
-              <Grid size={12} sx={{ display: { xs: "none", md: "block" } }}>
+              <Grid size={12}>
                 <Typography
                   textAlign="center"
                   color="#f1f1f1"
@@ -112,10 +118,6 @@ export const DashboardLayout = () => {
                       width: "25px",
                       mt: 2,
                       float: "left",
-                      display: {
-                        xs: "none",
-                        md: "inline",
-                      },
                     }}
                   />
                   {sectionName}

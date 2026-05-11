@@ -32,6 +32,7 @@ import { AppointmentTimeline } from "./pages/dashboard/components/timeline/TimeL
 import { DashboardLayout } from "./components/layouts/DashboardLayout";
 import { PdfReport } from "./pages/dashboard/components/pdf/PdfReport";
 import PdfPreview from "./pages/dashboard/components/pdf/PdfPreview";
+import { TenantProvider } from "./providers/tenant/TenantProvider";
 
 const queryClient = new QueryClient();
 
@@ -63,32 +64,34 @@ function App() {
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
       <ThemeProvider theme={mainTheme}>
         <QueryClientProvider client={queryClient}>
-          <AuthProvider>
-            <ToastProvider>
-              <MainLayout>
-                <DialogProvider>
-                  <BrowserRouter>
-                    <Routes>
-                      <Route index element={<Home />} />
-                      <Route
-                        path="/dashboard/*"
-                        element={
-                          <AuthLayout>
-                            <DashboardRoutes />
-                          </AuthLayout>
-                        }
-                      />
+          <TenantProvider>
+            <AuthProvider>
+              <ToastProvider>
+                <MainLayout>
+                  <DialogProvider>
+                    <BrowserRouter>
+                      <Routes>
+                        <Route index element={<Home />} />
+                        <Route
+                          path="/dashboard/*"
+                          element={
+                            <AuthLayout>
+                              <DashboardRoutes />
+                            </AuthLayout>
+                          }
+                        />
 
-                      <Route path="/login" element={<Login />} />
+                        <Route path="/login" element={<Login />} />
 
-                      {/* Rota para capturar tudo o que não foi especificado */}
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </BrowserRouter>
-                </DialogProvider>
-              </MainLayout>
-            </ToastProvider>
-          </AuthProvider>
+                        {/* Rota para capturar tudo o que não foi especificado */}
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </BrowserRouter>
+                  </DialogProvider>
+                </MainLayout>
+              </ToastProvider>
+            </AuthProvider>
+          </TenantProvider>
         </QueryClientProvider>
       </ThemeProvider>
     </LocalizationProvider>

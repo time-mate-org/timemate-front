@@ -9,7 +9,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import { menuItems } from "../pages/dashboard/components/menuItems";
-import { useAuth } from "../hooks";
+import { useAuth, useTenant } from "../hooks";
 import { useNavigate } from "react-router-dom";
 
 export const DashboardDrawer = ({
@@ -18,6 +18,7 @@ export const DashboardDrawer = ({
   handleDrawerItemClick: (path: string) => void;
 }) => {
   const { logout } = useAuth();
+  const { tenant } = useTenant();
   const navigate = useNavigate();
 
   return (
@@ -31,8 +32,8 @@ export const DashboardDrawer = ({
     >
       <Box
         component="img"
-        src="/images/logo.png"
-        alt="BALTAZAR"
+        src={tenant?.logo}
+        alt={tenant?.blog_title || "TIMEMATE"}
         sx={{
           height: { xs: 30, sm: 30, md: 50 },
           width: "60%",

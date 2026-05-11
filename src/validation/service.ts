@@ -15,4 +15,16 @@ export const serviceSchema = Joi.object({
     "number.empty": "O serviço precisa ter um preço.",
     "number.min": "O serviço deve custar ao menos 10 centavos.",
   }),
+  description: Joi.string().min(10).required().messages({
+    string: "O serviço precisa ter uma descrição maior que 10 caracteres.",
+  }),
+  image: Joi.string()
+    .regex(
+      /^(?:https?:\/\/)?(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(?::\d+)?(?:\/[^\s]*)?$/,
+    )
+    .required()
+    .messages({
+      "string.empty": "O serviço precisa ter uma imagem.",
+      "string.regex": "O serviço precisa ser uma url(ex: https://car.ai)",
+    }),
 });

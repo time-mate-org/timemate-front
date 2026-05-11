@@ -19,8 +19,10 @@ import { CustomNavItem } from "../style";
 import { BLUE, LIGHTBLUE } from "./utils";
 import { toTitle } from "../../../utils/string";
 import { replace } from "ramda";
+import { useTenant } from "../../../hooks";
 
 export const HomeHeader = () => {
+  const { tenant } = useTenant();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
@@ -49,8 +51,8 @@ export const HomeHeader = () => {
         <Toolbar disableGutters>
           <Box
             component="img"
-            src="/images/logo.png"
-            alt="BALTAZAR"
+            src={tenant?.logo || "/images/logo.png"}
+            alt={tenant?.blog_title?.toUpperCase() || "TIMEMATE"}
             sx={{ display: { xs: "none", md: "flex" }, height: 50 }}
           />
 
@@ -83,7 +85,7 @@ export const HomeHeader = () => {
                 }}
               >
                 <Typography variant="h6" sx={{ my: 2, textAlign: "center" }}>
-                  BALTAZAR
+                  {tenant?.blog_title?.toUpperCase() || "TIMEMATE"}
                 </Typography>
                 <Divider />
                 <List>
@@ -106,8 +108,8 @@ export const HomeHeader = () => {
           </Box>
           <Box
             component="img"
-            src="/images/logo.png"
-            alt="BALTAZAR"
+            src={tenant?.logo || "/images/logo.png"}
+            alt={tenant?.blog_title?.toUpperCase() || "TIMEMATE"}
             sx={{ display: { xs: "flex", md: "none" }, height: 50 }}
           />
           <Box flexGrow={1} />

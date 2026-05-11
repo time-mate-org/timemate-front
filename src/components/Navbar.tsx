@@ -3,9 +3,11 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { Grid, IconButton, useMediaQuery, useTheme } from "@mui/material";
 import { Menu } from "@mui/icons-material";
+import { useTenant } from "../hooks";
 
 const Navbar = ({ handleDrawerToggle }: { handleDrawerToggle: () => void }) => {
   const { breakpoints } = useTheme();
+  const { tenant } = useTenant();
   const isMdDown = useMediaQuery(breakpoints.down("md"));
 
   return (
@@ -36,7 +38,7 @@ const Navbar = ({ handleDrawerToggle }: { handleDrawerToggle: () => void }) => {
                     color: "inherit",
                   }}
                 >
-                  BALTAZAR
+                  {tenant?.blog_title?.toUpperCase() || "TIMEMATE"}
                 </Typography>
               </Grid>
             </>
@@ -57,7 +59,7 @@ const Navbar = ({ handleDrawerToggle }: { handleDrawerToggle: () => void }) => {
                   ml: 2,
                 }}
               >
-                BAR BEER BALTAZAR
+                {tenant?.name?.toUpperCase() || "TIMEMATE"}
               </Typography>
             </Grid>
           )}

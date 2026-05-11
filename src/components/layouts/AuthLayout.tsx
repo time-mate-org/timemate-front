@@ -15,7 +15,9 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   }, [navigate]);
 
   useEffect(() => {
-    if (!user && !isUserFetching) redirectToLogin();
+    if (!user && !isUserFetching) {
+      redirectToLogin();
+    }
   }, [user, redirectToLogin, isUserFetching]);
 
   return (

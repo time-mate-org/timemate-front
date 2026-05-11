@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { Box, Typography } from "@mui/material";
@@ -42,10 +42,16 @@ const ServiceEdit = () => {
 
   const setValueCallback = useCallback(
     (
-      field: "id" | "name" | "estimated_time" | "price",
-      newValue: string | number | undefined
+      field:
+        | "id"
+        | "name"
+        | "estimated_time"
+        | "price"
+        | "image"
+        | "description",
+      newValue: string | number | undefined,
     ) => setValue(field, newValue),
-    [setValue]
+    [setValue],
   );
 
   const updateServiceMutation = useMutation({
@@ -62,10 +68,12 @@ const ServiceEdit = () => {
   useEffect(() => {
     const { data } = serviceQuery;
     if (data && data.price) {
-      const { name, estimated_time, price } = data;
+      const { name, estimated_time, price, image, description } = data;
       setValueCallback("name", name);
       setValueCallback("estimated_time", estimated_time);
       setValueCallback("price", price);
+      setValueCallback("image", image);
+      setValueCallback("description", description);
     }
   }, [serviceQuery, setValueCallback]);
 
@@ -85,12 +93,13 @@ const ServiceEdit = () => {
     }
   };
 
+  const image = useWatch({ control, name: "image" });
+
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h5" mb={3} color="text.primary">
         Editar Serviço
       </Typography>
-
       <Box
         component="form"
         id="serviceEditForm"
@@ -117,9 +126,39 @@ const ServiceEdit = () => {
           label="Preço"
           name="price"
         />
+        <CustomTextField<Service>
+          formId="serviceCreateForm"
+          errors={errors}
+          label="Descrição"
+          name="description"
+          control={control}
+        />
 
-        <CustomSubmitButton formId="serviceEditForm" />
+        <CustomTextField<Service>
+          formId="serviceCreateForm"
+          errors={errors}
+          label="URL da Imagem"
+          name="image"
+          control={control}
+        />
+
+        <CustomSubmitButton formId="serviceCreateForm" />
       </Box>
+
+      {image && (
+        <Box
+          component="img"
+          src={control._formValues.image}
+          alt="Preview"
+          sx={{
+            mt: 3,
+            maxWidth: "100%",
+            maxHeight: 200,
+            borderRadius: 2,
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+          }}
+        />
+      )}
     </Box>
   );
 };

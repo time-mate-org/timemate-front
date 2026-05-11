@@ -4,10 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { LoginBox, LoginButton } from "./style";
 import { ResponsiveTypography } from "../home/style";
 import { LIGHTBLUE } from "../home/components/utils";
-import { useAuth } from "../../hooks";
+import { useAuth, useTenant } from "../../hooks";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { tenant } = useTenant();
   const { user, setUser, login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,15 +19,14 @@ const Login = () => {
   }, [navigate]);
 
   useEffect(() => {
-    if (user) redirectToDashboard();
-  }, [user, redirectToDashboard]);
+    if (user && tenant) redirectToDashboard();
+  }, [user, redirectToDashboard, tenant]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const user = await login(email, password);
-      setUser(user);
-      if (user) navigate("/dashboard");
+      const loggedUser = await login(email, password);
+      setUser(loggedUser);
     } catch (e) {
       setError((e as Error).message);
     }

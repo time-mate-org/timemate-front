@@ -1,21 +1,13 @@
-import { onAuthStateChanged, User } from "firebase/auth";
-import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import {
-  createContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-
-interface AuthContextType {
-  user: User | null;
-  setUser: (user: User | null) => Promise<void>;
-  isUserFetching: boolean;
-  login: (email: string, password: string) => Promise<User>;
-  logout: () => Promise<void>;
-}
+/* eslint-disable react-hooks/exhaustive-deps */
+import { onAuthStateChanged, signInWithCustomToken, User } from "firebase/auth";
+import { auth } from "../../lib/firebase/config";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { createContext, useCallback, useEffect, useState } from "react";
+import { AuthContextType } from "./types";
+import { getEntity } from "../../services/getEntity";
+import { Tenant } from "../../types/models";
+import { redirectToSubdomain } from "../utils";
+import { backendEndpoint } from "../../services/utils";
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
@@ -28,24 +20,13 @@ const AuthContext = createContext<AuthContextType>({
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isUserFetching, setIsUserFetching] = useState(true);
-  const firebaseConfig = {
-    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-    appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
 
   const login = async (email: string, password: string) => {
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
-        password
+        password,
       );
       return userCredential.user;
     } catch (error) {
@@ -55,27 +36,77 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = () => auth.signOut();
 
-  const setUserCallback = useCallback(
-    async (user: User | null) => setUser(user),
-    [setUser]
-  );
+  const getTenantFromUserClaims = useCallback(async (userParam: User) => {
+    const tokenResult = await userParam.getIdTokenResult();
+    const tenantId = (tokenResult.claims.tenant_id as string) ?? null;
 
-  const memoizedUser = useMemo(() => user, [user]);
+    if (!tenantId) return;
+
+    const currentSubdomain = window.location.hostname.split(".")[0];
+    const fetchedTenant = await getEntity<Tenant>({
+      user: userParam,
+      resource: "tenants",
+      id: parseInt(tenantId),
+    });
+
+    if (fetchedTenant.subdomain !== currentSubdomain) {
+      const idToken = await userParam.getIdToken();
+      const { customToken } = await fetch(
+        `${backendEndpoint}auth/custom-token`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${idToken}` },
+        },
+      ).then((r) => r.json());
+
+      redirectToSubdomain({
+        subdomain: fetchedTenant.subdomain,
+        token: customToken,
+      });
+    }
+  }, []);
+
+  const setUserCallback = useCallback(async (user: User | null) => {
+    setUser(user);
+  }, []);
 
   useEffect(() => {
-    if (auth) {
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        setUserCallback(user?.uid ? user : null);
-        setIsUserFetching(false);
-      });
-      return () => unsubscribe();
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+
+    if (token) {
+      window.history.replaceState({}, "", "/dashboard");
+
+      signInWithCustomToken(auth, token)
+        .then((credential) => {
+          // sessão já é a correta — seta direto, sem verificar tenant
+          setUser(credential.user);
+          setIsUserFetching(false);
+        })
+        .catch((error) => {
+          console.error(error);
+          setIsUserFetching(false);
+        });
+
+      // retorna aqui — NÃO registra o onAuthStateChanged nesse branch
+      return;
     }
-  }, [auth, setUserCallback]);
+
+    // fluxo normal: sem token
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      setUser(firebaseUser ?? null);
+      setIsUserFetching(false);
+
+      if (firebaseUser) getTenantFromUserClaims(firebaseUser);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <AuthContext.Provider
       value={{
-        user: memoizedUser,
+        user,
         setUser: setUserCallback,
         login,
         logout,
@@ -86,4 +117,5 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     </AuthContext.Provider>
   );
 };
+
 export { AuthProvider, AuthContext };
