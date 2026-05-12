@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { Box, Typography } from "@mui/material";
@@ -26,6 +26,8 @@ const ServiceNew = () => {
       name: "",
       price: 0.0,
       estimated_time: 0,
+      description: "",
+      image: "",
     },
     resolver: joiResolver(serviceSchema),
   });
@@ -48,6 +50,8 @@ const ServiceNew = () => {
       showToast(toastMessage);
     }
   };
+
+  const image = useWatch({ control, name: "image" });
 
   return (
     <Box sx={{ p: 3 }}>
@@ -82,8 +86,39 @@ const ServiceNew = () => {
           errors={errors}
         />
 
+        <CustomTextField<Service>
+          formId="serviceCreateForm"
+          errors={errors}
+          label="Descrição"
+          name="description"
+          control={control}
+        />
+
+        <CustomTextField<Service>
+          formId="serviceCreateForm"
+          errors={errors}
+          label="URL da Imagem"
+          name="image"
+          control={control}
+        />
+
         <CustomSubmitButton formId="serviceCreateForm" />
       </Box>
+
+      {image && (
+        <Box
+          component="img"
+          src={control._formValues.image}
+          alt="Preview"
+          sx={{
+            mt: 3,
+            maxWidth: "100%",
+            maxHeight: 200,
+            borderRadius: 2,
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+          }}
+        />
+      )}
     </Box>
   );
 };

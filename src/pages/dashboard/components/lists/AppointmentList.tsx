@@ -25,7 +25,7 @@ const AppointmentList = () => {
   const { showToast } = useToast();
   const { setSectionName } = useOutletContext<OutletContextType>();
   const [appointmentsByDate, setAppointmentsByDate] = useState<Appointment[]>(
-    []
+    [],
   );
   const { state } = useLocation();
   const [date, setDate] = useState(state?.externalDate ?? new Date());
@@ -66,11 +66,7 @@ const AppointmentList = () => {
   }, [appointmentsQuery.data, date]);
 
   return (
-    <Box
-      sx={{
-        p: 3,
-      }}
-    >
+    <Box sx={{ p: 3, width: "100%" }}>
       <Grid container spacing={2}>
         <Grid
           size={{ xs: 12, md: 6 }}

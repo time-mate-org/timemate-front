@@ -50,7 +50,7 @@ const ServiceList = () => {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ p: 3, width: "100%" }}>
       <Button
         variant="contained"
         startIcon={<AddIcon />}

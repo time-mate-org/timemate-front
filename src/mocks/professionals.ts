@@ -1,4 +1,6 @@
-export const mockedProfessionals = [
+import { Professional } from "../types/models";
+
+export const mockedProfessionals: Professional[] = [
   {
     id: 1,
     name: "Baltazar",

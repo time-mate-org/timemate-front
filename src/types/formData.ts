@@ -24,6 +24,8 @@ export type ServiceFormData = {
   name: string;
   estimated_time: number;
   price: number;
+  description: string;
+  image: string;
 };
 
 export type ContactFormData = {

@@ -7,7 +7,7 @@ export const HomeFooter = () => {
       <Grid container maxWidth="lg">
         <Grid size={6}>
           <Typography variant="body2" color="#f1f1f1" align="center">
-            <strong>Baltazar</strong> - 2025, Todos os Direitos Reservados.
+            <strong>Timemate</strong> - 2026, Todos os Direitos Reservados.
           </Typography>
         </Grid>
         <Grid size={6}>

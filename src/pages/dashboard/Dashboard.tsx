@@ -47,93 +47,108 @@ const Dashboard = () => {
     queryFn: () => getEntity<Service[]>({ user, resource: "services" }),
   });
   const todayAppointments = appointmentsQuery.data?.filter((appointment) =>
-    isToday(appointment.start_time)
+    isToday(appointment.start_time),
   );
   const tomorrowAppointments = appointmentsQuery.data?.filter((appointment) =>
-    isTomorrow(appointment.start_time)
+    isTomorrow(appointment.start_time),
   );
 
   return (
-    <Grid container spacing={5} justifyContent="center" alignItems="center">
-      <Grid size={{ xs: 12, sm: 12, md: 6, xl: 4 }}>
-        <MetricCard
-          title="Hoje"
-          metricNumber={todayAppointments?.length ?? 0}
-          metricName="agendamentos"
-          onClick={() => navigate("/dashboard/appointments")}
-        />
-      </Grid>
+    <Box sx={{ p: 3, width: "100%" }}>
+      <Grid container spacing={5} justifyContent="center" alignItems="center">
+        <Grid size={{ xs: 12, sm: 12, md: 6, xl: 4 }}>
+          <MetricCard
+            title="Hoje"
+            metricNumber={todayAppointments?.length ?? 0}
+            metricName="agendamentos"
+            onClick={() => navigate("/dashboard/appointments")}
+          />
+        </Grid>
 
-      <Grid size={{ xs: 12, sm: 12, md: 6, xl: 4 }}>
-        <MetricCard
-          title={toTitle(
-            format(addDays(new Date(), 1), "EEEE", { locale: ptBR })
-          )}
-          metricNumber={tomorrowAppointments?.length ?? 0}
-          metricName="agendamentos"
-          onClick={() =>
-            navigate("/dashboard/appointments", {
-              state: { externalDate: startOfTomorrow() },
-            })
-          }
-        />
-      </Grid>
+        <Grid size={{ xs: 12, sm: 12, md: 6, xl: 4 }}>
+          <MetricCard
+            title={toTitle(
+              format(addDays(new Date(), 1), "EEEE", { locale: ptBR }),
+            )}
+            metricNumber={tomorrowAppointments?.length ?? 0}
+            metricName="agendamentos"
+            onClick={() =>
+              navigate("/dashboard/appointments", {
+                state: { externalDate: startOfTomorrow() },
+              })
+            }
+          />
+        </Grid>
 
-      <Grid size={{ xs: 12, sm: 12, md: 6, xl: 4 }}>
-        <MetricCard
-          title="Clientes"
-          metricNumber={clientsQuery.data?.length ?? 0}
-          metricName="cadastrados"
-          onClick={() => navigate("/dashboard/clients")}
-        />
-      </Grid>
+        <Grid size={{ xs: 12, sm: 12, md: 6, xl: 4 }}>
+          <MetricCard
+            title="Clientes"
+            metricNumber={clientsQuery.data?.length ?? 0}
+            metricName="cadastrados"
+            onClick={() => navigate("/dashboard/clients")}
+          />
+        </Grid>
 
-      <Grid size={{ xs: 12, sm: 12, md: 6, xl: 4 }}>
-        <MetricCard
-          title="Profissionais"
-          metricNumber={professionalsQuery.data?.length ?? 0}
-          metricName="cadastrados"
-          onClick={() => navigate("/dashboard/professionals")}
-        />
-      </Grid>
-      <Grid size={{ xs: 12 }}>
-        <Grid container spacing={5} justifyContent="center" alignItems="center">
-          {/* Serviços */}
-          <Grid size={{ xs: 12 }}>
-            <Box
-              sx={{
-                background: "#1e293b",
-                borderRadius: 2,
-                p: 3,
-                mb: 10,
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
-              }}
-            >
-              <Typography variant="h5" sx={{ color: "#e2e8f0", mb: 2 }}>
-                Serviços Disponíveis
-              </Typography>
-              <Grid container spacing={2}>
-                {servicesQuery.data?.map((service) => (
-                  <Grid size={{ xs: 12, sm: 6, md: 4 }} key={service.id}>
-                    <ServiceBox onClick={() => navigate("/dashboard/services")}>
-                      <Typography variant="subtitle1" sx={{ color: "#e2e8f0" }}>
-                        {service.name}
-                      </Typography>
-                      <Typography variant="body2" sx={{ color: "#94a3b8" }}>
-                        Duração: {service.estimated_time} min
-                      </Typography>
-                      <Typography variant="h6" sx={{ color: "#00ff9d", mt: 1 }}>
-                        R$ {service.price.toFixed(2)}
-                      </Typography>
-                    </ServiceBox>
-                  </Grid>
-                ))}
-              </Grid>
-            </Box>
+        <Grid size={{ xs: 12, sm: 12, md: 6, xl: 4 }}>
+          <MetricCard
+            title="Profissionais"
+            metricNumber={professionalsQuery.data?.length ?? 0}
+            metricName="cadastrados"
+            onClick={() => navigate("/dashboard/professionals")}
+          />
+        </Grid>
+        <Grid size={{ xs: 12 }}>
+          <Grid
+            container
+            spacing={5}
+            justifyContent="center"
+            alignItems="center"
+          >
+            {/* Serviços */}
+            <Grid size={{ xs: 12 }}>
+              <Box
+                sx={{
+                  background: "#1e293b",
+                  borderRadius: 2,
+                  p: 3,
+                  mb: 10,
+                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+                }}
+              >
+                <Typography variant="h5" sx={{ color: "#e2e8f0", mb: 2 }}>
+                  Serviços Disponíveis
+                </Typography>
+                <Grid container spacing={2}>
+                  {servicesQuery.data?.map((service) => (
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }} key={service.id}>
+                      <ServiceBox
+                        onClick={() => navigate("/dashboard/services")}
+                      >
+                        <Typography
+                          variant="subtitle1"
+                          sx={{ color: "#e2e8f0" }}
+                        >
+                          {service.name}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+                          Duração: {service.estimated_time} min
+                        </Typography>
+                        <Typography
+                          variant="h6"
+                          sx={{ color: "#00ff9d", mt: 1 }}
+                        >
+                          R$ {service.price.toFixed(2)}
+                        </Typography>
+                      </ServiceBox>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Box>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
-    </Grid>
+    </Box>
   );
 };
 

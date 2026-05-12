@@ -50,7 +50,7 @@ const ClientList = () => {
   };
 
   return (
-    <Box sx={{ position: "relative", p: 3 }}>
+    <Box sx={{ p: 3, width: "100%" }}>
       <Button
         variant="contained"
         startIcon={<AddIcon />}

@@ -15,29 +15,21 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   }, [navigate]);
 
   useEffect(() => {
-    if (!user && !isUserFetching) redirectToLogin();
+    if (!user && !isUserFetching) {
+      redirectToLogin();
+    }
   }, [user, redirectToLogin, isUserFetching]);
 
   return (
     <Box
       sx={{
-        display: "grid",
-        placeItems: "center",
-        minHeight: "100vh",
-        padding: { xs: 2, md: 0 },
+        overflowX: "hidden",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
       }}
     >
-      <Box
-        sx={{
-          width: "100%",
-          bgcolor: "background.paper",
-          borderRadius: 2,
-          boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
-          overflow: "hidden",
-        }}
-      >
-        {children}
-      </Box>
+      {children}
     </Box>
   );
 };

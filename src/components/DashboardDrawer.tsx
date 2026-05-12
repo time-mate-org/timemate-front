@@ -1,6 +1,5 @@
 import { Logout, PictureAsPdf } from "@mui/icons-material";
 import {
-  Toolbar,
   Box,
   Divider,
   List,
@@ -10,7 +9,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import { menuItems } from "../pages/dashboard/components/menuItems";
-import { useAuth } from "../hooks";
+import { useAuth, useTenant } from "../hooks";
 import { useNavigate } from "react-router-dom";
 
 export const DashboardDrawer = ({
@@ -19,31 +18,57 @@ export const DashboardDrawer = ({
   handleDrawerItemClick: (path: string) => void;
 }) => {
   const { logout } = useAuth();
+  const { tenant } = useTenant();
   const navigate = useNavigate();
 
   return (
-    <div>
-      <Toolbar>
-        <Box
-          component="img"
-          src="/images/logo.png"
-          alt="BALTAZAR"
-          sx={{ height: 50, margin: "auto", "&:hover": { cursor: "pointer" } }}
-          onClick={() => navigate("/")}
-        />
-      </Toolbar>
+    <Box
+      sx={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <Box
+        component="img"
+        src={tenant?.logo}
+        alt={tenant?.blog_title || "TIMEMATE"}
+        sx={{
+          height: { xs: 30, sm: 30, md: 50 },
+          width: "60%",
+          margin: 2,
+          alignSelf: "center",
+          "&:hover": { cursor: "pointer" },
+        }}
+        onClick={() => navigate("/")}
+      />
+
       <Divider />
+
       <List>
         {menuItems.map(({ text, icon, path }) => (
           <ListItem
             key={text}
             disablePadding
             onClick={() => handleDrawerItemClick(path)}
-            sx={{ py: 1 }}
+            sx={{ py: 1, width: "100%" }}
           >
-            <ListItemButton>
-              <ListItemIcon>{icon}</ListItemIcon>
-              <ListItemText primary={text} />
+            <ListItemButton
+              sx={{
+                width: "100%",
+                justifyContent: {
+                  xs: "flex-start",
+                  sm: "center",
+                  md: "flex-start",
+                },
+                px: 2,
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 0, justifyContent: "center" }}>
+                {icon}
+              </ListItemIcon>
+              <ListItemText primary={text} sx={{ display: "block", ml: 2 }} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -54,27 +79,50 @@ export const DashboardDrawer = ({
           key="pdfReport"
           disablePadding
           onClick={() => navigate("/dashboard/pdfReport")}
-          sx={{ py: 1 }}
+          sx={{ py: 1, width: "100%" }}
         >
-          <ListItemButton>
-            <ListItemIcon>
+          <ListItemButton
+            sx={{
+              width: "100%",
+              justifyContent: {
+                xs: "flex-start",
+                sm: "center",
+                md: "flex-start",
+              },
+              px: 2,
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 0, justifyContent: "center" }}>
               <PictureAsPdf />
             </ListItemIcon>
-            <ListItemText primary={"Relatório"} />
+            <ListItemText
+              primary={"Relatório"}
+              sx={{ display: "block", ml: 2 }}
+            />
           </ListItemButton>
         </ListItem>
       </List>
       <Divider />
       <List>
-        <ListItem key="logout" disablePadding onClick={logout}>
-          <ListItemButton>
-            <ListItemIcon>
+        <ListItem
+          key="logout"
+          disablePadding
+          onClick={logout}
+          sx={{ width: "100%" }}
+        >
+          <ListItemButton
+            sx={{
+              width: "100%",
+              px: 2,
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 0, justifyContent: "center" }}>
               <Logout />
             </ListItemIcon>
-            <ListItemText primary="Logout" />
+            <ListItemText primary="Logout" sx={{ display: "block", ml: 2 }} />
           </ListItemButton>
         </ListItem>
       </List>
-    </div>
+    </Box>
   );
 };

@@ -54,7 +54,7 @@ export const AppointmentTimeline = () => {
 
   const setColorsCallback = useCallback(
     () => setColors(getNewServiceColors(servicesQuery.data ?? [])),
-    [servicesQuery.data]
+    [servicesQuery.data],
   );
   const shouldShowTimeline =
     !servicesQuery.isLoading &&
@@ -91,8 +91,9 @@ export const AppointmentTimeline = () => {
   return (
     <Box
       sx={{
-        p: {xs: 0, sm: 3},
+        p: { xs: 0, sm: 1, md: 3 },
         width: "100%",
+        maxWidth: "100%",
         alignItems: "center",
         justifyContent: "center",
         display: "flex",
@@ -104,7 +105,15 @@ export const AppointmentTimeline = () => {
           Timeline.
         </Typography>
       ) : (
-        <Box width='100%'>
+        <Box
+          sx={{
+            width: "100%",
+            maxWidth: `100%`,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
           <TimelineHeader
             colors={colors}
             date={date}
@@ -116,19 +125,40 @@ export const AppointmentTimeline = () => {
             sx={{
               border: "1px solid fff",
               maxHeight: "80vh",
+              width: "100%",
+              maxWidth: "100%",
               borderBottomLeftRadius: "10px",
               borderBottomRightRadius: "10px",
+              overflowX: "auto",
             }}
           >
             <Table
               stickyHeader
-              sx={{ minWidth: 300, border: "1px solid fff" }}
+              sx={{
+                maxWidth: "100%",
+                border: "1px solid fff",
+                userSelect: "none",
+              }}
               size="small"
               aria-label="appointments"
             >
               <TableHead>
                 <TableRow>
-                  <TableCell>Horário</TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      minWidth: "6ch",
+                      width: "6ch",
+                      maxWidth: "6ch",
+                      whiteSpace: "nowrap",
+                      left: 0,
+                      zIndex: 3,
+                      position: "sticky",
+                      backgroundColor: "background.background",
+                    }}
+                  >
+                    Horário
+                  </TableCell>
                   {professionalsQuery.data?.map(({ name }) => (
                     <TableCell align="center" key={`${name}-head`}>
                       {toTitle(name)}

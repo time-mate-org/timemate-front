@@ -18,6 +18,8 @@ export interface Service extends Model {
   name: string;
   estimated_time: number;
   price: number;
+  description: string;
+  image: string;
 }
 
 export interface Appointment extends Model {
@@ -29,4 +31,25 @@ export interface Appointment extends Model {
   service: Service;
   start_time: string;
   end_time: string;
+}
+
+export interface Tenant extends Model {
+  id: number;
+  subdomain: string;
+  name: string;
+  email: string;
+  phone: string;
+  whatsapp?: string;
+  address: string;
+  availability: string;
+  is_active: boolean;
+  logo?: string;
+  blog_photos?: string[];
+  blog_title: string;
+  blog_subtitle: string;
+  blog_about?: string;
+  banner: string;
+  instagram_profile?: string;
+  facebook_profile?: string;
+  isAuthenticated?: boolean;
 }

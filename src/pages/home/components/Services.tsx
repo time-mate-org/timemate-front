@@ -1,9 +1,19 @@
 import { Container, Typography, Paper, Box, Grid } from "@mui/material";
 import { Star } from "@mui/icons-material";
-import { LIGHTBLUE, services } from "./utils";
+import { LIGHTBLUE } from "./utils";
 import { ResponsiveTypography } from "../style";
+import { useQuery } from "@tanstack/react-query";
+import { getServices } from "../../../services/getEntity";
+import { useTenant } from "../../../hooks";
 
 export const HomeServices = () => {
+  const { tenant } = useTenant();
+  const servicesQuery = useQuery({
+    enabled: !!tenant,
+    queryKey: ["services"],
+    queryFn: () => getServices(tenant!.id),
+  });
+
   return (
     <Container id="serviços" sx={{ py: 4, background: "#f1f1f1" }}>
       <ResponsiveTypography
@@ -13,12 +23,12 @@ export const HomeServices = () => {
         gutterBottom
         py={5}
         letterSpacing={2}
-        sx={{ fontWeight: 800 }}
+        sx={{ fontWeight: 800, mb: 5 }}
       >
         SERVIÇOS
       </ResponsiveTypography>
       <Grid container spacing={4}>
-        {services.map((service, index) => (
+        {servicesQuery.data?.map((service, index) => (
           <Grid size={{ xs: 12, sm: 4 }} key={index}>
             <Paper
               elevation={2}
@@ -33,12 +43,13 @@ export const HomeServices = () => {
                 <Box
                   component="img"
                   src={service.image}
-                  alt={service.title}
+                  alt={service.name}
                   sx={{
                     width: "100%",
-                    height: "100%",
+                    aspectRatio: "1 / 1", // ← força quadrado
+                    objectFit: "cover", // ← centraliza e corta
                     borderRadius: 100,
-                    opacity: 1,
+                    display: "block",
                   }}
                 />
                 <Box
@@ -70,7 +81,7 @@ export const HomeServices = () => {
                       <Star sx={{ fontSize: 100 }} />
                     </Grid>
                     <Grid size={12}>
-                      <p>{service.title}</p>
+                      <p>{service.name}</p>
                     </Grid>
                   </Grid>
                 </Box>
@@ -78,10 +89,10 @@ export const HomeServices = () => {
 
               <Box sx={{ p: 2 }}>
                 <Typography variant="h6" color={LIGHTBLUE} textAlign="center">
-                  {service.title}
+                  {service.name}
                 </Typography>
                 <Typography
-                  variant="body2"
+                  variant="body1"
                   color="secondary"
                   textAlign="center"
                   fontFamily="Ubuntu"

@@ -1,12 +1,11 @@
 import { Container, Typography, Grid, Box, IconButton } from "@mui/material";
 import { Search } from "@mui/icons-material";
 import { BLUE } from "./utils";
-import { useDialog } from "../../../hooks";
+import { useDialog, useTenant } from "../../../hooks";
 
 export const HomeGallery = () => {
   const { openImageDialog } = useDialog();
-  // Array de nomes/índices das imagens
-  const images = [1, 2, 3, 4, 5, 6, 7, 8];
+  const { tenant } = useTenant();
 
   return (
     <Box id="galeriadefotos" sx={{ py: 4, bgcolor: BLUE, width: 1 }}>
@@ -22,17 +21,22 @@ export const HomeGallery = () => {
           GALERIA DE FOTOS
         </Typography>
         <Grid container spacing={2}>
-          {images.reverse().map((img, index) => (
+          {tenant?.blog_photos?.reverse().map((imgUrl, index) => (
             <Grid size={{ xs: 12, md: 6 }} p={2} key={index}>
               <Box
                 sx={{ position: "relative", borderRadius: 2 }}
-                onClick={() => openImageDialog(`/images/galeria/${img}.jpg`)}
+                onClick={() => openImageDialog(imgUrl)}
               >
                 <Box
                   component="img"
-                  src={`/images/galeria/${img}.jpg`}
-                  alt={`Galeria ${img}`}
-                  sx={{ width: "100%", minHeight: "100%" }}
+                  src={imgUrl}
+                  alt={`Galeria ${index}`}
+                  sx={{
+                    width: "100%",
+                    minHeight: "100%",
+                    objectFit: "cover",
+                    borderRadius: 2,
+                  }}
                 />
                 <Box
                   sx={{

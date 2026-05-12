@@ -2,8 +2,11 @@ import { Box } from "@mui/material";
 import "./loading.css";
 import { ResponsiveTypography } from "../../pages/home/style";
 import { LIGHTBLACK } from "../../pages/home/components/utils";
+import { useTenant } from "../../hooks";
 
 const LoadingComponent = () => {
+  const { tenant } = useTenant();
+
   return (
     <Box
       sx={{
@@ -32,13 +35,13 @@ const LoadingComponent = () => {
         initialVariant="h1"
         sx={{ color: "#f1f1f1", mt: "30vh" }}
       >
-        BALTAZAR
+        {tenant?.blog_title || "TIMEMATE"}
       </ResponsiveTypography>
       <ResponsiveTypography
         initialVariant="h5"
         sx={{ fontWeight: 300, letterSpacing: 7, color: "#f1f1f1", mb: 0 }}
       >
-        CORTES DE CABELO MASCULINO
+        {tenant?.blog_subtitle?.toUpperCase() ?? "carregando..."}
       </ResponsiveTypography>
       <Box className="loader" sx={{ mx: "auto" }} />
     </Box>
