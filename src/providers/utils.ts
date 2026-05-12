@@ -9,5 +9,6 @@ export const redirectToSubdomain = ({
 }) => {
   const parsedDomain = psl.parse(window.location.hostname) as ParsedDomain;
   const isLocalHost = parsedDomain.domain?.includes("localhost");
-  window.location.href = `${window.location.protocol}//${subdomain}.${isLocalHost ? "localhost:5173" : parsedDomain.domain}/dashboard?token=${token}`;
+  const timemateSubdomain = isLocalHost ? subdomain : `${subdomain}.timemate`;
+  window.location.href = `${window.location.protocol}//${timemateSubdomain}.${isLocalHost ? "localhost:5173" : parsedDomain.domain}/dashboard?token=${token}`;
 };
